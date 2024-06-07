@@ -380,8 +380,8 @@ const generateRandomColor = (format) => {
       <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '8px'}}>
           <BarChart colorPair={colorPair} data={barChartData} />
           <PieChartAlt colorPair={[colorPair[1],colorPair[0]]}  data={pieChartDataAlt}/>
-          <article style={{ background: colorPair[1], color: colorPair[0] }}>
-
+          <article style={{ background: colorPair[1], color: colorPair[0], padding: '32px' }}>
+    <p style={{ lineHeight: 1.5 }}>Every perception of colour is an illusion, we do not see colours as they really are. In our perception they alter one another.</p>
           </article>
       </div>
 
@@ -389,7 +389,8 @@ const generateRandomColor = (format) => {
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 2fr', gap: '8px' }}>
           <PieChart colorPair={colorPair} data={pieChartData}/>
-          <article style={{ border: '1px solid' }}>
+          <article style={{ border: '1px solid', padding: '32px' }}>
+    <p style={{ lineHeight: 1.5 }}>Every perception of colour is an illusion, we do not see colours as they really are. In our perception they alter one another.</p>
           </article>
           <BarChart colorPair={[colorPair[1], colorPair[0]]} data={barChartData} />
       </div>
