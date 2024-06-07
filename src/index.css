@@ -11,3 +11,35 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+* { 
+    box-sizing: border-box;
+}
+
+div { 
+    transition: background-color .2s ease, color .1s ease, border-color .1s ease, fill .2s ease; 
+}
+
+path { 
+    transition: stroke .2s ease, stroke-width .2s ease, height .2s ease, d .2s ease;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(calc(var(--pulse-size) / var(--size)));
+    opacity: 0;
+  }
+}
+
+button:active,
+button:focus-visible,
+button:focus-within,
+button:focus { 
+    border-radius: 0!important;
+    outline: 1px solid currentColor;
+    outline-offset: 1px;
+}

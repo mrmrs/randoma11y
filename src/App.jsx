@@ -2,19 +2,18 @@ import React, { useState, useEffect } from 'react';
 import Color from 'colorjs.io';
 import { HexColorPicker } from 'react-colorful';
 import { v4 as uuidv4 } from 'uuid';
-import styles from './App.css'
-import BarChart from './components/BarChart'
-import ProgressBar from './components/ProgressBar'
-import Card from './components/Card'
-import StatusDot from './components/StatusDot'
-import StatusDotOutline from './components/StatusDotOutline'
-import Badge from './components/Badge'
-import BadgeOutline from './components/BadgeOutline'
-import PieChart from './components/PieChart'
-import PieChartAlt from './components/PieChartAlt'
-import TextBox from './components/TextBox'
-import Logo from './components/Logo'
-import BackgroundStripes from './components/BackgroundStripes'
+import BarChart from './components/BarChart.jsx'
+import ProgressBar from './components/ProgressBar.jsx'
+import Card from './components/Card.jsx'
+import StatusDot from './components/StatusDot.jsx'
+import StatusDotOutline from './components/StatusDotOutline.jsx'
+import Badge from './components/Badge.jsx'
+import BadgeOutline from './components/BadgeOutline.jsx'
+import PieChart from './components/PieChart.jsx'
+import PieChartAlt from './components/PieChartAlt.jsx'
+import TextBox from './components/TextBox.jsx'
+import Logo from './components/Logo.jsx'
+import BackgroundStripes from './components/BackgroundStripes.jsx'
 
 const App = () => {
   const [count, setCount] = useState(0);

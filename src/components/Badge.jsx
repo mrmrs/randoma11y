@@ -11,7 +11,6 @@ const Badge = ({ colorPair, borderRadius = 0, ...props }) => {
             backgroundColor: colorPair[1],
             color: colorPair[0],
             fontSize: '10px',
-            whiteSpace: 'nowrap',
         }} {...props} />
 
     );
