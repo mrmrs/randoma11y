@@ -422,7 +422,7 @@ const generateRandomColor = (format) => {
           <BadgeOutline borderRadius={borderRadius} colorPair={colorPair}>Badge Outline</BadgeOutline>
       <hr style={{ backgroundColor: colorPair[0], borderBottomWidth: '1px', borderBottomStyle: 'solid', borderBottomColor: colorPair[1], borderTopColor: 'transparent', borderLeftColor: 'transparent', borderRightColor: 'transparent',  width: '100%' }}/>
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '8px'}}>
+      <div style={{ display: 'grid', gridTemplateColumns: '3fr 1fr 1fr', gap: '8px'}}>
           <BarChart colorPair={colorPair} data={barChartData} borderRadius={borderRadius} />
           <PieChartAlt colorPair={[colorPair[1],colorPair[0]]}  data={pieChartDataAlt} borderRadius={borderRadius} />
           <article style={{ background: colorPair[1], color: colorPair[0], padding: '32px', borderRadius: borderRadius }}>
@@ -432,39 +432,17 @@ const generateRandomColor = (format) => {
 
           <ProgressBar colorPair={colorPair} progress={Math.random() * 100} borderRadius={borderRadius} />
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 2fr', gap: '8px' }}>
-          <PieChart colorPair={colorPair} data={pieChartData} borderRadius={borderRadius} />
-          <article style={{ border: '1px solid', padding: '32px', borderRadius: borderRadius }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 3fr', gap: '8px' }}>
+         <article style={{ border: '1px solid', padding: '32px', borderRadius: borderRadius }}>
     <p style={{ lineHeight: 1.5, fontSize: '14px' }}>Every perception of colour is an illusion, we do not see colours as they really are. In our perception they alter one another.</p>
-          </article>
+    </article> 
+    <PieChart colorPair={colorPair} data={pieChartData} borderRadius={borderRadius} />
+          
           <BarChart colorPair={[colorPair[1], colorPair[0]]} data={barChartData} borderRadius={borderRadius} />
       </div>
-    <section style={{ display: 'flex', gap: '8px' }}>
-      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '100%' }}></div>
-      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '90%' }}></div>
-      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '80%' }}></div>
-      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '70%' }}></div>
-      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '60%' }}></div>
-      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '50%' }}></div>
-      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '40%' }}></div>
-      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '30%' }}></div>
-      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '20%' }}></div>
-      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '10%' }}></div>
-      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '5%' }}></div>
-      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '2.5%' }}></div>
-      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '1.25%' }}></div>
-    </section>
-    
-    <div style={{ boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '384px', padding: '128px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'radial-gradient(circle, currentColor 0%, transparent 110%)' }}>
-    <blockquote style={{ color: colorPair[0], maxWidth: '24ch', fontSize: '48px'}}>
-      <p style={{ fontSize: '48px', fontWeight: 900, margin: 0 }}>Color is my day-long obsession, joy, and torment.</p>
-    <p style={{ marginTop: '8px', fontSize: '20px', }}><small>Claude Monet</small></p>
-    </blockquote>
-    </div>
-      <div style={{ boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '128px', padding: '16px', background: 'linear-gradient(135deg, currentColor 0%, transparent 100%)' }}></div>
-    <section style={{ display: 'flex', gap: '8px' }}>
-          <TextBox title='A sample example sale title' text='Color contrast is the difference in brightness between foreground and background colors. For accessibility purposes, aim for a 4.5:1 ratio between the foreground color (e.g. text, links, etc.) and the background color. This ratio ensures people with moderately low vision can tell the colors apart and see your content.' colorPair={colorPair} />
-          <TextBox title='A sample example sale title' text='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.' colorPair={[colorPair[1], colorPair[0]]} />
+    <section style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+          <TextBox time='15 July 2024' title='A sample example title' subtitle='A subtitle for the card' text='Color contrast is the difference in brightness between foreground and background colors. For accessibility purposes, aim for a 4.5:1 ratio between the foreground color (e.g. text, links, etc.) and the background color. This ratio ensures people with moderately low vision can tell the colors apart and see your content.' colorPair={colorPair} />
+          <TextBox time='27 May 2024' title='A sample example title' text='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.' subtitle='Another subtitle example' colorPair={[colorPair[1], colorPair[0]]} />
     </section>
 
       </div>
@@ -485,6 +463,31 @@ const generateRandomColor = (format) => {
       <div style={{ width: '100%', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '128px', padding: '16px', background: 'radial-gradient(circle, transparent 10%, currentColor 10%)' }}></div>
       <div style={{ width: '100%', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '128px', padding: '16px', background: 'radial-gradient(circle, transparent 60%, currentColor 60%)' }}></div>
     </section>
+
+    <section style={{ display: 'flex', gap: '8px', margin: '8px 0' }}>
+      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '100%' }}></div>
+      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '90%' }}></div>
+      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '80%' }}></div>
+      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '70%' }}></div>
+      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '60%' }}></div>
+      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '50%' }}></div>
+      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '40%' }}></div>
+      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '30%' }}></div>
+      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '20%' }}></div>
+      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '10%' }}></div>
+      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '5%' }}></div>
+      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '2.5%' }}></div>
+      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '64px', backgroundColor: colorPair[1], opacity: '1.25%' }}></div>
+    </section>
+    
+    <div style={{ marginBottom: '8px', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '384px', padding: '128px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'radial-gradient(circle, currentColor 0%, transparent 110%)' }}>
+    <blockquote style={{ color: colorPair[0], maxWidth: '24ch', fontSize: '48px'}}>
+      <p style={{ fontSize: '48px', fontWeight: 900, margin: 0 }}>Color is my day-long obsession, joy, and torment.</p>
+    <p style={{ marginTop: '8px', fontSize: '20px', }}><small>Claude Monet</small></p>
+    </blockquote>
+    </div>
+
+      <div style={{ boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '64px', padding: '16px', background: 'linear-gradient(135deg, currentColor 0%, transparent 100%)' }}></div>
       <div>
         <p>Contrast: {contrast}</p>
         <p>Iterations: {iterations + 1}</p>

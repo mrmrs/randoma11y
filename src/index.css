@@ -43,3 +43,13 @@ button:focus {
     outline: 1px solid currentColor;
     outline-offset: 1px;
 }
+
+.bg-halftone { 
+   background-image: radial-gradient(
+      circle at center,
+      currentColoR 0.25REM,
+      transparent 0
+    );
+    background-size: 1rem 1rem;
+    background-repeat: round;
+}
