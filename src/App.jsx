@@ -194,6 +194,10 @@ const generateRandomColor = (format) => {
     setThreshold(parseFloat(value));
   };
 
+  const handleBorderRadiusChange = (value) => {
+    setBorderRadius(value);
+  };
+
   const generateColorFormats = (color) => {
     const formats = ['hex', 'rgb', 'hsl', 'lab', 'rec2020', 'p3', 'lch', 'oklch', 'oklab' ];
     return formats.map((format) => {
@@ -209,30 +213,15 @@ const generateRandomColor = (format) => {
 
   return (
     <div style={{ minHeight: '100dvh', backgroundColor: colorPair[0], color: colorPair[1] }}>
-      <header style={{ padding: '16px', borderBottomWidth: '1px', borderBottomStyle: 'solid', borderBottomColor: 'currentColor', display: 'flex', alignItems: 'center' , gap: '8px' }}>
-      <Logo colorPair={colorPair} size={20} />
-        <b style={{ fontSize: '12px', letterSpacing: '-0.05em', fontWeight: 900 }}>RandomA11y</b>
-
-      <button style={{
-          marginLeft: 'auto',
-              appearance: 'none', 
-              WebkitAppearance: 'none',
-              borderWidth: '1px',
-              borderStyle: 'solid',
-              borderColor: 'currentColor',
-              background: colorPair[1],
-              color: colorPair[0],
-              padding: '8px 16px'
-
-      }} onClick={handleGenerateColorPair}>Generate</button>
-      </header>
-      <div style={{ padding: '16px', }}>
-      
-      
-      <section style={{ display: 'flex', gap: '32px', padding: '8px 0'}}>
+      <header style={{  paddingRight: '8px', borderBottomWidth: '1px', borderBottomStyle: 'solid', borderBottomColor: 'currentColor', display: 'flex', alignItems: 'center' , gap: '8px' }}>
+        <div style={{ padding: '16px', display: 'flex', alignItems: 'center', gap: '8px', borderRight: '1px solid' }}>
+          <Logo colorPair={colorPair} size={20} />
+          <b style={{ fontSize: '12px', letterSpacing: '-0.05em', fontWeight: 900 }}>RandomA11y</b>
+        </div>
+<section style={{ display: 'flex', alignItems: 'flex-start', gap: '32px', padding: '8px', }}>
 <div>
         <label>
-      <span style={{ display: 'block', fontSize: '12px', fontWeight: 700, marginBottom: '2px' }}>Format</span> 
+      <span style={{ display: 'block', fontSize: '12px', fontWeight: 700, marginBottom: '4px' }}>Format</span> 
       <select
             style={{ fontSize: '12px' }}
             value={inputFormat}
@@ -251,7 +240,7 @@ const generateRandomColor = (format) => {
         </label>
       </div>
       <div>
-        <label style={{ fontSize: '12px', fontWeight: 'bold', display: 'block', marginBottom: '2px' }}>Contrast Algorithm</label>
+        <label style={{ fontSize: '12px', fontWeight: 'bold', display: 'block', marginBottom: '6px' }}>Contrast Algorithm</label>
         <div>
           <label style={{ fontSize: '12px', display: 'inline-flex', alignItems: 'center', marginRight: '8px' }}>
             <input
@@ -280,7 +269,7 @@ const generateRandomColor = (format) => {
         </div>
       </div>
       <div>
-        <label style={{ fontWeight: 'bold', fontSize: '12px', display: 'block', marginBottom: '2px' }}>Threshold</label>
+        <label style={{ fontWeight: 'bold', fontSize: '12px', display: 'block', marginBottom: '6px' }}>Threshold</label>
         {contrastAlgorithm === 'WCAG21' && (
           <div style={{display: 'flex', gap: '8px'}}>
             <label style={{ fontSize: '12px', display: 'inline-flex', alignItems: 'center'}}>
@@ -344,31 +333,87 @@ const generateRandomColor = (format) => {
           </div>
         )}
       </div>
+<div style={{ display: 'none' }}>
+        <label style={{ fontWeight: 'bold', fontSize: '12px', display: 'block', marginBottom: '2px' }}>Border Radius</label>
+          <div style={{ display: 'flex', gap: '4px'}}>
+            <label style={{ fontSize: '12px', display: 'inline-flex', alignItems: 'center'}}>
+              <input
+                type="radio"
+                value={'0px'}
+                checked={borderRadius === '0px'}
+                onChange={(e) => handleBorderRadiusChange(e.target.value)}
+              />
+              0
+            </label>
+            <label style={{ fontSize: '12px', display: 'inline-flex', alignItems: 'center'}}>
+              <input
+                type="radio"
+                value={'6px'}
+                checked={borderRadius === '6px'}
+                onChange={(e) => handleBorderRadiusChange(e.target.value)}
+              />
+              6px
+            </label>
+            <label style={{ fontSize: '12px', display: 'inline-flex', alignItems: 'center'}}>
+              <input
+                type="radio"
+                value={'16px'}
+                checked={borderRadius === '16px'}
+                onChange={(e) => handleBorderRadiusChange(e.target.value)}
+              />
+              16px
+            </label>
+            <label style={{ fontSize: '12px', display: 'inline-flex', alignItems: 'center'}}>
+              <input
+                type="radio"
+                value={'32px'}
+                checked={borderRadius === '32px'}
+                onChange={(e) => handleBorderRadiusChange(e.target.value)}
+              />
+              32px
+            </label>
+          </div>
+      </div>
 <div>
-        <label>
-      <span style={{ display: 'block', fontSize: '12px', fontWeight: 700, marginBottom: '2px' }}>Pinned color</span> 
+        <label style={{ position: 'relative', top: '-2px' }}>
+      <span style={{ display: 'block', fontSize: '12px', fontWeight: 700, marginBottom: '4px', }}>Pinned color</span> 
 
           <input
             type="text"
             value={pinnedColor}
             onChange={(e) => setPinnedColor(e.target.value)}
-            style={{ appearance: 'none', WebkitAppearance: 'none', borderWidth: '1px', borderStyle: 'solid', borderColor: colorPair[1], color: colorPair[1], backgroundColor: 'transparent', padding: '8px', width: '100%'  }}
+            style={{ appearance: 'none', WebkitAppearance: 'none', borderWidth: '1px', borderStyle: 'solid', borderColor: colorPair[1], color: colorPair[1], backgroundColor: 'transparent', padding: '4px', fontSize: '12px', width: '100%'  }}
           />
         </label>
       </div>
       </section>
 
-      <div style={{ display: 'grid', gap: '8px', gridTemplateColumns: '1fr' }}>
-          <div style={{ display: 'flex', gap: '8px', }}>
 
-      <div>
+      <button style={{
+          marginLeft: 'auto',
+              appearance: 'none', 
+              WebkitAppearance: 'none',
+              borderWidth: '1px',
+              borderStyle: 'solid',
+              borderColor: 'currentColor',
+              background: colorPair[1],
+              color: colorPair[0],
+              padding: '8px 16px',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
 
-      <button style={{ appearance: 'none', WebkitAppearance: 'none', padding: '4px 8px', margin: 0, border: 0, background: colorPair[1], color: colorPair[0], fontSize: '10px' }} onClick={() => handleSetPinnedColor(colorPair[0])}>{colorPair[0]}</button>
-      </div>
+      }} onClick={handleGenerateColorPair}>Generate <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.14645 3.14645C8.34171 2.95118 8.65829 2.95118 8.85355 3.14645L12.8536 7.14645C13.0488 7.34171 13.0488 7.65829 12.8536 7.85355L8.85355 11.8536C8.65829 12.0488 8.34171 12.0488 8.14645 11.8536C7.95118 11.6583 7.95118 11.3417 8.14645 11.1464L11.2929 8H2.5C2.22386 8 2 7.77614 2 7.5C2 7.22386 2.22386 7 2.5 7H11.2929L8.14645 3.85355C7.95118 3.65829 7.95118 3.34171 8.14645 3.14645Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg> </button>
+      </header>
+      <div style={{ padding: '16px', }}>
+        <div style={{ display: 'grid', gap: '8px', gridTemplateColumns: '1fr' }}>
+          <div style={{ display: 'grid', gap: '8px', gridTemplateColumns: '1fr 1fr' }}>
 
-      <div>
-      <button style={{ appearance: 'none', WebkitAppearance: 'none', padding: '4px 8px', margin: 0, border: 0, boxShadow: 'inset 0 0 0 1px currentColor', background: 'transparent', color: colorPair[1], fontSize: '10px' }} onClick={() => handleSetPinnedColor(colorPair[1])}>{colorPair[1]}</button>
-      </div>
+        <button style={{ appearance: 'none', WebkitAppearance: 'none', padding: '16px 8px', margin: 0, border: 0, background: colorPair[1], color: colorPair[0], fontSize: '12px' }} onClick={() => handleSetPinnedColor(colorPair[0])}>{colorPair[0]}</button>
+
+
+      <button style={{ appearance: 'none', WebkitAppearance: 'none', padding: '16px 8px', margin: 0, border: 0, boxShadow: 'inset 0 0 0 1px currentColor', background: 'transparent', color: colorPair[1], fontSize: '12px' }} onClick={() => handleSetPinnedColor(colorPair[1])}>{colorPair[1]}</button>
+
           </div>
       <div style={{display: 'flex', gap: '4px', alignItems: 'center'}}>
           <StatusDot colorPair={colorPair} borderRadius={borderRadius} />
@@ -378,36 +423,36 @@ const generateRandomColor = (format) => {
       <hr style={{ backgroundColor: colorPair[0], borderBottomWidth: '1px', borderBottomStyle: 'solid', borderBottomColor: colorPair[1], borderTopColor: 'transparent', borderLeftColor: 'transparent', borderRightColor: 'transparent',  width: '100%' }}/>
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '8px'}}>
-          <BarChart colorPair={colorPair} data={barChartData} />
-          <PieChartAlt colorPair={[colorPair[1],colorPair[0]]}  data={pieChartDataAlt}/>
-          <article style={{ background: colorPair[1], color: colorPair[0], padding: '32px' }}>
-    <p style={{ lineHeight: 1.5 }}>Every perception of colour is an illusion, we do not see colours as they really are. In our perception they alter one another.</p>
+          <BarChart colorPair={colorPair} data={barChartData} borderRadius={borderRadius} />
+          <PieChartAlt colorPair={[colorPair[1],colorPair[0]]}  data={pieChartDataAlt} borderRadius={borderRadius} />
+          <article style={{ background: colorPair[1], color: colorPair[0], padding: '32px', borderRadius: borderRadius }}>
+    <p style={{ lineHeight: 1.5, fontSize: '14px' }}>Every perception of colour is an illusion, we do not see colours as they really are. In our perception they alter one another.</p>
           </article>
       </div>
 
-          <ProgressBar colorPair={colorPair} progress={Math.random() * 100} />
+          <ProgressBar colorPair={colorPair} progress={Math.random() * 100} borderRadius={borderRadius} />
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 2fr', gap: '8px' }}>
-          <PieChart colorPair={colorPair} data={pieChartData}/>
-          <article style={{ border: '1px solid', padding: '32px' }}>
-    <p style={{ lineHeight: 1.5 }}>Every perception of colour is an illusion, we do not see colours as they really are. In our perception they alter one another.</p>
+          <PieChart colorPair={colorPair} data={pieChartData} borderRadius={borderRadius} />
+          <article style={{ border: '1px solid', padding: '32px', borderRadius: borderRadius }}>
+    <p style={{ lineHeight: 1.5, fontSize: '14px' }}>Every perception of colour is an illusion, we do not see colours as they really are. In our perception they alter one another.</p>
           </article>
-          <BarChart colorPair={[colorPair[1], colorPair[0]]} data={barChartData} />
+          <BarChart colorPair={[colorPair[1], colorPair[0]]} data={barChartData} borderRadius={borderRadius} />
       </div>
-    <section style={{ display: 'flex', gap: '8px'}}>
-      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '16px', backgroundColor: colorPair[1], opacity: '100%' }}></div>
-      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '16px', backgroundColor: colorPair[1], opacity: '90%' }}></div>
-      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '16px', backgroundColor: colorPair[1], opacity: '80%' }}></div>
-      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '16px', backgroundColor: colorPair[1], opacity: '70%' }}></div>
-      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '16px', backgroundColor: colorPair[1], opacity: '60%' }}></div>
-      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '16px', backgroundColor: colorPair[1], opacity: '50%' }}></div>
-      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '16px', backgroundColor: colorPair[1], opacity: '40%' }}></div>
-      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '16px', backgroundColor: colorPair[1], opacity: '30%' }}></div>
-      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '16px', backgroundColor: colorPair[1], opacity: '20%' }}></div>
-      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '16px', backgroundColor: colorPair[1], opacity: '10%' }}></div>
-      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '16px', backgroundColor: colorPair[1], opacity: '5%' }}></div>
-      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '16px', backgroundColor: colorPair[1], opacity: '2.5%' }}></div>
-      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '16px', backgroundColor: colorPair[1], opacity: '1.25%' }}></div>
+    <section style={{ display: 'flex', gap: '8px' }}>
+      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '100%' }}></div>
+      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '90%' }}></div>
+      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '80%' }}></div>
+      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '70%' }}></div>
+      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '60%' }}></div>
+      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '50%' }}></div>
+      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '40%' }}></div>
+      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '30%' }}></div>
+      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '20%' }}></div>
+      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '10%' }}></div>
+      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '5%' }}></div>
+      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '2.5%' }}></div>
+      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '1.25%' }}></div>
     </section>
     
     <div style={{ boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '384px', padding: '128px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'radial-gradient(circle, currentColor 0%, transparent 110%)' }}>

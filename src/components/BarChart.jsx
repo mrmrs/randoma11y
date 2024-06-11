@@ -10,7 +10,7 @@ const BarChart = ({ colorPair, borderRadius = 0, data }) => {
     gap: '4px',
     justifyContent: 'space-around',
     backgroundColor: colorPair[0],
-    padding: '20px',
+    padding: '48px',
     borderRadius: borderRadius,
     boxShadow: 'inset 0 0 0 1px currentColor'
   };
