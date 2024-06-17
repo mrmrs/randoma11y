@@ -43,7 +43,7 @@ const BarChart = ({ colorPair, borderRadius = 0, data }) => {
   return (
       <article style={chartStyleWrapper}>
         <div style={chartStyle}>
-          {DATA.MAP((ITEM) => (
+          {data.map((item) => (
             <div key={item.label} style={{ textAlign: 'center', height: '100%', display: 'flex', alignItems: 'center', flexDirection: 'column', justifyContent: 'flex-end', width: '100%' }}>
               <div
                 style={{
