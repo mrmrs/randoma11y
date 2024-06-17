@@ -212,13 +212,13 @@ const generateRandomColor = (format) => {
   };
 
   return (
-    <div style={{ minHeight: '100dvh', backgroundColor: colorPair[0], color: colorPair[1] }}>
-      <header style={{  paddingRight: '8px', borderBottomWidth: '1px', borderBottomStyle: 'solid', borderBottomColor: 'currentColor', display: 'flex', alignItems: 'center' , gap: '8px' }}>
-        <div style={{ padding: '16px', display: 'flex', alignItems: 'center', gap: '8px', borderRight: '1px solid' }}>
+    <div style={{ minHeight: '100dvh', backgroundColor: colorPair[0], color: colorPair[1], position: 'relative' }}>
+      <header style={{  backgroundColor: colorPair[0], color: colorPair[1], position: 'sticky', top: 0, paddingRight: '8px', borderBottomWidth: '1px', borderBottomStyle: 'solid', borderBottomColor: 'currentColor', display: 'flex', alignItems: 'center' , gap: '8px' }}>
+        <div style={{ padding: '20px 16px', display: 'flex', alignItems: 'center', gap: '8px', borderRight: '1px solid' }}>
           <Logo colorPair={colorPair} size={20} />
           <b style={{ fontSize: '12px', letterSpacing: '-0.05em', fontWeight: 900 }}>RandomA11y</b>
         </div>
-<section style={{ display: 'flex', alignItems: 'flex-start', gap: '32px', padding: '8px', }}>
+<section style={{ display: 'flex', alignItems: 'flex-start', gap: '32px', padding: '8px', overflow: 'scroll', flexWrap: 'none', whiteSpace: 'nowrap' }}>
 <div>
         <label>
       <span style={{ display: 'block', fontSize: '12px', fontWeight: 700, marginBottom: '4px' }}>Format</span> 
@@ -391,28 +391,29 @@ const generateRandomColor = (format) => {
 
       <button style={{
           marginLeft: 'auto',
-              appearance: 'none', 
-              WebkitAppearance: 'none',
-              borderWidth: '1px',
-              borderStyle: 'solid',
-              borderColor: 'currentColor',
-              background: colorPair[1],
-              color: colorPair[0],
-              padding: '8px 16px',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
+          appearance: 'none', 
+          WebkitAppearance: 'none',
+          borderWidth: '1px',
+          borderStyle: 'solid',
+          borderColor: 'currentColor',
+          background: colorPair[1],
+          color: colorPair[0],
+          padding: '8px 16px',
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '6px',
+          cursor: 'pointer',
 
       }} onClick={handleGenerateColorPair}>Generate <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.14645 3.14645C8.34171 2.95118 8.65829 2.95118 8.85355 3.14645L12.8536 7.14645C13.0488 7.34171 13.0488 7.65829 12.8536 7.85355L8.85355 11.8536C8.65829 12.0488 8.34171 12.0488 8.14645 11.8536C7.95118 11.6583 7.95118 11.3417 8.14645 11.1464L11.2929 8H2.5C2.22386 8 2 7.77614 2 7.5C2 7.22386 2.22386 7 2.5 7H11.2929L8.14645 3.85355C7.95118 3.65829 7.95118 3.34171 8.14645 3.14645Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg> </button>
       </header>
-      <div style={{ padding: '16px', }}>
+      <div style={{ maxWidth: '100%', padding: '16px', overflow: 'hidden' }}>
         <div style={{ display: 'grid', gap: '8px', gridTemplateColumns: '1fr' }}>
           <div style={{ display: 'grid', gap: '8px', gridTemplateColumns: '1fr 1fr' }}>
 
-        <button style={{ appearance: 'none', WebkitAppearance: 'none', padding: '16px 8px', margin: 0, border: 0, background: colorPair[1], color: colorPair[0], fontSize: '12px' }} onClick={() => handleSetPinnedColor(colorPair[0])}>{colorPair[0]}</button>
+        <button style={{ cursor: 'pointer', appearance: 'none', WebkitAppearance: 'none', padding: '16px 8px', margin: 0, border: 0, background: colorPair[1], color: colorPair[0], fontSize: '12px' }} onClick={() => handleSetPinnedColor(colorPair[0])}>{colorPair[0]}</button>
 
 
-      <button style={{ appearance: 'none', WebkitAppearance: 'none', padding: '16px 8px', margin: 0, border: 0, boxShadow: 'inset 0 0 0 1px currentColor', background: 'transparent', color: colorPair[1], fontSize: '12px' }} onClick={() => handleSetPinnedColor(colorPair[1])}>{colorPair[1]}</button>
+      <button style={{ cursor: 'pointer', appearance: 'none', WebkitAppearance: 'none', padding: '16px 8px', margin: 0, border: 0, boxShadow: 'inset 0 0 0 1px currentColor', background: 'transparent', color: colorPair[1], fontSize: '12px' }} onClick={() => handleSetPinnedColor(colorPair[1])}>{colorPair[1]}</button>
 
           </div>
       <div style={{display: 'flex', gap: '4px', alignItems: 'center'}}>
