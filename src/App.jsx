@@ -17,9 +17,11 @@ import Footer from './components/Footer.jsx'
 import BackgroundStripes from './components/BackgroundStripes.jsx'
 import ColorFormats from './components/ColorFormats.jsx'
 import OpacityScale from './components/OpacityScale.jsx'
+import GradientPanel from './components/GradientPanel.jsx'
 
 const App = () => {
   const [count, setCount] = useState(0);
+  const [sessionCount, setSessionCount] = useState(0);
   const [borderRadius, setBorderRadius] = useState('0px');
   const [colorSpace, setColorSpace] = useState('p3');
   const [inputFormat, setInputFormat] = useState('p3');
@@ -438,8 +440,8 @@ const generateRandomColor = (format) => {
           <BarChart colorPair={[colorPair[1], colorPair[0]]} data={barChartData} borderRadius={borderRadius} />
       </div>
     <section style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-          <TextBox time='15 July 2024' title='A sample example title' subtitle='A subtitle for the card' text='Color contrast is the difference in brightness between foreground and background colors. For accessibility purposes, aim for a 4.5:1 ratio between the foreground color (e.g. text, links, etc.) and the background color. This ratio ensures people with moderately low vision can tell the colors apart and see your content.' colorPair={colorPair} />
-          <TextBox time='27 May 2024' title='A sample example title' text='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.' subtitle='Another subtitle example' colorPair={[colorPair[1], colorPair[0]]} />
+          <TextBox time='15 July 2024' title='A sample example title' subtitle='A subtitle for the card' colorPair={colorPair} />
+          <TextBox time='27 May 2024' title='A sample example title' subtitle='Another subtitle example' colorPair={[colorPair[1], colorPair[0]]} />
     </section>
 
       </div>
@@ -467,13 +469,7 @@ const generateRandomColor = (format) => {
       <OpacityScale color={colorPair[1]} />
     </section>
     
-    <div style={{ marginBottom: '8px', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '384px', padding: '128px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'radial-gradient(circle, currentColor 0%, transparent 110%)' }}>
-    <blockquote style={{ color: colorPair[0], maxWidth: '24ch', fontSize: '48px'}}>
-      <p style={{ fontSize: '48px', fontWeight: 900, margin: 0 }}>Color is my day-long obsession, joy, and torment.</p>
-    <p style={{ marginTop: '8px', fontSize: '20px', }}><small>Claude Monet</small></p>
-    </blockquote>
-    </div>
-
+      <GradientPanel colorPair={colorPair} />
       <div style={{ boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '64px', padding: '16px', background: 'linear-gradient(135deg, currentColor 0%, transparent 100%)' }}></div>
       <div>
         <p>Contrast: {contrast}</p>
