@@ -22,6 +22,7 @@ import GradientPanel from './components/GradientPanel.jsx'
 const App = () => {
   const [count, setCount] = useState(0);
   const [sessionCount, setSessionCount] = useState(0);
+  const [colorHistory, setColorHistory] = useState([]);
   const [borderRadius, setBorderRadius] = useState('0px');
   const [colorSpace, setColorSpace] = useState('p3');
   const [inputFormat, setInputFormat] = useState('p3');
@@ -188,12 +189,21 @@ const generateRandomColor = (format) => {
     }
   };
 
-  const handleGenerateColorPair = () => {
+ const handleGenerateColorPair = () => {
     const { colorPair, contrast, iterations } = generateAccessibleColorPair(pinnedColor, inputFormat, threshold, contrastAlgorithm);
     setColorPair(colorPair);
     setContrast(contrast);
     setIterations(iterations);
     handleIncrement();
+    // Update history
+    setColorHistory(prev => [...prev.slice(-511), { id: uuidv4(), colors: colorPair }]); // Keep only the last 512 entries
+    setSessionCount(prev => prev + 1); // Increment session count
+  };
+
+  // Function to restore color from history
+  const restoreColorPair = (colors) => {
+    setColorPair(colors);
+    setContrast(Color.contrast(colors[0], colors[1], contrastAlgorithm)); // Recalculate contrast for these colors
   };
 
   const handleThresholdChange = (value) => {
@@ -404,7 +414,16 @@ const generateRandomColor = (format) => {
 
       }} onClick={handleGenerateColorPair}>Generate <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.14645 3.14645C8.34171 2.95118 8.65829 2.95118 8.85355 3.14645L12.8536 7.14645C13.0488 7.34171 13.0488 7.65829 12.8536 7.85355L8.85355 11.8536C8.65829 12.0488 8.34171 12.0488 8.14645 11.8536C7.95118 11.6583 7.95118 11.3417 8.14645 11.1464L11.2929 8H2.5C2.22386 8 2 7.77614 2 7.5C2 7.22386 2.22386 7 2.5 7H11.2929L8.14645 3.85355C7.95118 3.65829 7.95118 3.34171 8.14645 3.14645Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path></svg> </button>
       </header>
+      
+     <div style={{ display: 'flex', flexWrap: 'wrap'}}>
+        {colorHistory.map(entry => (
+          <button key={entry.id} title={colorPair[0] + ' / ' + colorPair[1] } style={{ cursor: 'pointer', fontWeight: 'bold', border: 0, appearance: 'none', WebkitAppearance: 'none', backgroundColor: entry.colors[0], color: entry.colors[1] }} onClick={() => restoreColorPair(entry.colors)}>
+            A
+          </button>
+        ))}
+      </div>
       <div style={{ maxWidth: '100%', padding: '16px', overflow: 'hidden' }}>
+      
         <div style={{ display: 'grid', gap: '8px', gridTemplateColumns: '1fr' }}>
           <div style={{ display: 'grid', gap: '8px', gridTemplateColumns: '1fr 1fr' }}>
 
