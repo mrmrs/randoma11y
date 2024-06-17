@@ -13,7 +13,9 @@ import PieChart from './components/PieChart.jsx'
 import PieChartAlt from './components/PieChartAlt.jsx'
 import TextBox from './components/TextBox.jsx'
 import Logo from './components/Logo.jsx'
+import Footer from './components/Footer.jsx'
 import BackgroundStripes from './components/BackgroundStripes.jsx'
+import ColorFormats from './components/ColorFormats.jsx'
 
 const App = () => {
   const [count, setCount] = useState(0);
@@ -448,22 +450,24 @@ const generateRandomColor = (format) => {
     </section>
 
       </div>
-<section style={{ display: 'flex', maxWidth: '100%', gap: '8px', marginTop: '8px' }}>
+<section style={{ display: 'grid', maxWidth: '100%', gap: '8px', gridTemplateColumns: 'repeat(auto-fill, minmax(min(10rem, 100%), 1fr))', marginTop: '8px' }}>
       <BackgroundStripes degree={0} />
       <BackgroundStripes degree={45} />
       <BackgroundStripes degree={90} />
       <BackgroundStripes degree={135} />
-      <div style={{ width: '100%', aspectRatio: '4/1', boxShadow: 'inset 0 0 0 1px currentColor', background: 'repeating-radial-gradient(circle at 100%, currentColor, currentColor 1px, transparent 1px, transparent 6px)' }}></div>
-      <div style={{ width: '100%', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '128px', padding: '16px', background: 'linear-gradient(0deg, currentColor 50%, transparent 50%)' }}></div>
-      <div style={{ width: '100%', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '128px', padding: '16px', background: 'linear-gradient(180deg, currentColor 50%, transparent 50%)' }}></div>
-      <div style={{ width: '100%', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '128px', padding: '16px', background: 'linear-gradient(90deg, currentColor 50%, transparent 50%)' }}></div>
-      <div style={{ width: '100%', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '128px', padding: '16px', background: 'linear-gradient(270deg, currentColor 50%, transparent 50%)' }}></div>
-      <div style={{ width: '100%', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '128px', padding: '16px', background: 'linear-gradient(135deg, currentColor 50%, transparent 50%)' }}></div>
-      <div style={{ width: '100%', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '128px', padding: '16px', background: 'linear-gradient(-135deg, currentColor 50%, transparent 50%)' }}></div>
-      <div style={{ width: '100%', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '128px', padding: '16px', background: 'radial-gradient(circle, currentColor 20%, transparent 20%)' }}></div>
-      <div style={{ width: '100%', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '128px', padding: '16px', background: 'radial-gradient(circle, currentColor 50%, transparent 50%)' }}></div>
-      <div style={{ width: '100%', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '128px', padding: '16px', background: 'radial-gradient(circle, transparent 10%, currentColor 10%)' }}></div>
-      <div style={{ width: '100%', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '128px', padding: '16px', background: 'radial-gradient(circle, transparent 60%, currentColor 60%)' }}></div>
+      <div style={{ width: '100%', aspectRatio: '6/4', minHeight: '32px', boxShadow: 'inset 0 0 0 1px currentColor', background: 'repeating-radial-gradient(circle at 100%, currentColor, currentColor 1px, transparent 1px, transparent 6px)' }}></div>
+      <div className='halftone' style={{ width: '100%', aspectRatio: '6/4', minHeight: '32px', boxShadow: 'inset 0 0 0 1px currentColor',  }}></div>
+      <div className='halftone-angle' style={{ width: '100%', aspectRatio: '6/4', minHeight: '32px', boxShadow: 'inset 0 0 0 1px currentColor',  }}></div>
+      <div style={{ width: '100%', aspectRatio: '6/4', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '64px', padding: '16px', background: 'linear-gradient(0deg, currentColor 50%, transparent 50%)' }}></div>
+      <div style={{ width: '100%', aspectRatio: '6/4', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '64px', padding: '16px', background: 'linear-gradient(180deg, currentColor 50%, transparent 50%)' }}></div>
+      <div style={{ width: '100%', aspectRatio: '6/4', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '64px', padding: '16px', background: 'linear-gradient(90deg, currentColor 50%, transparent 50%)' }}></div>
+      <div style={{ width: '100%', aspectRatio: '6/4', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '64px', padding: '16px', background: 'linear-gradient(270deg, currentColor 50%, transparent 50%)' }}></div>
+      <div style={{ width: '100%', aspectRatio: '6/4', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '64px', padding: '16px', background: 'linear-gradient(135deg, currentColor 50%, transparent 50%)' }}></div>
+      <div style={{ width: '100%', aspectRatio: '6/4', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '64px', padding: '16px', background: 'linear-gradient(-135deg, currentColor 50%, transparent 50%)' }}></div>
+      <div style={{ width: '100%', aspectRatio: '6/4', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '64px', padding: '16px', background: 'radial-gradient(circle, currentColor 20%, transparent 20%)' }}></div>
+      <div style={{ width: '100%', aspectRatio: '6/4', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '64px', padding: '16px', background: 'radial-gradient(circle, currentColor 50%, transparent 50%)' }}></div>
+      <div style={{ width: '100%', aspectRatio: '6/4', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '64px', padding: '16px', background: 'radial-gradient(circle, transparent 10%, currentColor 10%)' }}></div>
+      <div style={{ width: '100%', aspectRatio: '6/4', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '64px', padding: '16px', background: 'radial-gradient(circle, transparent 60%, currentColor 60%)' }}></div>
     </section>
 
     <section style={{ display: 'flex', gap: '8px', margin: '8px 0' }}>
@@ -495,40 +499,11 @@ const generateRandomColor = (format) => {
         <p>Iterations: {iterations + 1}</p>
       </div>
       <section style={{ display: 'flex', gap: '32px' }}>
-      <article>
-        {generateColorFormats(new Color(colorPair[0])).map(({ format, color, inGamut }) => (
-          <div key={uuidv4()}>
-            <dl style={{ margin: 0 }}>
-                <dt style={{ fontSize: '10px', display: 'none' }}>{format.toUpperCase()}</dt>
-            <dd style={{ margin: 0, fontFamily: 'monospace' }}>
-                <span style={{ marginRight: '4px', borderRadius: '9999px', display: 'inline-block', height: '8px', width: '8px', backgroundColor: color, boxShadow: 'inset 0 0 0 1px rgb(0,0,0,.25),0 0 0 1px rgb(255,255,255,.35)' }}></span>
-                {color}
-                <span style={{ fontSize: '10px'}}>{inGamut ? ' ' : ' (Out of Gamut)'}</span>
-            </dd>
-            </dl>
-          </div>
-        ))}
-      </article>
-      <article>
-        {generateColorFormats(new Color(colorPair[1])).map(({ format, color, inGamut }) => (
-          <div key={uuidv4()}>
-            <dl style={{ margin: 0 }}>
-                <dt style={{ fontSize: '10px', display: 'none' }}>{format.toUpperCase()}</dt>
-            <dd style={{ margin: 0, fontFamily: 'monospace' }}>
-                <span style={{ marginRight: '4px', borderRadius: '9999px', display: 'inline-block', height: '8px', width: '8px', backgroundColor: color }}></span>
-                {color}
-                <span style={{ fontSize: '10px' }}>{inGamut ? ' ' : ' (Out of Gamut)'}</span>
-            </dd>
-            </dl>
-          </div>
-        ))}
-      </article>
+        <ColorFormats color={colorPair[0]} />
+        <ColorFormats color={colorPair[1]} />
       </section>
     </div>
-      <footer style={{ padding: '16px 8px' }}>
-      <small style={{ fontSize: '10px', display: 'block', textAlign: 'center' }}>{Intl.NumberFormat().format(count)} generated combinations</small>
-      <p style={{ fontSize: '10px' }}>Created by <a href="https://johno.com" style={{ color: 'currentColor' }}>John Otander</a> &amp; <a href="https://mrmrs.cc" style={{ color: 'currentColor' }}>Adam Morse</a></p>
-      </footer>
+    <Footer count={count} /> 
     </div>
   );
 };

@@ -44,12 +44,36 @@ button:focus {
     outline-offset: 1px;
 }
 
-.bg-halftone { 
-   background-image: radial-gradient(
+.halftone-config {
+  --dotSize: 0.125rem;
+  --bgSize: 1.35rem;
+  --bgPosition: calc(var(--bgSize) / 2);
+
+  background-image: radial-gradient(
       circle at center,
-      currentColoR 0.25REM,
+      currentColor var(--dotSize),
       transparent 0
-    );
-    background-size: 1rem 1rem;
-    background-repeat: round;
+    ), radial-gradient(circle at center, currentColor var(--dotSize), transparent 0);
+  background-size: var(--bgSize) var(--bgSize);
+  background-position: 0 0, var(--bgPosition) var(--bgPosition);
+}
+
+.halftone {
+  background-image: radial-gradient(
+    circle at center,
+    currentColor 0.125rem,
+    transparent 0
+  );
+  background-size: 1rem 1rem;
+  background-repeat: round;
+}
+
+.halftone-angle {
+  background-image: radial-gradient(
+      circle at center,
+      currentColor 0.125rem,
+      transparent 0
+    ), radial-gradient(circle at center, currentColor 0.125rem, transparent 0);
+  background-size: 1.3rem 1.3rem;
+  background-position: 0 0, 0.65rem 0.65rem;
 }

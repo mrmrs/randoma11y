@@ -5,22 +5,22 @@ const BarChart = ({ colorPair, borderRadius = 0, data }) => {
     width: '100%',
     height: '100%',
     display: 'flex',
-    alignItems: 'items-center',
+    alignItems: 'center',
     justifyContent: 'space-around',
     backgroundColor: colorPair[0],
-    padding: '48px',
+    padding: '32px',
     borderRadius: borderRadius,
     boxShadow: 'inset 0 0 0 1px currentColor'
   };
 
   const chartStyle = {
     width: '100%',
-    height: '256px',
+    height: '24vw',
+    maxHeight: '256px',
     display: 'flex',
     alignItems: 'flex-end',
     gap: '4px',
     justifyContent: 'space-around',
-    backgroundColor: colorPair[0],
   };
 
   const barStyle = {
