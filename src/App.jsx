@@ -16,6 +16,7 @@ import Logo from './components/Logo.jsx'
 import Footer from './components/Footer.jsx'
 import BackgroundStripes from './components/BackgroundStripes.jsx'
 import ColorFormats from './components/ColorFormats.jsx'
+import OpacityScale from './components/OpacityScale.jsx'
 
 const App = () => {
   const [count, setCount] = useState(0);
@@ -201,14 +202,6 @@ const generateRandomColor = (format) => {
     setBorderRadius(value);
   };
 
-  const generateColorFormats = (color) => {
-    const formats = ['hex', 'rgb', 'hsl', 'lab', 'rec2020', 'p3', 'lch', 'oklch', 'oklab' ];
-    return formats.map((format) => {
-      const formattedColor = color.to(formatMapping[format]).toString({ format });
-      const inGamut = color.to(formatMapping[format]).inGamut();
-      return { format, color: formattedColor, inGamut };
-    });
-  };
 
  const handleSetPinnedColor = (color) => {
     setPinnedColor(color);
@@ -470,20 +463,8 @@ const generateRandomColor = (format) => {
       <div style={{ width: '100%', aspectRatio: '6/4', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '64px', padding: '16px', background: 'radial-gradient(circle, transparent 60%, currentColor 60%)' }}></div>
     </section>
 
-    <section style={{ display: 'flex', gap: '8px', margin: '8px 0' }}>
-      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '100%' }}></div>
-      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '90%' }}></div>
-      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '80%' }}></div>
-      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '70%' }}></div>
-      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '60%' }}></div>
-      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '50%' }}></div>
-      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '40%' }}></div>
-      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '30%' }}></div>
-      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '20%' }}></div>
-      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '10%' }}></div>
-      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '5%' }}></div>
-      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: colorPair[1], opacity: '2.5%' }}></div>
-      <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '64px', backgroundColor: colorPair[1], opacity: '1.25%' }}></div>
+    <section style={{ padding: '8px 0' }}>
+      <OpacityScale color={colorPair[1]} />
     </section>
     
     <div style={{ marginBottom: '8px', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '384px', padding: '128px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'radial-gradient(circle, currentColor 0%, transparent 110%)' }}>
