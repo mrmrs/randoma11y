@@ -28,6 +28,7 @@ const App = () => {
   const [iterations, setIterations] = useState(0);
   const [pieChartData, setPieChartData] = useState([15,Math.floor(Math.random() * 100),55])
   const [pieChartDataAlt, setPieChartDataAlt] = useState([25,Math.floor(Math.random() * 100),5 ])
+  const [progressBarData, setProgressBarData] = useState(Math.floor(Math.random() * 100))
   const [barChartData, setBarChartData] = useState([
     { label: 'Jan', value: 8 },
     { label: 'Feb', value: Math.floor(Math.random() * 100) },
@@ -431,7 +432,7 @@ const generateRandomColor = (format) => {
           </article>
       </div>
 
-          <ProgressBar colorPair={colorPair} progress={Math.random() * 100} borderRadius={borderRadius} />
+          <ProgressBar colorPair={colorPair} progress={progressBarData} borderRadius={borderRadius} />
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 3fr', gap: '8px' }}>
          <article style={{ border: '1px solid', padding: '32px', borderRadius: borderRadius }}>
