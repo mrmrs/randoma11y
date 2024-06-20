@@ -228,27 +228,35 @@ const generateRandomColor = (format) => {
           <Logo colorPair={colorPair} size={20} />
           <b style={{ fontSize: '12px', letterSpacing: '-0.05em', fontWeight: 900 }}>RandomA11y</b>
         </div>
-<section style={{ display: 'flex', alignItems: 'flex-start', gap: '32px', padding: '8px', overflow: 'scroll', flexWrap: 'none', whiteSpace: 'nowrap' }}>
-<div>
-        <label>
-      <span style={{ display: 'block', fontSize: '12px', fontWeight: 700, marginBottom: '4px' }}>Format</span> 
-      <select
-            style={{ fontSize: '12px' }}
-            value={inputFormat}
-            onChange={(e) => setInputFormat(e.target.value)}
-          >
-            <option value="hex">HEX</option>
-            <option value="p3">Display-P3</option>
-            <option value="rgb">RGB</option>
-            <option value="hsl">HSL</option>
-            <option value="lab">LAB</option>
-            <option value="oklab">OKLAB</option>
-            <option value="rec2020">REC.2020</option>
-            <option value="lch">LCH</option>
-            <option value="oklch">OKLCH</option>
-          </select>
-        </label>
-      </div>
+<section style={{ display: 'flex', alignItems: 'flex-start', gap: '32px', padding: '8px', overflow: 'scroll', flexWrap: 'none', whiteSpace: 'nowrap', zIndex: 2000 }}>
+ <label style={{  fontSize: '12px', lineHeight: 1, margin: 0, padding: 0, zIndex: 2000 }}>
+      <span style={{ fontWeight: 'bold', fontSize: '12px', marginBottom: '6px', display: 'block',  }}>Format</span>
+      <Select.Root value={inputFormat} onValueChange={setInputFormat} style={{ fontSize: '12px', }}>
+        <Select.Trigger style={{ fontSize: '12px', all: 'unset', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '4px', gap: '6px', backgroundColor: 'transparent',color: 'currentColor', border: '1px solid currentColor', borderRadius: 0 }}>
+          <Select.Value />
+          <Select.Icon />
+        </Select.Trigger>
+        <Select.Portal style={{ zIndex: 2000, background: 'red', cursor: 'pointer', }}>
+          <Select.Content style={{ background: colorPair[1], color: colorPair[0] }}>
+            <Select.ScrollUpButton />
+            <Select.Viewport style={{ background: colorPair[0], color: colorPair[1], border: '1px solid currentColor' }}>
+              <Select.Group style={{ fontSize: '12px', }}>
+                <Select.Item style={{ padding: '8px' }} value="hex"><Select.ItemText>HEX</Select.ItemText></Select.Item>
+                <Select.Item style={{ padding: '8px' }} value="p3"><Select.ItemText>Display-P3</Select.ItemText></Select.Item>
+                <Select.Item style={{ padding: '8px' }} value="rgb"><Select.ItemText>RGB</Select.ItemText></Select.Item>
+                <Select.Item style={{ padding: '8px' }} value="hsl"><Select.ItemText>HSL</Select.ItemText></Select.Item>
+                <Select.Item style={{ padding: '8px' }} value="lab"><Select.ItemText>LAB</Select.ItemText></Select.Item>
+                <Select.Item style={{ padding: '8px' }} value="oklab"><Select.ItemText>OKLAB</Select.ItemText></Select.Item>
+                <Select.Item style={{ padding: '8px' }} value="rec2020"><Select.ItemText>REC.2020</Select.ItemText></Select.Item>
+                <Select.Item style={{ padding: '8px' }} value="lch"><Select.ItemText>LCH</Select.ItemText></Select.Item>
+                <Select.Item style={{ padding: '8px' }} value="oklch"><Select.ItemText>OKLCH</Select.ItemText></Select.Item>
+              </Select.Group>
+            </Select.Viewport>
+            <Select.ScrollDownButton />
+          </Select.Content>
+        </Select.Portal>
+      </Select.Root>
+    </label>
     <fieldset style={{ border: 0, padding: 0, fontSize: '12px', fontWeight: 'bold', display: 'block', marginBottom: '6px' }}><legend style={{ marginBottom: '8px'}}>Algorithm</legend>
       <RadioGroup.Root value={contrastAlgorithm} onValueChange={(value) => {
         setContrastAlgorithm(value);
@@ -257,16 +265,16 @@ const generateRandomColor = (format) => {
        style={{ display: 'flex', alignItems: 'center', }}
     >
     <label style={{ gap: '4px', fontSize: '12px', display: 'inline-flex', alignItems: 'center', marginRight: '12px', fontWeight: 400 }}>   
-        <RadioGroup.Item value="WCAG21" id="wcag21" style={{ display: 'block', padding: 0, height: '10px', width: '10px', border: 0, background: 'transparent', boxShadow: 'inset 0 0 0 1px white' }}>
+        <RadioGroup.Item value="WCAG21" id="wcag21" style={{ display: 'block', padding: 0, height: '10px', width: '10px', border: 0, background: 'transparent', boxShadow: 'inset 0 0 0 1px currentColor', color: colorPair[1] }}>
           
-            <RadioGroup.Indicator style={{ width: '100%', height: '100%', display: 'block',  background: 'white'}} />
+            <RadioGroup.Indicator style={{ width: '100%', height: '100%', display: 'block',  background: colorPair[1] }} />
         </RadioGroup.Item>
     WCAG 2.1
           </label>
     <label style={{ gap: '4px', fontWeight: 400, fontSize: '12px', display: 'inline-flex', alignItems: 'center', }}>   
     <RadioGroup.Item value="APCA" id="apca" 
-style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, boxShadow: 'inset 0 0 0 1px white', background: 'transparent' }}>
-            <RadioGroup.Indicator style={{ height: '100%', width: '100%', display: 'block', background: 'white'}} />
+style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, boxShadow: 'inset 0 0 0 1px currentColor', color:colorPair[1], background: 'transparent' }}>
+            <RadioGroup.Indicator style={{ height: '100%', width: '100%', display: 'block', background: colorPair[1], }} />
         </RadioGroup.Item>
             APCA
           </label>
@@ -280,22 +288,22 @@ style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, 
           <div style={{display: 'flex', gap: '8px'}}>
     <label style={{ gap: '4px', fontWeight: 400, fontSize: '12px', display: 'inline-flex', alignItems: 'center', }}>   
     <RadioGroup.Item value={3} id="3" 
-style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, boxShadow: 'inset 0 0 0 1px white', background: 'transparent' }}>
-            <RadioGroup.Indicator style={{ height: '100%', width: '100%', display: 'block', background: 'white'}} />
+style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, boxShadow: 'inset 0 0 0 1px currentColor', color: colorPair[1], background: 'transparent' }}>
+            <RadioGroup.Indicator style={{ height: '100%', width: '100%', display: 'block', background: colorPair[1] }} />
         </RadioGroup.Item>
           3
             </label>
 <label style={{ gap: '4px', fontWeight: 400, fontSize: '12px', display: 'inline-flex', alignItems: 'center', }}>   
     <RadioGroup.Item value={4.5} id="4.5" 
-style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, boxShadow: 'inset 0 0 0 1px white', background: 'transparent' }}>
-            <RadioGroup.Indicator style={{ height: '100%', width: '100%', display: 'block', background: 'white'}} />
+style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, boxShadow: 'inset 0 0 0 1px currentColor', color: colorPair[1], background: 'transparent' }}>
+            <RadioGroup.Indicator style={{ height: '100%', width: '100%', display: 'block', background: colorPair[1]}} />
         </RadioGroup.Item>
           4.5
             </label>
 <label style={{ gap: '4px', fontWeight: 400, fontSize: '12px', display: 'inline-flex', alignItems: 'center', }}>   
     <RadioGroup.Item value={7} id="7" 
-style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, boxShadow: 'inset 0 0 0 1px white', background: 'transparent' }}>
-            <RadioGroup.Indicator style={{ height: '100%', width: '100%', display: 'block', background: 'white'}} />
+style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, boxShadow: 'inset 0 0 0 1px currentColor', color:colorPair[1], background: 'transparent' }}>
+            <RadioGroup.Indicator style={{ height: '100%', width: '100%', display: 'block', background: colorPair[1] }} />
         </RadioGroup.Item>
           <span style={{ width: '2ch', display: 'inline-block'}}>7</span>
             </label>
@@ -307,22 +315,22 @@ style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, 
           <div style={{display: 'flex', gap: '8px'}}>
     <label style={{ gap: '4px', fontWeight: 400, fontSize: '12px', display: 'inline-flex', alignItems: 'center', }}>   
     <RadioGroup.Item value={45} id="45" 
-style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, boxShadow: 'inset 0 0 0 1px white', background: 'transparent' }}>
-            <RadioGroup.Indicator style={{ height: '100%', width: '100%', display: 'block', background: 'white'}} />
+style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, boxShadow: 'inset 0 0 0 1px currentColor', color: colorPair[1], background: 'transparent' }}>
+            <RadioGroup.Indicator style={{ height: '100%', width: '100%', display: 'block', background: colorPair[1]}} />
         </RadioGroup.Item>
               45
             </label>
 <label style={{ gap: '4px', fontWeight: 400, fontSize: '12px', display: 'inline-flex', alignItems: 'center', }}>   
     <RadioGroup.Item value={60} id="60" 
-style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, boxShadow: 'inset 0 0 0 1px white', background: 'transparent' }}>
-            <RadioGroup.Indicator style={{ height: '100%', width: '100%', display: 'block', background: 'white'}} />
+style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, boxShadow: 'inset 0 0 0 1px currentColor', color: colorPair[1], background: 'transparent' }}>
+            <RadioGroup.Indicator style={{ height: '100%', width: '100%', display: 'block', background: colorPair[1] }} />
         </RadioGroup.Item>
               60
             </label>
 <label style={{ gap: '4px', fontWeight: 400, fontSize: '12px', display: 'inline-flex', alignItems: 'center', }}>   
     <RadioGroup.Item value={75} id="75" 
-style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, boxShadow: 'inset 0 0 0 1px white', background: 'transparent' }}>
-            <RadioGroup.Indicator style={{ height: '100%', width: '100%', display: 'block', background: 'white'}} />
+style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, boxShadow: 'inset 0 0 0 1px currentColor', color: colorPair[1], background: 'transparent' }}>
+            <RadioGroup.Indicator style={{ height: '100%', width: '100%', display: 'block', background: colorPair[1]}} />
         </RadioGroup.Item>
               75
             </label>
