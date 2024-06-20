@@ -7,6 +7,7 @@ import * as Select from '@radix-ui/react-select';
 import BarChart from './components/BarChart.jsx'
 import ProgressBar from './components/ProgressBar.jsx'
 import Card from './components/Card.jsx'
+import Shape001 from './components/Shape001.jsx'
 import StatusDot from './components/StatusDot.jsx'
 import StatusDotOutline from './components/StatusDotOutline.jsx'
 import Badge from './components/Badge.jsx'
@@ -412,9 +413,9 @@ style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, 
       }} onClick={handleGenerateColorPair}>Generate <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.14645 3.14645C8.34171 2.95118 8.65829 2.95118 8.85355 3.14645L12.8536 7.14645C13.0488 7.34171 13.0488 7.65829 12.8536 7.85355L8.85355 11.8536C8.65829 12.0488 8.34171 12.0488 8.14645 11.8536C7.95118 11.6583 7.95118 11.3417 8.14645 11.1464L11.2929 8H2.5C2.22386 8 2 7.77614 2 7.5C2 7.22386 2.22386 7 2.5 7H11.2929L8.14645 3.85355C7.95118 3.65829 7.95118 3.34171 8.14645 3.14645Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path></svg> </button>
       </header>
       
-     <div style={{ display: 'flex', flexWrap: 'wrap'}}>
+     <div style={{ display: 'flex', flexWrap: 'wrap', minHeight: '32px'}}>
         {colorHistory.map(entry => (
-          <button key={entry.id} title={colorPair[0] + ' / ' + colorPair[1] } style={{ cursor: 'pointer', fontWeight: 'bold', border: 0, appearance: 'none', WebkitAppearance: 'none', backgroundColor: entry.colors[0], color: entry.colors[1] }} onClick={() => restoreColorPair(entry.colors)}>
+          <button key={entry.id} title={colorPair[0] + ' / ' + colorPair[1] } style={{ cursor: 'pointer', fontWeight: 'bold', border: 0, appearance: 'none', WebkitAppearance: 'none', backgroundColor: entry.colors[0], color: entry.colors[1], aspectRatio: 1, padding: '0px', width: 'auto', height: '32px',  }} onClick={() => restoreColorPair(entry.colors)}>
             A
           </button>
         ))}
@@ -444,6 +445,8 @@ style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, 
           <BarChart colorPair={colorPair} data={barChartData} borderRadius={borderRadius} />
           <PieChartAlt colorPair={[colorPair[1],colorPair[0]]}  data={pieChartDataAlt} borderRadius={borderRadius} />
           <article style={{ background: colorPair[1], color: colorPair[0], padding: '32px', borderRadius: borderRadius }}>
+
+    <div style={{ width: '100%' }}><Shape001 /></div>
     <p style={{ lineHeight: 1.5, fontSize: '14px' }}>Every perception of colour is an illusion, we do not see colours as they really are. In our perception they alter one another.</p>
           </article>
       </div>
@@ -452,6 +455,7 @@ style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, 
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 3fr', gap: '8px' }}>
          <article style={{ border: '1px solid', padding: '32px', borderRadius: borderRadius }}>
+    <div style={{ width: '100%' }}><Shape001 /></div>
     <p style={{ lineHeight: 1.5, fontSize: '14px' }}>Every perception of colour is an illusion, we do not see colours as they really are. In our perception they alter one another.</p>
     </article> 
     <PieChart colorPair={colorPair} data={pieChartData} borderRadius={borderRadius} />

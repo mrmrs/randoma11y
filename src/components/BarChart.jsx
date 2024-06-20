@@ -8,6 +8,7 @@ const BarChart = ({ colorPair, borderRadius = 0, data }) => {
     alignItems: 'center',
     justifyContent: 'space-around',
     backgroundColor: colorPair[0],
+    color: colorPair[1],
     padding: '32px',
     borderRadius: borderRadius,
     boxShadow: 'inset 0 0 0 1px currentColor'

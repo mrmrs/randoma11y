@@ -46,6 +46,7 @@ const PieChart = ({ colorPair, colorStripe, colorDot, data, borderRadius = 0 }) 
         width: '100%',
         textAlign: 'center',
         backgroundColor: colorPair[1],
+        color: colorPair[0],
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
