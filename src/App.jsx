@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Color from 'colorjs.io';
 import { HexColorPicker } from 'react-colorful';
 import { v4 as uuidv4 } from 'uuid';
+import * as RadioGroup from '@radix-ui/react-radio-group';
+import * as Select from '@radix-ui/react-select';
 import BarChart from './components/BarChart.jsx'
 import ProgressBar from './components/ProgressBar.jsx'
 import Card from './components/Card.jsx'
@@ -247,100 +249,87 @@ const generateRandomColor = (format) => {
           </select>
         </label>
       </div>
-      <div>
-        <label style={{ fontSize: '12px', fontWeight: 'bold', display: 'block', marginBottom: '6px' }}>Contrast Algorithm</label>
-        <div>
-          <label style={{ fontSize: '12px', display: 'inline-flex', alignItems: 'center', marginRight: '8px' }}>
-            <input
-              type="radio"
-              value="WCAG21"
-              checked={contrastAlgorithm === 'WCAG21'}
-              onChange={(e) => {
-                setContrastAlgorithm(e.target.value);
-                handleThresholdChange(4.5);
-              }}
-            />
-            WCAG 2.1
+    <fieldset style={{ border: 0, padding: 0, fontSize: '12px', fontWeight: 'bold', display: 'block', marginBottom: '6px' }}><legend style={{ marginBottom: '8px'}}>Algorithm</legend>
+      <RadioGroup.Root value={contrastAlgorithm} onValueChange={(value) => {
+        setContrastAlgorithm(value);
+        handleThresholdChange(value === 'WCAG21' ? 4.5 : 60);
+      }}
+       style={{ display: 'flex', alignItems: 'center', }}
+    >
+    <label style={{ gap: '4px', fontSize: '12px', display: 'inline-flex', alignItems: 'center', marginRight: '12px', fontWeight: 400 }}>   
+        <RadioGroup.Item value="WCAG21" id="wcag21" style={{ display: 'block', padding: 0, height: '10px', width: '10px', border: 0, background: 'transparent', boxShadow: 'inset 0 0 0 1px white' }}>
+          
+            <RadioGroup.Indicator style={{ width: '100%', height: '100%', display: 'block',  background: 'white'}} />
+        </RadioGroup.Item>
+    WCAG 2.1
           </label>
-          <label style={{ fontSize: '12px', display: 'inline-flex', alignItems: 'center' }}>
-            <input
-              type="radio"
-              value="APCA"
-              checked={contrastAlgorithm === 'APCA'}
-              onChange={(e) => {
-                setContrastAlgorithm(e.target.value);
-                handleThresholdChange(45);
-              }}
-            />
+    <label style={{ gap: '4px', fontWeight: 400, fontSize: '12px', display: 'inline-flex', alignItems: 'center', }}>   
+    <RadioGroup.Item value="APCA" id="apca" 
+style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, boxShadow: 'inset 0 0 0 1px white', background: 'transparent' }}>
+            <RadioGroup.Indicator style={{ height: '100%', width: '100%', display: 'block', background: 'white'}} />
+        </RadioGroup.Item>
             APCA
           </label>
-        </div>
-      </div>
-      <div>
-        <label style={{ fontWeight: 'bold', fontSize: '12px', display: 'block', marginBottom: '6px' }}>Threshold</label>
+      </RadioGroup.Root>
+    </fieldset>
+
+    <fieldset style={{ width: '128px', border: 0, padding: 0, fontSize: '12px', fontWeight: 'bold', display: 'block', }}><legend style={{ marginBottom: '8px'}}>Threshold</legend>
+
         {contrastAlgorithm === 'WCAG21' && (
+<RadioGroup.Root value={threshold} onValueChange={(value) => handleThresholdChange(parseFloat(value))}>
           <div style={{display: 'flex', gap: '8px'}}>
-            <label style={{ fontSize: '12px', display: 'inline-flex', alignItems: 'center'}}>
-              <input
-                type="radio"
-                value={3}
-                checked={threshold === 3}
-                onChange={(e) => handleThresholdChange(e.target.value)}
-              />
-              3
+    <label style={{ gap: '4px', fontWeight: 400, fontSize: '12px', display: 'inline-flex', alignItems: 'center', }}>   
+    <RadioGroup.Item value={3} id="3" 
+style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, boxShadow: 'inset 0 0 0 1px white', background: 'transparent' }}>
+            <RadioGroup.Indicator style={{ height: '100%', width: '100%', display: 'block', background: 'white'}} />
+        </RadioGroup.Item>
+          3
             </label>
-            <label style={{ fontSize: '12px', display: 'inline-flex', alignItems: 'center'}}>
-              <input
-                type="radio"
-                value={4.5}
-                checked={threshold === 4.5}
-                onChange={(e) => handleThresholdChange(e.target.value)}
-              />
-              4.5
+<label style={{ gap: '4px', fontWeight: 400, fontSize: '12px', display: 'inline-flex', alignItems: 'center', }}>   
+    <RadioGroup.Item value={4.5} id="4.5" 
+style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, boxShadow: 'inset 0 0 0 1px white', background: 'transparent' }}>
+            <RadioGroup.Indicator style={{ height: '100%', width: '100%', display: 'block', background: 'white'}} />
+        </RadioGroup.Item>
+          4.5
             </label>
-            <label style={{ fontSize: '12px', display: 'inline-flex', alignItems: 'center'}}>
-              <input
-                type="radio"
-                value={7}
-                checked={threshold === 7}
-                onChange={(e) => handleThresholdChange(e.target.value)}
-              />
-              7
+<label style={{ gap: '4px', fontWeight: 400, fontSize: '12px', display: 'inline-flex', alignItems: 'center', }}>   
+    <RadioGroup.Item value={7} id="7" 
+style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, boxShadow: 'inset 0 0 0 1px white', background: 'transparent' }}>
+            <RadioGroup.Indicator style={{ height: '100%', width: '100%', display: 'block', background: 'white'}} />
+        </RadioGroup.Item>
+          <span style={{ width: '2ch', display: 'inline-block'}}>7</span>
             </label>
           </div>
+          </RadioGroup.Root>
         )}
         {contrastAlgorithm === 'APCA' && (
-          <div style={{ display: 'flex', gap: '4px'}}>
-            <label style={{ fontSize: '12px', display: 'inline-flex', alignItems: 'center'}}>
-              <input
-                type="radio"
-                value={45}
-                checked={threshold === 45}
-                onChange={(e) => handleThresholdChange(e.target.value)}
-              />
+          <RadioGroup.Root value={threshold} onValueChange={(value) => handleThresholdChange(parseFloat(value))}>
+          <div style={{display: 'flex', gap: '8px'}}>
+    <label style={{ gap: '4px', fontWeight: 400, fontSize: '12px', display: 'inline-flex', alignItems: 'center', }}>   
+    <RadioGroup.Item value={45} id="45" 
+style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, boxShadow: 'inset 0 0 0 1px white', background: 'transparent' }}>
+            <RadioGroup.Indicator style={{ height: '100%', width: '100%', display: 'block', background: 'white'}} />
+        </RadioGroup.Item>
               45
             </label>
-            <label style={{ fontSize: '12px', display: 'inline-flex', alignItems: 'center'}}>
-              <input
-                type="radio"
-                value={60}
-                checked={threshold === 60}
-                onChange={(e) => handleThresholdChange(e.target.value)}
-              />
+<label style={{ gap: '4px', fontWeight: 400, fontSize: '12px', display: 'inline-flex', alignItems: 'center', }}>   
+    <RadioGroup.Item value={60} id="60" 
+style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, boxShadow: 'inset 0 0 0 1px white', background: 'transparent' }}>
+            <RadioGroup.Indicator style={{ height: '100%', width: '100%', display: 'block', background: 'white'}} />
+        </RadioGroup.Item>
               60
             </label>
-            <label style={{ fontSize: '12px', display: 'inline-flex', alignItems: 'center'}}>
-              <input
-                type="radio"
-                value={75}
-                checked={threshold === 75}
-                onChange={(e) => handleThresholdChange(e.target.value)}
-              />
+<label style={{ gap: '4px', fontWeight: 400, fontSize: '12px', display: 'inline-flex', alignItems: 'center', }}>   
+    <RadioGroup.Item value={75} id="75" 
+style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, boxShadow: 'inset 0 0 0 1px white', background: 'transparent' }}>
+            <RadioGroup.Indicator style={{ height: '100%', width: '100%', display: 'block', background: 'white'}} />
+        </RadioGroup.Item>
               75
             </label>
           </div>
+          </RadioGroup.Root>
         )}
-      </div>
+      </fieldset>
 <div style={{ display: 'none' }}>
         <label style={{ fontWeight: 'bold', fontSize: '12px', display: 'block', marginBottom: '2px' }}>Border Radius</label>
           <div style={{ display: 'flex', gap: '4px'}}>
@@ -427,12 +416,15 @@ const generateRandomColor = (format) => {
         <div style={{ display: 'grid', gap: '8px', gridTemplateColumns: '1fr' }}>
           <div style={{ display: 'grid', gap: '8px', gridTemplateColumns: '1fr 1fr' }}>
 
-        <button style={{ cursor: 'pointer', appearance: 'none', WebkitAppearance: 'none', padding: '16px 8px', margin: 0, border: 0, background: colorPair[1], color: colorPair[0], fontSize: '12px' }} onClick={() => handleSetPinnedColor(colorPair[0])}>{colorPair[0]}</button>
+        <button title="Pin - Find matches for this color" style={{ cursor: 'pointer', appearance: 'none', WebkitAppearance: 'none', padding: '16px 8px', margin: 0, border: 0, background: colorPair[1], color: colorPair[0], fontSize: '12px' }} onClick={() => handleSetPinnedColor(colorPair[0])}>{colorPair[0]}</button>
 
 
-      <button style={{ cursor: 'pointer', appearance: 'none', WebkitAppearance: 'none', padding: '16px 8px', margin: 0, border: 0, boxShadow: 'inset 0 0 0 1px currentColor', background: 'transparent', color: colorPair[1], fontSize: '12px' }} onClick={() => handleSetPinnedColor(colorPair[1])}>{colorPair[1]}</button>
+      <button title="Pin - Find matches for this color" style={{ cursor: 'pointer', appearance: 'none', WebkitAppearance: 'none', padding: '16px 8px', margin: 0, border: 0, boxShadow: 'inset 0 0 0 1px currentColor', background: 'transparent', color: colorPair[1], fontSize: '12px' }} onClick={() => handleSetPinnedColor(colorPair[1])}>{colorPair[1]}</button>
 
           </div>
+      <section>
+
+      </section>
       <div style={{display: 'flex', gap: '4px', alignItems: 'center'}}>
           <StatusDot colorPair={colorPair} borderRadius={borderRadius} />
           <StatusDotOutline colorPair={colorPair} borderRadius={borderRadius} />
@@ -469,6 +461,7 @@ const generateRandomColor = (format) => {
       <BackgroundStripes degree={45} />
       <BackgroundStripes degree={90} />
       <BackgroundStripes degree={135} />
+
       <div style={{ width: '100%', aspectRatio: '6/4', minHeight: '32px', boxShadow: 'inset 0 0 0 1px currentColor', background: 'repeating-radial-gradient(circle at 100%, currentColor, currentColor 1px, transparent 1px, transparent 6px)' }}></div>
       <div className='halftone' style={{ width: '100%', aspectRatio: '6/4', minHeight: '32px', boxShadow: 'inset 0 0 0 1px currentColor',  }}></div>
       <div className='halftone-angle' style={{ width: '100%', aspectRatio: '6/4', minHeight: '32px', boxShadow: 'inset 0 0 0 1px currentColor',  }}></div>
