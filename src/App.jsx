@@ -229,7 +229,7 @@ const generateRandomColor = (format) => {
           <Logo colorPair={colorPair} size={20} />
           <b style={{ fontSize: '12px', letterSpacing: '-0.05em', fontWeight: 900 }}>RandomA11y</b>
         </div>
-<section style={{ display: 'flex', alignItems: 'flex-start', gap: '32px', padding: '8px', overflow: 'scroll', flexWrap: 'none', whiteSpace: 'nowrap', zIndex: 2000 }}>
+<section style={{ width: '100%', marginRight: '8px', borderRight: '1px solid currentColor', display: 'flex', alignItems: 'flex-start', gap: '32px', padding: '8px', overflow: 'scroll', flexWrap: 'none', whiteSpace: 'nowrap', zIndex: 2000 }}>
  <label style={{  fontSize: '12px', lineHeight: 1, margin: 0, padding: 0, zIndex: 2000 }}>
       <span style={{ fontWeight: 'bold', fontSize: '12px', marginBottom: '6px', display: 'block',  }}>Format</span>
       <Select.Root value={inputFormat} onValueChange={setInputFormat} style={{ fontSize: '12px', }}>
@@ -421,19 +421,16 @@ style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, 
         ))}
       </div>
       <div style={{ maxWidth: '100%', padding: '16px', overflow: 'hidden' }}>
-      
-        <div style={{ display: 'grid', gap: '8px', gridTemplateColumns: '1fr' }}>
-          <div style={{ display: 'grid', gap: '8px', gridTemplateColumns: '1fr 1fr' }}>
+          <div style={{ marginBottom: '8px', maxWidth: '100%', display: 'grid', gap: '8px', gridTemplateColumns: '1fr 1fr' }}>
 
-        <button title="Pin - Find matches for this color" style={{ cursor: 'pointer', appearance: 'none', WebkitAppearance: 'none', padding: '16px 8px', margin: 0, border: 0, background: colorPair[1], color: colorPair[0], fontSize: '12px' }} onClick={() => handleSetPinnedColor(colorPair[0])}>{colorPair[0]}</button>
+        <button title="Pin - Find matches for this color" className='f1 f7-m' style={{ fontWeight: 900, cursor: 'pointer', appearance: 'none', WebkitAppearance: 'none', padding: '16px 8px', margin: 0, border: 0, background: colorPair[1], color: colorPair[0], }} onClick={() => handleSetPinnedColor(colorPair[0])}>{colorPair[0]}</button>
 
 
-      <button title="Pin - Find matches for this color" style={{ cursor: 'pointer', appearance: 'none', WebkitAppearance: 'none', padding: '16px 8px', margin: 0, border: 0, boxShadow: 'inset 0 0 0 1px currentColor', background: 'transparent', color: colorPair[1], fontSize: '12px' }} onClick={() => handleSetPinnedColor(colorPair[1])}>{colorPair[1]}</button>
+      <button title="Pin - Find matches for this color" className='f1 f7-m' style={{ fontWeight: 900, cursor: 'pointer', appearance: 'none', WebkitAppearance: 'none', padding: '16px 8px', margin: 0, border: 0, boxShadow: 'inset 0 0 0 1px currentColor', background: 'transparent', color: colorPair[1], }} onClick={() => handleSetPinnedColor(colorPair[1])}>{colorPair[1]}</button>
 
           </div>
-      <section>
-
-      </section>
+      
+        <div style={{ maxWidth: '100%', display: 'grid', gap: '8px', gridTemplateColumns: '1fr' }}>
       <div style={{display: 'flex', gap: '4px', alignItems: 'center'}}>
           <StatusDot colorPair={colorPair} borderRadius={borderRadius} />
           <StatusDotOutline colorPair={colorPair} borderRadius={borderRadius} />

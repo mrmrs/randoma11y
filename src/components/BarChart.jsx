@@ -1,6 +1,6 @@
 import React from 'react';
 
-const BarChart = ({ colorPair, borderRadius = 0, data }) => {
+const BarChart = ({ colorPair, borderRadius = 0, data, ...props }) => {
   const chartStyleWrapper = {
     width: '100%',
     height: '100%',
@@ -42,7 +42,7 @@ const BarChart = ({ colorPair, borderRadius = 0, data }) => {
   const maxValue = Math.max(...data.map((item) => item.value));
 
   return (
-      <article style={chartStyleWrapper}>
+      <article style={chartStyleWrapper} {...props}>
         <div style={chartStyle}>
           {data.map((item) => (
             <div key={item.label} style={{ textAlign: 'center', height: '100%', display: 'flex', alignItems: 'center', flexDirection: 'column', justifyContent: 'flex-end', width: '100%' }}>
