@@ -423,10 +423,10 @@ style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, 
       <div style={{ maxWidth: '100%', padding: '16px', overflow: 'hidden' }}>
           <div style={{ marginBottom: '8px', maxWidth: '100%', display: 'grid', gap: '8px', gridTemplateColumns: '1fr 1fr' }}>
 
-        <button title="Pin - Find matches for this color" className='f1 f7-m' style={{ fontWeight: 900, cursor: 'pointer', appearance: 'none', WebkitAppearance: 'none', padding: '16px 8px', margin: 0, border: 0, background: colorPair[1], color: colorPair[0], }} onClick={() => handleSetPinnedColor(colorPair[0])}>{colorPair[0]}</button>
+        <button title="Pin - Find matches for this color" className='f0 f3-m f5-l' style={{ fontWeight: 400, cursor: 'pointer', appearance: 'none', WebkitAppearance: 'none', fontFamily: 'monospace', padding: '16px 8px', margin: 0, border: 0, background: colorPair[1], color: colorPair[0], }} onClick={() => handleSetPinnedColor(colorPair[0])}>{colorPair[0]}</button>
 
 
-      <button title="Pin - Find matches for this color" className='f1 f7-m' style={{ fontWeight: 900, cursor: 'pointer', appearance: 'none', WebkitAppearance: 'none', padding: '16px 8px', margin: 0, border: 0, boxShadow: 'inset 0 0 0 1px currentColor', background: 'transparent', color: colorPair[1], }} onClick={() => handleSetPinnedColor(colorPair[1])}>{colorPair[1]}</button>
+      <button title="Pin - Find matches for this color" className='f0 f3-m f5-l' style={{ fontWeight: 400, cursor: 'pointer', appearance: 'none', WebkitAppearance: 'none', fontFamily: 'monospace', padding: '16px 8px', margin: 0, border: 0, boxShadow: 'inset 0 0 0 1px currentColor', background: 'transparent', color: colorPair[1], }} onClick={() => handleSetPinnedColor(colorPair[1])}>{colorPair[1]}</button>
 
           </div>
       
