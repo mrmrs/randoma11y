@@ -2,7 +2,7 @@ import React from 'react';
 
 const OpacityScale = ({ color, borderRadius = 0, ...props }) => {
     return (
-      <article style={{ display: 'flex', gap: '8px' }}>
+      <article style={{ display: 'flex', gap: '8px', padding: '8px', border: '1px solid', color: color }}>
       <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: color, opacity: '100%' }}></div>
       <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: color, opacity: '90%' }}></div>
       <div style={{ boxshadow: 'inset 0 0 0 1px currentColor', width: '100%', minHeight: '48px', backgroundColor: color, opacity: '80%' }}></div>

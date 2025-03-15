@@ -19,6 +19,7 @@ import PieChart from './components/PieChart.jsx'
 import PieChartAlt from './components/PieChartAlt.jsx'
 import TextBox from './components/TextBox.jsx'
 import Logo from './components/Logo.jsx'
+import InputRadioGroup from './components/InputRadioGroup.jsx'
 import Footer from './components/Footer.jsx'
 import BackgroundStripes from './components/BackgroundStripes.jsx'
 import ColorFormats from './components/ColorFormats.jsx'
@@ -455,16 +456,18 @@ style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, 
           </div>
 
           <div style={{ maxWidth: '100%', display: 'grid', gap: '8px', gridTemplateColumns: '1fr' }}>
-        <div style={{display: 'flex', gap: '4px', alignItems: 'center'}}>
+        <div style={{display: 'flex', gap: '8px', alignItems: 'center'}}>
             <StatusDot colorPair={colorPair} borderRadius={borderRadius} />
             <StatusDotOutline colorPair={colorPair} borderRadius={borderRadius} />
             <Badge borderRadius={borderRadius} colorPair={colorPair}>Badge</Badge>
             <BadgeOutline borderRadius={borderRadius} colorPair={colorPair}>Badge Outline</BadgeOutline>
-            <Avatar borderRadius={'9999px'} colorPair={colorPair}>AE</Avatar>
-            <AvatarOutline borderRadius={'9999px'} colorPair={colorPair}>AE</AvatarOutline>
-            <InputCheckbox label='Label' colorPair={colorPair}/>
-           
+         
+            <InputCheckbox label='Checkbox Label' colorPair={colorPair}/>
+            <InputRadioGroup colorPair={colorPair}/>
+
         <hr style={{ backgroundColor: colorPair[0], borderBottomWidth: '1px', borderBottomStyle: 'solid', borderBottomColor: colorPair[1], borderTopColor: 'transparent', borderLeftColor: 'transparent', borderRightColor: 'transparent',  width: '100%' }}/>
+        <Avatar borderRadius={'9999px'} colorPair={colorPair}>AE</Avatar>
+        <AvatarOutline borderRadius={'9999px'} colorPair={colorPair}>AE</AvatarOutline>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: '3fr 1fr 1fr', gap: '8px'}}>
             <BarChart colorPair={colorPair} data={barChartData} borderRadius={borderRadius} />
@@ -493,53 +496,67 @@ style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, 
     </section>
 
       </div>
-    <section style={{ display: 'grid', maxWidth: '100%', gap: '8px', gridTemplateColumns: 'repeat(auto-fill, minmax(min(10rem, 100%), 1fr))', marginTop: '8px' }}>
+    <section style={{ display: 'grid', maxWidth: '100%', gap: '8px', gridTemplateColumns: 'repeat(auto-fill, minmax(min(128px, 100%), 1fr))', marginTop: '8px' }}>
       <BackgroundStripes degree={0} />
       <BackgroundStripes degree={45} />
       <BackgroundStripes degree={90} />
       <BackgroundStripes degree={135} />
 
-      <div style={{ width: '100%', aspectRatio: '6/4', minHeight: '32px', boxShadow: 'inset 0 0 0 1px currentColor', background: 'repeating-radial-gradient(circle at 100%, currentColor, currentColor 1px, transparent 1px, transparent 6px)' }}></div>
-      <div className='halftone' style={{ width: '100%', aspectRatio: '6/4', minHeight: '32px', boxShadow: 'inset 0 0 0 1px currentColor',  }}></div>
-      <div className='halftone-angle' style={{ width: '100%', aspectRatio: '6/4', minHeight: '32px', boxShadow: 'inset 0 0 0 1px currentColor',  }}></div>
-      <div style={{ width: '100%', aspectRatio: '6/4', minHeight: '32px', boxShadow: 'inset 0 0 0 1px currentColor', background: 'radial-gradient(currentColor 3px, transparent 4px), radial-gradient(currentColor 3px, transparent 4px)', backgroundSize: '32px 32px', backgroundPosition: '0 0, 16px 16px' }}></div>
-      <div style={{ width: '100%', aspectRatio: '6/4', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '64px', padding: '16px', background: 'linear-gradient(0deg, currentColor 50%, transparent 50%)' }}></div>
-      <div style={{ width: '100%', aspectRatio: '6/4', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '64px', padding: '16px', background: 'linear-gradient(180deg, currentColor 50%, transparent 50%)' }}></div>
-      <div style={{ width: '100%', aspectRatio: '6/4', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '64px', padding: '16px', background: 'linear-gradient(90deg, currentColor 50%, transparent 50%)' }}></div>
-      <div style={{ width: '100%', aspectRatio: '6/4', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '64px', padding: '16px', background: 'linear-gradient(270deg, currentColor 50%, transparent 50%)' }}></div>
-      <div style={{ width: '100%', aspectRatio: '6/4', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '64px', padding: '16px', background: 'linear-gradient(135deg, currentColor 50%, transparent 50%)' }}></div>
-      <div style={{ width: '100%', aspectRatio: '6/4', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '64px', padding: '16px', background: 'linear-gradient(-135deg, currentColor 50%, transparent 50%)' }}></div>
-      <div style={{ width: '100%', aspectRatio: '6/4', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '64px', padding: '16px', background: 'radial-gradient(circle, currentColor 20%, transparent 20%)' }}></div>
-      <div style={{ width: '100%', aspectRatio: '6/4', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '64px', padding: '16px', background: 'radial-gradient(circle, currentColor 50%, transparent 50%)' }}></div>
-      <div style={{ width: '100%', aspectRatio: '6/4', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '64px', padding: '16px', background: 'radial-gradient(circle, transparent 10%, currentColor 10%)' }}></div>
-      <div style={{ width: '100%', aspectRatio: '6/4', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '64px', padding: '16px', background: 'radial-gradient(circle, transparent 60%, currentColor 60%)' }}></div>
+    <style>
+    {`
+      :root {
+        --aspectRatio: 16/4;
+        --minHeight: 64px;
+      }
+    `}
+    </style>
+      <div style={{ width: '100%', aspectRatio: 'var(--aspectRatio)', minHeight: 'var(--minHeight)', boxShadow: 'inset 0 0 0 1px currentColor', background: 'repeating-radial-gradient(circle at 100%, currentColor, currentColor 1px, transparent 1px, transparent 2px)' }}> </div>
 
-      <div style={{ width: '100%', aspectRatio: '6/4', minHeight: '32px', boxShadow: 'inset 0 0 0 1px currentColor', background: 'linear-gradient(45deg, currentColor 25%, transparent 25%), linear-gradient(-45deg, currentColor 25%, transparent 25%), linear-gradient(45deg, transparent 75%, currentColor 75%), linear-gradient(-45deg, transparent 75%, currentColor 75%)', backgroundSize: '20px 20px', backgroundPosition: '0 0, 0 10px, 10px -10px, -10px 0px' }}></div>
-      
-      <div style={{ width: '100%', aspectRatio: '6/4', minHeight: '32px', boxShadow: 'inset 0 0 0 1px currentColor', background: 'linear-gradient(135deg, currentColor 25%, transparent 25%) -10px 0, linear-gradient(225deg, currentColor 25%, transparent 25%) -10px 0, linear-gradient(315deg, currentColor 25%, transparent 25%), linear-gradient(45deg, currentColor 25%, transparent 25%)', backgroundSize: '20px 20px' }}></div>
-      
-      
-      
-      <div style={{ width: '100%', aspectRatio: '6/4', minHeight: '32px', boxShadow: 'inset 0 0 0 1px currentColor', background: 'conic-gradient(from 0deg, currentColor 0deg 10deg, transparent 10deg 30deg, currentColor 30deg 40deg, transparent 40deg 60deg, currentColor 60deg 70deg, transparent 70deg 90deg, currentColor 90deg 100deg, transparent 100deg 120deg, currentColor 120deg 130deg, transparent 130deg 150deg, currentColor 150deg 160deg, transparent 160deg 180deg, currentColor 180deg 190deg, transparent 190deg 210deg, currentColor 210deg 220deg, transparent 220deg 240deg, currentColor 240deg 250deg, transparent 250deg 270deg, currentColor 270deg 280deg, transparent 280deg 300deg, currentColor 300deg 310deg, transparent 310deg 330deg, currentColor 330deg 340deg, transparent 340deg 360deg)' }}></div>
-      
-      <div style={{ width: '100%', aspectRatio: '6/4', minHeight: '32px', boxShadow: 'inset 0 0 0 1px currentColor', background: 'linear-gradient(45deg, currentColor 12%, transparent 0, transparent 88%, currentColor 0), linear-gradient(135deg, transparent 37%, currentColor 0, currentColor 63%, transparent 0), linear-gradient(45deg, transparent 37%, currentColor 0, currentColor 63%, transparent 0)', backgroundSize: '25px 25px' }}></div>
-      
-      <div style={{ width: '100%', aspectRatio: '6/4', minHeight: '32px', boxShadow: 'inset 0 0 0 1px currentColor', background: 'linear-gradient(45deg, currentColor 25%, transparent 25%, transparent 75%, currentColor 75%) 0 0, linear-gradient(45deg, currentColor 25%, transparent 25%, transparent 75%, currentColor 75%) 15px 15px', backgroundSize: '30px 30px' }}></div>
-      
+      <div className='halftone' style={{ width: '100%', aspectRatio: 'var(--aspectRatio)', minHeight: 'var(--minHeight)', boxShadow: 'inset 0 0 0 1px currentColor',  }}></div>
+      <div className='halftone-angle' style={{ width: '100%', aspectRatio: 'var(--aspectRatio)', minHeight: 'var(--minHeight)', boxShadow: 'inset 0 0 0 1px currentColor',  }}></div>
 
-      
-      <div style={{ width: '100%', aspectRatio: '6/4', minHeight: '32px', boxShadow: 'inset 0 0 0 1px currentColor', background: 'linear-gradient(currentColor 2px, transparent 2px), linear-gradient(to right, currentColor 2px, transparent 2px)', backgroundSize: '30px 30px' }}></div>
-      
-      <div style={{ width: '100%', aspectRatio: '6/4', minHeight: '32px', boxShadow: 'inset 0 0 0 1px currentColor', background: 'linear-gradient(to right, transparent 0%, transparent 35%, currentColor 35%, currentColor 65%, transparent 65%, transparent 100%), linear-gradient(to bottom, transparent 0%, transparent 35%, currentColor 35%, currentColor 65%, transparent 65%, transparent 100%)', backgroundSize: '20px 20px' }}></div>
-      
-      <div style={{ width: '100%', aspectRatio: '6/4', minHeight: '32px', boxShadow: 'inset 0 0 0 1px currentColor', background: 'repeating-linear-gradient(45deg, currentColor, currentColor 10px, transparent 10px, transparent 20px)' }}></div>
-      
-     
-      <div style={{ width: '100%', aspectRatio: '6/4', minHeight: '32px', boxShadow: 'inset 0 0 0 1px currentColor', background: 'linear-gradient(60deg, currentColor 25%, transparent 25.5%), linear-gradient(0deg, transparent 75%, currentColor 75%)', backgroundSize: '30px 30px' }}></div>
-      
-      <div style={{ width: '100%', aspectRatio: '6/4', minHeight: '32px', boxShadow: 'inset 0 0 0 1px currentColor', background: 'radial-gradient(circle farthest-side at 0% 50%, transparent 74%, currentColor 75%, currentColor 85%, transparent 86%) 0 0, radial-gradient(circle farthest-side at 100% 50%, transparent 74%, currentColor 75%, currentColor 85%, transparent 86%) 0 0, radial-gradient(circle farthest-side at 50% 0%, transparent 74%, currentColor 75%, currentColor 85%, transparent 86%) 0 0, radial-gradient(circle farthest-side at 50% 100%, transparent 74%, currentColor 75%, currentColor 85%, transparent 86%) 0 0', backgroundSize: '30px 30px' }}></div>
-      
-      <div style={{ width: '100%', aspectRatio: '6/4', minHeight: '32px', boxShadow: 'inset 0 0 0 1px currentColor', background: 'linear-gradient(currentColor 1px, transparent 1px), linear-gradient(90deg, currentColor 1px, transparent 1px)', backgroundSize: '16px 16px' }}></div>
+      <div style={{ width: '100%', aspectRatio: 'var(--aspectRatio)', minHeight: 'var(--minHeight)', boxShadow: 'inset 0 0 0 1px currentColor', background: 'radial-gradient(currentColor 3px, transparent 4px), radial-gradient(currentColor 3px, transparent 4px)', backgroundSize: '32px 32px', backgroundPosition: '0 0, 16px 16px' }}></div>
+
+      <div style={{ width: '100%', aspectRatio: 'var(--aspectRatio)', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: 'var(--minHeight)', padding: '16px', background: 'linear-gradient(0deg, currentColor 50%, transparent 50%)' }}></div>
+      <div style={{ width: '100%', aspectRatio: 'var(--aspectRatio)', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: 'var(--minHeight)', padding: '16px', background: 'linear-gradient(180deg, currentColor 50%, transparent 50%)' }}></div>
+      <div style={{ width: '100%', aspectRatio: 'var(--aspectRatio)', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: 'var(--minHeight)', padding: '16px', background: 'linear-gradient(90deg, currentColor 50%, transparent 50%)' }}></div>
+      <div style={{ width: '100%', aspectRatio: 'var(--aspectRatio)', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: 'var(--minHeight)', padding: '16px', background: 'linear-gradient(270deg, currentColor 50%, transparent 50%)' }}></div>
+      <div style={{ width: '100%', aspectRatio: 'var(--aspectRatio)', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: 'var(--minHeight)', padding: '16px', background: 'linear-gradient(135deg, currentColor 50%, transparent 50%)' }}></div>
+      <div style={{ width: '100%', aspectRatio: 'var(--aspectRatio)', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: 'var(--minHeight)', padding: '16px', background: 'linear-gradient(-135deg, currentColor 50%, transparent 50%)' }}></div>
+      <div style={{ width: '100%', aspectRatio: 'var(--aspectRatio)', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: 'var(--minHeight)', padding: '16px', background: 'radial-gradient(circle, currentColor 20%, transparent 20%)' }}></div>
+      <div style={{ width: '100%', aspectRatio: 'var(--aspectRatio)', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: 'var(--minHeight)', padding: '16px', background: 'radial-gradient(circle, currentColor 50%, transparent 50%)' }}></div>
+      <div style={{ width: '100%', aspectRatio: 'var(--aspectRatio)', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: 'var(--minHeight)', padding: '16px', background: 'radial-gradient(circle, transparent 10%, currentColor 10%)' }}></div>
+      <div style={{ width: '100%', aspectRatio: 'var(--aspectRatio)', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: 'var(--minHeight)', padding: '16px', background: 'radial-gradient(circle, transparent 60%, currentColor 60%)' }}></div>
+
+
+      <div style={{ width: '100%', aspectRatio: 'var(--aspectRatio)', minHeight: 'var(--minHeight)', boxShadow: 'inset 0 0 0 1px currentColor', background: 'linear-gradient(135deg, currentColor 25%, transparent 25%) -10px 0, linear-gradient(225deg, currentColor 25%, transparent 25%) -10px 0, linear-gradient(315deg, currentColor 25%, transparent 25%), linear-gradient(45deg, currentColor 25%, transparent 25%)', backgroundSize: '24px 24px' }}></div>
+
+      <div style={{ width: '100%', aspectRatio: 'var(--aspectRatio)', minHeight: 'var(--minHeight)', boxShadow: 'inset 0 0 0 1px currentColor', background: 'linear-gradient(135deg, currentColor 25%, transparent 25%) -10px 0, linear-gradient(225deg, currentColor 25%, transparent 25%) -10px 0, linear-gradient(315deg, currentColor 25%, transparent 25%), linear-gradient(45deg, currentColor 25%, transparent 25%)', backgroundSize: '16px 8px' }}></div>
+
+
+
+
+      <div style={{ width: '100%', aspectRatio: 'var(--aspectRatio)', minHeight: 'var(--minHeight)', boxShadow: 'inset 0 0 0 1px currentColor', background: 'linear-gradient(45deg, currentColor 12%, transparent 0, transparent 88%, currentColor 0), linear-gradient(135deg, transparent 37%, currentColor 0, currentColor 63%, transparent 0), linear-gradient(45deg, transparent 37%, currentColor 0, currentColor 63%, transparent 0)', backgroundSize: '24px 24px' }}></div>
+      <div style={{ width: '100%', aspectRatio: 'var(--aspectRatio)', minHeight: 'var(--minHeight)', boxShadow: 'inset 0 0 0 1px currentColor', background: 'linear-gradient(45deg, currentColor 25%, transparent 25%), linear-gradient(-45deg, currentColor 25%, transparent 25%), linear-gradient(45deg, transparent 75%, currentColor 75%), linear-gradient(-45deg, transparent 75%, currentColor 75%)', backgroundSize: '20px 20px', backgroundPosition: '0 0, 0 10px, 10px -10px, -10px 0px' }}></div>
+
+      <div style={{ width: '100%', aspectRatio: 'var(--aspectRatio)', minHeight: 'var(--minHeight)', boxShadow: 'inset 0 0 0 1px currentColor', background: 'linear-gradient(45deg, currentColor 25%, transparent 25%, transparent 75%, currentColor 75%) 0 0, linear-gradient(45deg, currentColor 25%, transparent 25%, transparent 75%, currentColor 75%) 15px 15px', backgroundSize: '32px 32px' }}></div>
+
+
+
+      <div style={{ width: '100%', aspectRatio: 'var(--aspectRatio)', minHeight: 'var(--minHeight)', boxShadow: 'inset 0 0 0 1px currentColor', background: 'linear-gradient(currentColor 1px, transparent 1px), linear-gradient(90deg, currentColor 1px, transparent 1px)', backgroundSize: '16px 16px' }}></div>
+      <div style={{ width: '100%', aspectRatio: 'var(--aspectRatio)', minHeight: 'var(--minHeight)', boxShadow: 'inset 0 0 0 1px currentColor', background: 'linear-gradient(currentColor 2px, transparent 2px), linear-gradient(to right, currentColor 2px, transparent 2px)', backgroundSize: '32px 32px' }}></div>
+
+      <div style={{ width: '100%', aspectRatio: 'var(--aspectRatio)', minHeight: 'var(--minHeight)', boxShadow: 'inset 0 0 0 1px currentColor', background: 'linear-gradient(to right, transparent 0%, transparent 35%, currentColor 35%, currentColor 65%, transparent 65%, transparent 100%), linear-gradient(to bottom, transparent 0%, transparent 35%, currentColor 35%, currentColor 65%, transparent 65%, transparent 100%)', backgroundSize: '32px 32px' }}></div>
+
+      <div style={{ width: '100%', aspectRatio: 'var(--aspectRatio)', minHeight: 'var(--minHeight)', boxShadow: 'inset 0 0 0 1px currentColor', background: 'linear-gradient(to bottom right, transparent 0%, transparent 35%, currentColor 35%, currentColor 65%, transparent 65%, transparent 100%), linear-gradient(to bottom right, transparent 0%, transparent 35%, currentColor 35%, currentColor 65%, transparent 65%, transparent 100%)', backgroundSize: '64px 32px' }}></div>
+
+      <div style={{ width: '100%', aspectRatio: 'var(--aspectRatio)', minHeight: 'var(--minHeight)', boxShadow: 'inset 0 0 0 1px currentColor', background: 'repeating-linear-gradient(45deg, currentColor, currentColor 10px, transparent 10px, transparent 20px)' }}></div>
+
+
+      <div style={{ width: '100%', aspectRatio: 'var(--aspectRatio)', minHeight: 'var(--minHeight)', boxShadow: 'inset 0 0 0 1px currentColor', background: 'linear-gradient(60deg, currentColor 25%, transparent 25.5%), linear-gradient(0deg, transparent 75%, currentColor 75%)', backgroundSize: '30px 30px' }}></div>
+
+      <div style={{ width: '100%', aspectRatio: 'var(--aspectRatio)', minHeight: 'var(--minHeight)', boxShadow: 'inset 0 0 0 1px currentColor', background: 'radial-gradient(circle farthest-side at 0% 50%, transparent 74%, currentColor 75%, currentColor 85%, transparent 86%) 0 0, radial-gradient(circle farthest-side at 100% 50%, transparent 74%, currentColor 75%, currentColor 85%, transparent 86%) 0 0, radial-gradient(circle farthest-side at 50% 0%, transparent 74%, currentColor 75%, currentColor 85%, transparent 86%) 0 0, radial-gradient(circle farthest-side at 50% 100%, transparent 74%, currentColor 75%, currentColor 85%, transparent 86%) 0 0', backgroundSize: '30px 30px' }}></div>
+
     </section>
 
     <section style={{ padding: '8px 0' }}>

@@ -5,7 +5,7 @@ export default function InputCheckbox({ label = "Enable notifications", colorPai
   // Extract colors from colorPair if provided
   const foregroundColor = colorPair ? colorPair[1] : 'currentColor';
   const backgroundColor = colorPair ? colorPair[0] : 'white';
-  
+
   return (
     <>
       <style>
@@ -13,6 +13,7 @@ export default function InputCheckbox({ label = "Enable notifications", colorPai
           .checkbox-root {
             width: 16px;
             height: 16px;
+            aspect-ratio: 1;
             border-radius: 0px;
             color: ${foregroundColor};
             border: 1px solid ${foregroundColor};
@@ -20,31 +21,30 @@ export default function InputCheckbox({ label = "Enable notifications", colorPai
             display: flex;
             align-items: center;
             justify-content: center;
-            
           }
-          
+
           .checkbox-root[data-state="checked"] {
             color: ${foregroundColor};
           }
 
-            .checkbox-root[data-unchecked] {
-    border: 1px solid currentColor;
-    background-color: transparent;
-  }
+          .checkbox-root[data-unchecked] {
+            border: 1px solid currentColor;
+            background-color: transparent;
+          }
 
-  .checkbox-root[data-checked] {
-    background-color: ${foregroundColor};
-  }
+          .checkbox-root[data-checked] {
+            background-color: ${foregroundColor};
+          }
 
-  .checkbox-root:focus-visible {
-    outline: 2px solid ${foregroundColor};
-    outline-offset: 2px;
-  }
-          
+          .checkbox-root:focus-visible {
+            outline: 2px solid ${foregroundColor};
+            outline-offset: 2px;
+          }
+
           .checkbox-indicator {
             color: ${foregroundColor};
           }
-          
+
           .checkbox-label {
             display: flex;
             align-items: center;
@@ -52,14 +52,16 @@ export default function InputCheckbox({ label = "Enable notifications", colorPai
             cursor: pointer;
             user-select: none;
             color: ${foregroundColor};
+            font-size: 12px;
+            white-space: nowrap;
           }
-            .checkbox-icon {
+          .checkbox-icon {
             color: ${backgroundColor};
         }
-            
+
         `}
       </style>
-      
+
       <label className="checkbox-label">
         <Checkbox.Root defaultChecked className="checkbox-root">
           <Checkbox.Indicator className="checkbox-indicator">
