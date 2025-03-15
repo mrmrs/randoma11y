@@ -10,8 +10,11 @@ import Card from './components/Card.jsx'
 import Shape001 from './components/Shape001.jsx'
 import StatusDot from './components/StatusDot.jsx'
 import StatusDotOutline from './components/StatusDotOutline.jsx'
+import Avatar from './components/Avatar.jsx'
+import AvatarOutline from './components/AvatarOutline.jsx'
 import Badge from './components/Badge.jsx'
 import BadgeOutline from './components/BadgeOutline.jsx'
+import InputCheckbox from './components/Checkbox.jsx'
 import PieChart from './components/PieChart.jsx'
 import PieChartAlt from './components/PieChartAlt.jsx'
 import TextBox from './components/TextBox.jsx'
@@ -56,7 +59,7 @@ const App = () => {
   )
 
 
-    const durableObjectName = 'RANDOMA11Y'; 
+    const durableObjectName = 'RANDOMA11Y';
 
     const fetchCount = async () => {
         try {
@@ -84,10 +87,10 @@ const App = () => {
         // Select a random palette from the curated list
         const randomIndex = Math.floor(Math.random() * curatedPalettes.length);
         const initialPalette = curatedPalettes[randomIndex];
-        
+
         // Set the color pair
         setColorPair(initialPalette);
-        
+
         // Calculate and set the contrast
         try {
             const calculatedContrast = Color.contrast(initialPalette[0], initialPalette[1], contrastAlgorithm);
@@ -95,10 +98,10 @@ const App = () => {
         } catch (error) {
             console.error('Error calculating contrast for initial palette:', error);
         }
-        
+
         // Add to history
         setColorHistory([{ id: uuidv4(), colors: initialPalette }]);
-        
+
         // Fetch the count
         fetchCount();
     }, []);
@@ -286,15 +289,15 @@ const generateRandomColor = (format) => {
             }}
              style={{ display: 'flex', alignItems: 'center', }}
           >
-          <label style={{ gap: '4px', fontSize: '12px', display: 'inline-flex', alignItems: 'center', marginRight: '12px', fontWeight: 400 }}>   
+          <label style={{ gap: '4px', fontSize: '12px', display: 'inline-flex', alignItems: 'center', marginRight: '12px', fontWeight: 400 }}>
               <RadioGroup.Item value="WCAG21" id="wcag21" style={{ display: 'block', padding: 0, height: '10px', width: '10px', border: 0, background: 'transparent', boxShadow: 'inset 0 0 0 1px currentColor', color: colorPair[1] }}>
-                
+
                   <RadioGroup.Indicator style={{ width: '100%', height: '100%', display: 'block',  background: colorPair[1] }} />
               </RadioGroup.Item>
           WCAG 2.1
             </label>
-          <label style={{ gap: '4px', fontWeight: 400, fontSize: '12px', display: 'inline-flex', alignItems: 'center', }}>   
-          <RadioGroup.Item value="APCA" id="apca" 
+          <label style={{ gap: '4px', fontWeight: 400, fontSize: '12px', display: 'inline-flex', alignItems: 'center', }}>
+          <RadioGroup.Item value="APCA" id="apca"
 style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, boxShadow: 'inset 0 0 0 1px currentColor', color:colorPair[1], background: 'transparent' }}>
               <RadioGroup.Indicator style={{ height: '100%', width: '100%', display: 'block', background: colorPair[1], }} />
           </RadioGroup.Item>
@@ -308,22 +311,22 @@ style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, 
             {contrastAlgorithm === 'WCAG21' && (
     <RadioGroup.Root value={threshold} onValueChange={(value) => handleThresholdChange(parseFloat(value))}>
               <div style={{display: 'flex', gap: '8px'}}>
-        <label style={{ gap: '4px', fontWeight: 400, fontSize: '12px', display: 'inline-flex', alignItems: 'center', }}>   
-        <RadioGroup.Item value={3} id="3" 
+        <label style={{ gap: '4px', fontWeight: 400, fontSize: '12px', display: 'inline-flex', alignItems: 'center', }}>
+        <RadioGroup.Item value={3} id="3"
 style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, boxShadow: 'inset 0 0 0 1px currentColor', color: colorPair[1], background: 'transparent' }}>
               <RadioGroup.Indicator style={{ height: '100%', width: '100%', display: 'block', background: colorPair[1] }} />
           </RadioGroup.Item>
             3
               </label>
-    <label style={{ gap: '4px', fontWeight: 400, fontSize: '12px', display: 'inline-flex', alignItems: 'center', }}>   
-        <RadioGroup.Item value={4.5} id="4.5" 
+    <label style={{ gap: '4px', fontWeight: 400, fontSize: '12px', display: 'inline-flex', alignItems: 'center', }}>
+        <RadioGroup.Item value={4.5} id="4.5"
 style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, boxShadow: 'inset 0 0 0 1px currentColor', color: colorPair[1], background: 'transparent' }}>
               <RadioGroup.Indicator style={{ height: '100%', width: '100%', display: 'block', background: colorPair[1]}} />
           </RadioGroup.Item>
             4.5
               </label>
-    <label style={{ gap: '4px', fontWeight: 400, fontSize: '12px', display: 'inline-flex', alignItems: 'center', }}>   
-        <RadioGroup.Item value={7} id="7" 
+    <label style={{ gap: '4px', fontWeight: 400, fontSize: '12px', display: 'inline-flex', alignItems: 'center', }}>
+        <RadioGroup.Item value={7} id="7"
 style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, boxShadow: 'inset 0 0 0 1px currentColor', color:colorPair[1], background: 'transparent' }}>
               <RadioGroup.Indicator style={{ height: '100%', width: '100%', display: 'block', background: colorPair[1] }} />
           </RadioGroup.Item>
@@ -335,22 +338,22 @@ style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, 
           {contrastAlgorithm === 'APCA' && (
             <RadioGroup.Root value={threshold} onValueChange={(value) => handleThresholdChange(parseFloat(value))}>
             <div style={{display: 'flex', gap: '8px'}}>
-      <label style={{ gap: '4px', fontWeight: 400, fontSize: '12px', display: 'inline-flex', alignItems: 'center', }}>   
-      <RadioGroup.Item value={45} id="45" 
+      <label style={{ gap: '4px', fontWeight: 400, fontSize: '12px', display: 'inline-flex', alignItems: 'center', }}>
+      <RadioGroup.Item value={45} id="45"
 style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, boxShadow: 'inset 0 0 0 1px currentColor', color: colorPair[1], background: 'transparent' }}>
               <RadioGroup.Indicator style={{ height: '100%', width: '100%', display: 'block', background: colorPair[1]}} />
           </RadioGroup.Item>
                 45
               </label>
-    <label style={{ gap: '4px', fontWeight: 400, fontSize: '12px', display: 'inline-flex', alignItems: 'center', }}>   
-      <RadioGroup.Item value={60} id="60" 
+    <label style={{ gap: '4px', fontWeight: 400, fontSize: '12px', display: 'inline-flex', alignItems: 'center', }}>
+      <RadioGroup.Item value={60} id="60"
 style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, boxShadow: 'inset 0 0 0 1px currentColor', color: colorPair[1], background: 'transparent' }}>
               <RadioGroup.Indicator style={{ height: '100%', width: '100%', display: 'block', background: colorPair[1] }} />
           </RadioGroup.Item>
                 60
               </label>
-    <label style={{ gap: '4px', fontWeight: 400, fontSize: '12px', display: 'inline-flex', alignItems: 'center', }}>   
-      <RadioGroup.Item value={75} id="75" 
+    <label style={{ gap: '4px', fontWeight: 400, fontSize: '12px', display: 'inline-flex', alignItems: 'center', }}>
+      <RadioGroup.Item value={75} id="75"
 style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, boxShadow: 'inset 0 0 0 1px currentColor', color: colorPair[1], background: 'transparent' }}>
               <RadioGroup.Indicator style={{ height: '100%', width: '100%', display: 'block', background: colorPair[1]}} />
           </RadioGroup.Item>
@@ -403,7 +406,7 @@ style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, 
         </div>
         <div>
           <label style={{ position: 'relative', top: '-2px' }}>
-        <span style={{ display: 'block', fontSize: '12px', fontWeight: 700, marginBottom: '4px', }}>Pinned color</span> 
+        <span style={{ display: 'block', fontSize: '12px', fontWeight: 700, marginBottom: '4px', }}>Pinned color</span>
 
             <input
               type="text"
@@ -418,7 +421,7 @@ style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, 
 
         <button style={{
             marginLeft: 'auto',
-            appearance: 'none', 
+            appearance: 'none',
             WebkitAppearance: 'none',
             borderWidth: '1px',
             borderStyle: 'solid',
@@ -433,10 +436,10 @@ style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, 
 
         }} onClick={handleGenerateColorPair}>Generate <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.14645 3.14645C8.34171 2.95118 8.65829 2.95118 8.85355 3.14645L12.8536 7.14645C13.0488 7.34171 13.0488 7.65829 12.8536 7.85355L8.85355 11.8536C8.65829 12.0488 8.34171 12.0488 8.14645 11.8536C7.95118 11.6583 7.95118 11.3417 8.14645 11.1464L11.2929 8H2.5C2.22386 8 2 7.77614 2 7.5C2 7.22386 2.22386 7 2.5 7H11.2929L8.14645 3.85355C7.95118 3.65829 7.95118 3.34171 8.14645 3.14645Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path></svg> </button>
       </header>
-      
+
       <div style={{ display: 'flex', flexWrap: 'wrap', minHeight: '32px'}}>
         {colorHistory.map(entry => (
-          <button key={entry.id} title={colorPair[0] + ' / ' + colorPair[1] } style={{ cursor: 'pointer', fontWeight: 'bold', border: 0, appearance: 'none', WebkitAppearance: 'none', backgroundColor: entry.colors[0], color: entry.colors[1], aspectRatio: 1, padding: '0px', width: 'auto', height: '32px',  }} onClick={() => restoreColorPair(entry.colors)}>
+          <button key={entry.id} title={colorPair[0] + ' / ' + colorPair[1] } style={{ cursor: 'pointer', fontWeight: 'bold', border: 0, appearance: 'none', WebkitAppearance: 'none', backgroundColor: entry.colors[0], color: entry.colors[1], aspectRatio: 1, padding: '0px', width: 'auto', height: '32px', fontSize: '10px'  }} onClick={() => restoreColorPair(entry.colors)}>
             A
           </button>
         ))}
@@ -450,13 +453,17 @@ style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, 
       <button title="Pin - Find matches for this color" className='f0 f3-m f5-l' style={{ fontWeight: 400, cursor: 'pointer', appearance: 'none', WebkitAppearance: 'none', fontFamily: 'monospace', padding: '16px 8px', margin: 0, border: 0, boxShadow: 'inset 0 0 0 1px currentColor', background: 'transparent', color: colorPair[1], }} onClick={() => handleSetPinnedColor(colorPair[1])}>{colorPair[1]}</button>
 
           </div>
-          
+
           <div style={{ maxWidth: '100%', display: 'grid', gap: '8px', gridTemplateColumns: '1fr' }}>
         <div style={{display: 'flex', gap: '4px', alignItems: 'center'}}>
             <StatusDot colorPair={colorPair} borderRadius={borderRadius} />
             <StatusDotOutline colorPair={colorPair} borderRadius={borderRadius} />
             <Badge borderRadius={borderRadius} colorPair={colorPair}>Badge</Badge>
             <BadgeOutline borderRadius={borderRadius} colorPair={colorPair}>Badge Outline</BadgeOutline>
+            <Avatar borderRadius={'9999px'} colorPair={colorPair}>AE</Avatar>
+            <AvatarOutline borderRadius={'9999px'} colorPair={colorPair}>AE</AvatarOutline>
+            <InputCheckbox label='Label' colorPair={colorPair}/>
+           
         <hr style={{ backgroundColor: colorPair[0], borderBottomWidth: '1px', borderBottomStyle: 'solid', borderBottomColor: colorPair[1], borderTopColor: 'transparent', borderLeftColor: 'transparent', borderRightColor: 'transparent',  width: '100%' }}/>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: '3fr 1fr 1fr', gap: '8px'}}>
@@ -475,9 +482,9 @@ style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, 
            <article style={{ border: '1px solid', padding: '32px', borderRadius: borderRadius }}>
       <div style={{ width: '100%' }}><Shape001 /></div>
       <p style={{ lineHeight: 1.5, fontSize: '14px' }}>Every perception of colour is an illusion, we do not see colours as they really are. In our perception they alter one another.</p>
-      </article> 
+      </article>
       <PieChart colorPair={colorPair} data={pieChartData} borderRadius={borderRadius} />
-        
+
         <BarChart colorPair={[colorPair[1], colorPair[0]]} data={barChartData} borderRadius={borderRadius} />
       </div>
     <section style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
@@ -495,6 +502,7 @@ style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, 
       <div style={{ width: '100%', aspectRatio: '6/4', minHeight: '32px', boxShadow: 'inset 0 0 0 1px currentColor', background: 'repeating-radial-gradient(circle at 100%, currentColor, currentColor 1px, transparent 1px, transparent 6px)' }}></div>
       <div className='halftone' style={{ width: '100%', aspectRatio: '6/4', minHeight: '32px', boxShadow: 'inset 0 0 0 1px currentColor',  }}></div>
       <div className='halftone-angle' style={{ width: '100%', aspectRatio: '6/4', minHeight: '32px', boxShadow: 'inset 0 0 0 1px currentColor',  }}></div>
+      <div style={{ width: '100%', aspectRatio: '6/4', minHeight: '32px', boxShadow: 'inset 0 0 0 1px currentColor', background: 'radial-gradient(currentColor 3px, transparent 4px), radial-gradient(currentColor 3px, transparent 4px)', backgroundSize: '32px 32px', backgroundPosition: '0 0, 16px 16px' }}></div>
       <div style={{ width: '100%', aspectRatio: '6/4', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '64px', padding: '16px', background: 'linear-gradient(0deg, currentColor 50%, transparent 50%)' }}></div>
       <div style={{ width: '100%', aspectRatio: '6/4', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '64px', padding: '16px', background: 'linear-gradient(180deg, currentColor 50%, transparent 50%)' }}></div>
       <div style={{ width: '100%', aspectRatio: '6/4', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '64px', padding: '16px', background: 'linear-gradient(90deg, currentColor 50%, transparent 50%)' }}></div>
@@ -505,12 +513,39 @@ style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, 
       <div style={{ width: '100%', aspectRatio: '6/4', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '64px', padding: '16px', background: 'radial-gradient(circle, currentColor 50%, transparent 50%)' }}></div>
       <div style={{ width: '100%', aspectRatio: '6/4', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '64px', padding: '16px', background: 'radial-gradient(circle, transparent 10%, currentColor 10%)' }}></div>
       <div style={{ width: '100%', aspectRatio: '6/4', boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '64px', padding: '16px', background: 'radial-gradient(circle, transparent 60%, currentColor 60%)' }}></div>
+
+      <div style={{ width: '100%', aspectRatio: '6/4', minHeight: '32px', boxShadow: 'inset 0 0 0 1px currentColor', background: 'linear-gradient(45deg, currentColor 25%, transparent 25%), linear-gradient(-45deg, currentColor 25%, transparent 25%), linear-gradient(45deg, transparent 75%, currentColor 75%), linear-gradient(-45deg, transparent 75%, currentColor 75%)', backgroundSize: '20px 20px', backgroundPosition: '0 0, 0 10px, 10px -10px, -10px 0px' }}></div>
+      
+      <div style={{ width: '100%', aspectRatio: '6/4', minHeight: '32px', boxShadow: 'inset 0 0 0 1px currentColor', background: 'linear-gradient(135deg, currentColor 25%, transparent 25%) -10px 0, linear-gradient(225deg, currentColor 25%, transparent 25%) -10px 0, linear-gradient(315deg, currentColor 25%, transparent 25%), linear-gradient(45deg, currentColor 25%, transparent 25%)', backgroundSize: '20px 20px' }}></div>
+      
+      
+      
+      <div style={{ width: '100%', aspectRatio: '6/4', minHeight: '32px', boxShadow: 'inset 0 0 0 1px currentColor', background: 'conic-gradient(from 0deg, currentColor 0deg 10deg, transparent 10deg 30deg, currentColor 30deg 40deg, transparent 40deg 60deg, currentColor 60deg 70deg, transparent 70deg 90deg, currentColor 90deg 100deg, transparent 100deg 120deg, currentColor 120deg 130deg, transparent 130deg 150deg, currentColor 150deg 160deg, transparent 160deg 180deg, currentColor 180deg 190deg, transparent 190deg 210deg, currentColor 210deg 220deg, transparent 220deg 240deg, currentColor 240deg 250deg, transparent 250deg 270deg, currentColor 270deg 280deg, transparent 280deg 300deg, currentColor 300deg 310deg, transparent 310deg 330deg, currentColor 330deg 340deg, transparent 340deg 360deg)' }}></div>
+      
+      <div style={{ width: '100%', aspectRatio: '6/4', minHeight: '32px', boxShadow: 'inset 0 0 0 1px currentColor', background: 'linear-gradient(45deg, currentColor 12%, transparent 0, transparent 88%, currentColor 0), linear-gradient(135deg, transparent 37%, currentColor 0, currentColor 63%, transparent 0), linear-gradient(45deg, transparent 37%, currentColor 0, currentColor 63%, transparent 0)', backgroundSize: '25px 25px' }}></div>
+      
+      <div style={{ width: '100%', aspectRatio: '6/4', minHeight: '32px', boxShadow: 'inset 0 0 0 1px currentColor', background: 'linear-gradient(45deg, currentColor 25%, transparent 25%, transparent 75%, currentColor 75%) 0 0, linear-gradient(45deg, currentColor 25%, transparent 25%, transparent 75%, currentColor 75%) 15px 15px', backgroundSize: '30px 30px' }}></div>
+      
+
+      
+      <div style={{ width: '100%', aspectRatio: '6/4', minHeight: '32px', boxShadow: 'inset 0 0 0 1px currentColor', background: 'linear-gradient(currentColor 2px, transparent 2px), linear-gradient(to right, currentColor 2px, transparent 2px)', backgroundSize: '30px 30px' }}></div>
+      
+      <div style={{ width: '100%', aspectRatio: '6/4', minHeight: '32px', boxShadow: 'inset 0 0 0 1px currentColor', background: 'linear-gradient(to right, transparent 0%, transparent 35%, currentColor 35%, currentColor 65%, transparent 65%, transparent 100%), linear-gradient(to bottom, transparent 0%, transparent 35%, currentColor 35%, currentColor 65%, transparent 65%, transparent 100%)', backgroundSize: '20px 20px' }}></div>
+      
+      <div style={{ width: '100%', aspectRatio: '6/4', minHeight: '32px', boxShadow: 'inset 0 0 0 1px currentColor', background: 'repeating-linear-gradient(45deg, currentColor, currentColor 10px, transparent 10px, transparent 20px)' }}></div>
+      
+     
+      <div style={{ width: '100%', aspectRatio: '6/4', minHeight: '32px', boxShadow: 'inset 0 0 0 1px currentColor', background: 'linear-gradient(60deg, currentColor 25%, transparent 25.5%), linear-gradient(0deg, transparent 75%, currentColor 75%)', backgroundSize: '30px 30px' }}></div>
+      
+      <div style={{ width: '100%', aspectRatio: '6/4', minHeight: '32px', boxShadow: 'inset 0 0 0 1px currentColor', background: 'radial-gradient(circle farthest-side at 0% 50%, transparent 74%, currentColor 75%, currentColor 85%, transparent 86%) 0 0, radial-gradient(circle farthest-side at 100% 50%, transparent 74%, currentColor 75%, currentColor 85%, transparent 86%) 0 0, radial-gradient(circle farthest-side at 50% 0%, transparent 74%, currentColor 75%, currentColor 85%, transparent 86%) 0 0, radial-gradient(circle farthest-side at 50% 100%, transparent 74%, currentColor 75%, currentColor 85%, transparent 86%) 0 0', backgroundSize: '30px 30px' }}></div>
+      
+      <div style={{ width: '100%', aspectRatio: '6/4', minHeight: '32px', boxShadow: 'inset 0 0 0 1px currentColor', background: 'linear-gradient(currentColor 1px, transparent 1px), linear-gradient(90deg, currentColor 1px, transparent 1px)', backgroundSize: '16px 16px' }}></div>
     </section>
 
     <section style={{ padding: '8px 0' }}>
       <OpacityScale color={colorPair[1]} />
     </section>
-    
+
     <GradientPanel colorPair={colorPair} />
     <div style={{ boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '64px', padding: '16px', background: 'linear-gradient(135deg, currentColor 0%, transparent 100%)' }}></div>
     <div>
@@ -522,7 +557,7 @@ style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, 
       <ColorFormats color={colorPair[1]} />
     </section>
   </div>
-  <Footer count={count} /> 
+  <Footer count={count} />
   </div>
 );
 };
