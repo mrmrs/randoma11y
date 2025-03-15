@@ -21,6 +21,7 @@ import BackgroundStripes from './components/BackgroundStripes.jsx'
 import ColorFormats from './components/ColorFormats.jsx'
 import OpacityScale from './components/OpacityScale.jsx'
 import GradientPanel from './components/GradientPanel.jsx'
+import curatedPalettes from './data/curatedPalettes.js'
 
 const App = () => {
   const [count, setCount] = useState(0);
@@ -32,7 +33,7 @@ const App = () => {
   const [pinnedColor, setPinnedColor] = useState('');
   const [threshold, setThreshold] = useState(60);
   const [contrastAlgorithm, setContrastAlgorithm] = useState('APCA');
-  const [colorPair, setColorPair] = useState(['#000000', '#FFFFFF']);
+  const [colorPair, setColorPair] = useState(['#000000', '#FFFFFF']); // Default for initial render to prevent FOUC
   const [contrast, setContrast] = useState(Color.contrast(colorPair[0], colorPair[1], 'WCAG21'));
   const [iterations, setIterations] = useState(0);
   const [pieChartData, setPieChartData] = useState([15,Math.floor(Math.random() * 100),55])
@@ -78,25 +79,45 @@ const App = () => {
         }
     };
 
+    // Initialize with a random curated palette
     useEffect(() => {
+        // Select a random palette from the curated list
+        const randomIndex = Math.floor(Math.random() * curatedPalettes.length);
+        const initialPalette = curatedPalettes[randomIndex];
+        
+        // Set the color pair
+        setColorPair(initialPalette);
+        
+        // Calculate and set the contrast
+        try {
+            const calculatedContrast = Color.contrast(initialPalette[0], initialPalette[1], contrastAlgorithm);
+            setContrast(calculatedContrast);
+        } catch (error) {
+            console.error('Error calculating contrast for initial palette:', error);
+        }
+        
+        // Add to history
+        setColorHistory([{ id: uuidv4(), colors: initialPalette }]);
+        
+        // Fetch the count
         fetchCount();
     }, []);
 
-useEffect(() => {
-    const handleKeyDown = (event) => {
-      if (event.key === 'ArrowRight') {
-        handleGenerateColorPair();
-      }
-    };
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+          if (event.key === 'ArrowRight') {
+            handleGenerateColorPair();
+          }
+        };
 
-    // Add event listener
-    window.addEventListener('keydown', handleKeyDown);
+        // Add event listener
+        window.addEventListener('keydown', handleKeyDown);
 
-    // Cleanup
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [pinnedColor, inputFormat, threshold, contrastAlgorithm]); // Dependencies
+        // Cleanup
+        return () => {
+          window.removeEventListener('keydown', handleKeyDown);
+        };
+      }, [pinnedColor, inputFormat, threshold, contrastAlgorithm]); // Dependencies
 
 
   const formatMapping = {
@@ -229,191 +250,191 @@ const generateRandomColor = (format) => {
           <Logo colorPair={colorPair} size={20} />
           <b className='dn db-m' style={{ fontSize: '12px', letterSpacing: '-0.05em', fontWeight: 900 }}>RandomA11y</b>
         </div>
-<section style={{ width: '100%', marginRight: '8px', borderRight: '1px solid currentColor', display: 'flex', alignItems: 'flex-start', gap: '32px', padding: '8px', overflow: 'scroll', flexWrap: 'none', whiteSpace: 'nowrap', zIndex: 2000 }}>
- <label style={{  fontSize: '12px', lineHeight: 1, margin: 0, padding: 0, zIndex: 2000 }}>
-      <span style={{ fontWeight: 'bold', fontSize: '12px', marginBottom: '6px', display: 'block',  }}>Format</span>
-      <Select.Root value={inputFormat} onValueChange={setInputFormat} style={{ fontSize: '12px', }}>
-        <Select.Trigger style={{ fontSize: '12px', all: 'unset', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '4px', gap: '6px', backgroundColor: 'transparent',color: 'currentColor', border: '1px solid currentColor', borderRadius: 0 }}>
-          <Select.Value />
-          <Select.Icon />
-        </Select.Trigger>
-        <Select.Portal style={{ zIndex: 2000, background: 'red', cursor: 'pointer', }}>
-          <Select.Content style={{ background: colorPair[1], color: colorPair[0] }}>
-            <Select.ScrollUpButton />
-            <Select.Viewport style={{ background: colorPair[0], color: colorPair[1], border: '1px solid currentColor' }}>
-              <Select.Group style={{ fontSize: '12px', }}>
-                <Select.Item style={{ padding: '8px' }} value="hex"><Select.ItemText>HEX</Select.ItemText></Select.Item>
-                <Select.Item style={{ padding: '8px' }} value="p3"><Select.ItemText>Display-P3</Select.ItemText></Select.Item>
-                <Select.Item style={{ padding: '8px' }} value="rgb"><Select.ItemText>RGB</Select.ItemText></Select.Item>
-                <Select.Item style={{ padding: '8px' }} value="hsl"><Select.ItemText>HSL</Select.ItemText></Select.Item>
-                <Select.Item style={{ padding: '8px' }} value="lab"><Select.ItemText>LAB</Select.ItemText></Select.Item>
-                <Select.Item style={{ padding: '8px' }} value="oklab"><Select.ItemText>OKLAB</Select.ItemText></Select.Item>
-                <Select.Item style={{ padding: '8px' }} value="rec2020"><Select.ItemText>REC.2020</Select.ItemText></Select.Item>
-                <Select.Item style={{ padding: '8px' }} value="lch"><Select.ItemText>LCH</Select.ItemText></Select.Item>
-                <Select.Item style={{ padding: '8px' }} value="oklch"><Select.ItemText>OKLCH</Select.ItemText></Select.Item>
-              </Select.Group>
-            </Select.Viewport>
-            <Select.ScrollDownButton />
-          </Select.Content>
-        </Select.Portal>
-      </Select.Root>
-    </label>
-    <fieldset style={{ border: 0, padding: 0, fontSize: '12px', fontWeight: 'bold', display: 'block', marginBottom: '6px' }}><legend style={{ marginBottom: '8px'}}>Algorithm</legend>
-      <RadioGroup.Root value={contrastAlgorithm} onValueChange={(value) => {
-        setContrastAlgorithm(value);
-        handleThresholdChange(value === 'WCAG21' ? 4.5 : 60);
-      }}
-       style={{ display: 'flex', alignItems: 'center', }}
-    >
-    <label style={{ gap: '4px', fontSize: '12px', display: 'inline-flex', alignItems: 'center', marginRight: '12px', fontWeight: 400 }}>   
-        <RadioGroup.Item value="WCAG21" id="wcag21" style={{ display: 'block', padding: 0, height: '10px', width: '10px', border: 0, background: 'transparent', boxShadow: 'inset 0 0 0 1px currentColor', color: colorPair[1] }}>
-          
-            <RadioGroup.Indicator style={{ width: '100%', height: '100%', display: 'block',  background: colorPair[1] }} />
-        </RadioGroup.Item>
-    WCAG 2.1
+        <section style={{ width: '100%', marginRight: '8px', borderRight: '1px solid currentColor', display: 'flex', alignItems: 'flex-start', gap: '32px', padding: '8px', overflow: 'scroll', flexWrap: 'none', whiteSpace: 'nowrap', zIndex: 2000 }}>
+          <label style={{  fontSize: '12px', lineHeight: 1, margin: 0, padding: 0, zIndex: 2000 }}>
+            <span style={{ fontWeight: 'bold', fontSize: '12px', marginBottom: '6px', display: 'block',  }}>Format</span>
+            <Select.Root value={inputFormat} onValueChange={setInputFormat} style={{ fontSize: '12px', }}>
+              <Select.Trigger style={{ fontSize: '12px', all: 'unset', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '4px', gap: '6px', backgroundColor: 'transparent',color: 'currentColor', border: '1px solid currentColor', borderRadius: 0 }}>
+                <Select.Value />
+                <Select.Icon />
+              </Select.Trigger>
+              <Select.Portal style={{ zIndex: 2000, background: 'red', cursor: 'pointer', }}>
+                <Select.Content style={{ background: colorPair[1], color: colorPair[0] }}>
+                  <Select.ScrollUpButton />
+                  <Select.Viewport style={{ background: colorPair[0], color: colorPair[1], border: '1px solid currentColor' }}>
+                    <Select.Group style={{ fontSize: '12px', }}>
+                      <Select.Item style={{ padding: '8px' }} value="hex"><Select.ItemText>HEX</Select.ItemText></Select.Item>
+                      <Select.Item style={{ padding: '8px' }} value="p3"><Select.ItemText>Display-P3</Select.ItemText></Select.Item>
+                      <Select.Item style={{ padding: '8px' }} value="rgb"><Select.ItemText>RGB</Select.ItemText></Select.Item>
+                      <Select.Item style={{ padding: '8px' }} value="hsl"><Select.ItemText>HSL</Select.ItemText></Select.Item>
+                      <Select.Item style={{ padding: '8px' }} value="lab"><Select.ItemText>LAB</Select.ItemText></Select.Item>
+                      <Select.Item style={{ padding: '8px' }} value="oklab"><Select.ItemText>OKLAB</Select.ItemText></Select.Item>
+                      <Select.Item style={{ padding: '8px' }} value="rec2020"><Select.ItemText>REC.2020</Select.ItemText></Select.Item>
+                      <Select.Item style={{ padding: '8px' }} value="lch"><Select.ItemText>LCH</Select.ItemText></Select.Item>
+                      <Select.Item style={{ padding: '8px' }} value="oklch"><Select.ItemText>OKLCH</Select.ItemText></Select.Item>
+                    </Select.Group>
+                  </Select.Viewport>
+                  <Select.ScrollDownButton />
+                </Select.Content>
+              </Select.Portal>
+            </Select.Root>
           </label>
-    <label style={{ gap: '4px', fontWeight: 400, fontSize: '12px', display: 'inline-flex', alignItems: 'center', }}>   
-    <RadioGroup.Item value="APCA" id="apca" 
+          <fieldset style={{ border: 0, padding: 0, fontSize: '12px', fontWeight: 'bold', display: 'block', marginBottom: '6px' }}><legend style={{ marginBottom: '8px'}}>Algorithm</legend>
+            <RadioGroup.Root value={contrastAlgorithm} onValueChange={(value) => {
+              setContrastAlgorithm(value);
+              handleThresholdChange(value === 'WCAG21' ? 4.5 : 60);
+            }}
+             style={{ display: 'flex', alignItems: 'center', }}
+          >
+          <label style={{ gap: '4px', fontSize: '12px', display: 'inline-flex', alignItems: 'center', marginRight: '12px', fontWeight: 400 }}>   
+              <RadioGroup.Item value="WCAG21" id="wcag21" style={{ display: 'block', padding: 0, height: '10px', width: '10px', border: 0, background: 'transparent', boxShadow: 'inset 0 0 0 1px currentColor', color: colorPair[1] }}>
+                
+                  <RadioGroup.Indicator style={{ width: '100%', height: '100%', display: 'block',  background: colorPair[1] }} />
+              </RadioGroup.Item>
+          WCAG 2.1
+            </label>
+          <label style={{ gap: '4px', fontWeight: 400, fontSize: '12px', display: 'inline-flex', alignItems: 'center', }}>   
+          <RadioGroup.Item value="APCA" id="apca" 
 style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, boxShadow: 'inset 0 0 0 1px currentColor', color:colorPair[1], background: 'transparent' }}>
-            <RadioGroup.Indicator style={{ height: '100%', width: '100%', display: 'block', background: colorPair[1], }} />
-        </RadioGroup.Item>
-            APCA
+              <RadioGroup.Indicator style={{ height: '100%', width: '100%', display: 'block', background: colorPair[1], }} />
+          </RadioGroup.Item>
+              APCA
+            </label>
+          </RadioGroup.Root>
+        </fieldset>
+
+        <fieldset style={{ width: '128px', border: 0, padding: 0, fontSize: '12px', fontWeight: 'bold', display: 'block', }}><legend style={{ marginBottom: '8px'}}>Threshold</legend>
+
+            {contrastAlgorithm === 'WCAG21' && (
+    <RadioGroup.Root value={threshold} onValueChange={(value) => handleThresholdChange(parseFloat(value))}>
+              <div style={{display: 'flex', gap: '8px'}}>
+        <label style={{ gap: '4px', fontWeight: 400, fontSize: '12px', display: 'inline-flex', alignItems: 'center', }}>   
+        <RadioGroup.Item value={3} id="3" 
+style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, boxShadow: 'inset 0 0 0 1px currentColor', color: colorPair[1], background: 'transparent' }}>
+              <RadioGroup.Indicator style={{ height: '100%', width: '100%', display: 'block', background: colorPair[1] }} />
+          </RadioGroup.Item>
+            3
+              </label>
+    <label style={{ gap: '4px', fontWeight: 400, fontSize: '12px', display: 'inline-flex', alignItems: 'center', }}>   
+        <RadioGroup.Item value={4.5} id="4.5" 
+style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, boxShadow: 'inset 0 0 0 1px currentColor', color: colorPair[1], background: 'transparent' }}>
+              <RadioGroup.Indicator style={{ height: '100%', width: '100%', display: 'block', background: colorPair[1]}} />
+          </RadioGroup.Item>
+            4.5
+              </label>
+    <label style={{ gap: '4px', fontWeight: 400, fontSize: '12px', display: 'inline-flex', alignItems: 'center', }}>   
+        <RadioGroup.Item value={7} id="7" 
+style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, boxShadow: 'inset 0 0 0 1px currentColor', color:colorPair[1], background: 'transparent' }}>
+              <RadioGroup.Indicator style={{ height: '100%', width: '100%', display: 'block', background: colorPair[1] }} />
+          </RadioGroup.Item>
+            <span style={{ width: '2ch', display: 'inline-block'}}>7</span>
+              </label>
+            </div>
+            </RadioGroup.Root>
+          )}
+          {contrastAlgorithm === 'APCA' && (
+            <RadioGroup.Root value={threshold} onValueChange={(value) => handleThresholdChange(parseFloat(value))}>
+            <div style={{display: 'flex', gap: '8px'}}>
+      <label style={{ gap: '4px', fontWeight: 400, fontSize: '12px', display: 'inline-flex', alignItems: 'center', }}>   
+      <RadioGroup.Item value={45} id="45" 
+style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, boxShadow: 'inset 0 0 0 1px currentColor', color: colorPair[1], background: 'transparent' }}>
+              <RadioGroup.Indicator style={{ height: '100%', width: '100%', display: 'block', background: colorPair[1]}} />
+          </RadioGroup.Item>
+                45
+              </label>
+    <label style={{ gap: '4px', fontWeight: 400, fontSize: '12px', display: 'inline-flex', alignItems: 'center', }}>   
+      <RadioGroup.Item value={60} id="60" 
+style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, boxShadow: 'inset 0 0 0 1px currentColor', color: colorPair[1], background: 'transparent' }}>
+              <RadioGroup.Indicator style={{ height: '100%', width: '100%', display: 'block', background: colorPair[1] }} />
+          </RadioGroup.Item>
+                60
+              </label>
+    <label style={{ gap: '4px', fontWeight: 400, fontSize: '12px', display: 'inline-flex', alignItems: 'center', }}>   
+      <RadioGroup.Item value={75} id="75" 
+style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, boxShadow: 'inset 0 0 0 1px currentColor', color: colorPair[1], background: 'transparent' }}>
+              <RadioGroup.Indicator style={{ height: '100%', width: '100%', display: 'block', background: colorPair[1]}} />
+          </RadioGroup.Item>
+                75
+              </label>
+            </div>
+            </RadioGroup.Root>
+          )}
+        </fieldset>
+        <div style={{ display: 'none' }}>
+          <label style={{ fontWeight: 'bold', fontSize: '12px', display: 'block', marginBottom: '2px' }}>Border Radius</label>
+            <div style={{ display: 'flex', gap: '4px'}}>
+              <label style={{ fontSize: '12px', display: 'inline-flex', alignItems: 'center'}}>
+                <input
+                  type="radio"
+                  value={'0px'}
+                  checked={borderRadius === '0px'}
+                  onChange={(e) => handleBorderRadiusChange(e.target.value)}
+                />
+                0
+              </label>
+              <label style={{ fontSize: '12px', display: 'inline-flex', alignItems: 'center'}}>
+                <input
+                  type="radio"
+                  value={'6px'}
+                  checked={borderRadius === '6px'}
+                  onChange={(e) => handleBorderRadiusChange(e.target.value)}
+                />
+                6px
+              </label>
+              <label style={{ fontSize: '12px', display: 'inline-flex', alignItems: 'center'}}>
+                <input
+                  type="radio"
+                  value={'16px'}
+                  checked={borderRadius === '16px'}
+                  onChange={(e) => handleBorderRadiusChange(e.target.value)}
+                />
+                16px
+              </label>
+              <label style={{ fontSize: '12px', display: 'inline-flex', alignItems: 'center'}}>
+                <input
+                  type="radio"
+                  value={'32px'}
+                  checked={borderRadius === '32px'}
+                  onChange={(e) => handleBorderRadiusChange(e.target.value)}
+                />
+                32px
+              </label>
+            </div>
+        </div>
+        <div>
+          <label style={{ position: 'relative', top: '-2px' }}>
+        <span style={{ display: 'block', fontSize: '12px', fontWeight: 700, marginBottom: '4px', }}>Pinned color</span> 
+
+            <input
+              type="text"
+              value={pinnedColor}
+              onChange={(e) => setPinnedColor(e.target.value)}
+              style={{ appearance: 'none', WebkitAppearance: 'none', borderWidth: '1px', borderStyle: 'solid', borderColor: colorPair[1], color: colorPair[1], backgroundColor: 'transparent', padding: '4px', fontSize: '12px', width: '100%'  }}
+            />
           </label>
-      </RadioGroup.Root>
-    </fieldset>
-
-    <fieldset style={{ width: '128px', border: 0, padding: 0, fontSize: '12px', fontWeight: 'bold', display: 'block', }}><legend style={{ marginBottom: '8px'}}>Threshold</legend>
-
-        {contrastAlgorithm === 'WCAG21' && (
-<RadioGroup.Root value={threshold} onValueChange={(value) => handleThresholdChange(parseFloat(value))}>
-          <div style={{display: 'flex', gap: '8px'}}>
-    <label style={{ gap: '4px', fontWeight: 400, fontSize: '12px', display: 'inline-flex', alignItems: 'center', }}>   
-    <RadioGroup.Item value={3} id="3" 
-style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, boxShadow: 'inset 0 0 0 1px currentColor', color: colorPair[1], background: 'transparent' }}>
-            <RadioGroup.Indicator style={{ height: '100%', width: '100%', display: 'block', background: colorPair[1] }} />
-        </RadioGroup.Item>
-          3
-            </label>
-<label style={{ gap: '4px', fontWeight: 400, fontSize: '12px', display: 'inline-flex', alignItems: 'center', }}>   
-    <RadioGroup.Item value={4.5} id="4.5" 
-style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, boxShadow: 'inset 0 0 0 1px currentColor', color: colorPair[1], background: 'transparent' }}>
-            <RadioGroup.Indicator style={{ height: '100%', width: '100%', display: 'block', background: colorPair[1]}} />
-        </RadioGroup.Item>
-          4.5
-            </label>
-<label style={{ gap: '4px', fontWeight: 400, fontSize: '12px', display: 'inline-flex', alignItems: 'center', }}>   
-    <RadioGroup.Item value={7} id="7" 
-style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, boxShadow: 'inset 0 0 0 1px currentColor', color:colorPair[1], background: 'transparent' }}>
-            <RadioGroup.Indicator style={{ height: '100%', width: '100%', display: 'block', background: colorPair[1] }} />
-        </RadioGroup.Item>
-          <span style={{ width: '2ch', display: 'inline-block'}}>7</span>
-            </label>
-          </div>
-          </RadioGroup.Root>
-        )}
-        {contrastAlgorithm === 'APCA' && (
-          <RadioGroup.Root value={threshold} onValueChange={(value) => handleThresholdChange(parseFloat(value))}>
-          <div style={{display: 'flex', gap: '8px'}}>
-    <label style={{ gap: '4px', fontWeight: 400, fontSize: '12px', display: 'inline-flex', alignItems: 'center', }}>   
-    <RadioGroup.Item value={45} id="45" 
-style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, boxShadow: 'inset 0 0 0 1px currentColor', color: colorPair[1], background: 'transparent' }}>
-            <RadioGroup.Indicator style={{ height: '100%', width: '100%', display: 'block', background: colorPair[1]}} />
-        </RadioGroup.Item>
-              45
-            </label>
-<label style={{ gap: '4px', fontWeight: 400, fontSize: '12px', display: 'inline-flex', alignItems: 'center', }}>   
-    <RadioGroup.Item value={60} id="60" 
-style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, boxShadow: 'inset 0 0 0 1px currentColor', color: colorPair[1], background: 'transparent' }}>
-            <RadioGroup.Indicator style={{ height: '100%', width: '100%', display: 'block', background: colorPair[1] }} />
-        </RadioGroup.Item>
-              60
-            </label>
-<label style={{ gap: '4px', fontWeight: 400, fontSize: '12px', display: 'inline-flex', alignItems: 'center', }}>   
-    <RadioGroup.Item value={75} id="75" 
-style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, boxShadow: 'inset 0 0 0 1px currentColor', color: colorPair[1], background: 'transparent' }}>
-            <RadioGroup.Indicator style={{ height: '100%', width: '100%', display: 'block', background: colorPair[1]}} />
-        </RadioGroup.Item>
-              75
-            </label>
-          </div>
-          </RadioGroup.Root>
-        )}
-      </fieldset>
-<div style={{ display: 'none' }}>
-        <label style={{ fontWeight: 'bold', fontSize: '12px', display: 'block', marginBottom: '2px' }}>Border Radius</label>
-          <div style={{ display: 'flex', gap: '4px'}}>
-            <label style={{ fontSize: '12px', display: 'inline-flex', alignItems: 'center'}}>
-              <input
-                type="radio"
-                value={'0px'}
-                checked={borderRadius === '0px'}
-                onChange={(e) => handleBorderRadiusChange(e.target.value)}
-              />
-              0
-            </label>
-            <label style={{ fontSize: '12px', display: 'inline-flex', alignItems: 'center'}}>
-              <input
-                type="radio"
-                value={'6px'}
-                checked={borderRadius === '6px'}
-                onChange={(e) => handleBorderRadiusChange(e.target.value)}
-              />
-              6px
-            </label>
-            <label style={{ fontSize: '12px', display: 'inline-flex', alignItems: 'center'}}>
-              <input
-                type="radio"
-                value={'16px'}
-                checked={borderRadius === '16px'}
-                onChange={(e) => handleBorderRadiusChange(e.target.value)}
-              />
-              16px
-            </label>
-            <label style={{ fontSize: '12px', display: 'inline-flex', alignItems: 'center'}}>
-              <input
-                type="radio"
-                value={'32px'}
-                checked={borderRadius === '32px'}
-                onChange={(e) => handleBorderRadiusChange(e.target.value)}
-              />
-              32px
-            </label>
-          </div>
-      </div>
-<div>
-        <label style={{ position: 'relative', top: '-2px' }}>
-      <span style={{ display: 'block', fontSize: '12px', fontWeight: 700, marginBottom: '4px', }}>Pinned color</span> 
-
-          <input
-            type="text"
-            value={pinnedColor}
-            onChange={(e) => setPinnedColor(e.target.value)}
-            style={{ appearance: 'none', WebkitAppearance: 'none', borderWidth: '1px', borderStyle: 'solid', borderColor: colorPair[1], color: colorPair[1], backgroundColor: 'transparent', padding: '4px', fontSize: '12px', width: '100%'  }}
-          />
-        </label>
-      </div>
-      </section>
+        </div>
+        </section>
 
 
-      <button style={{
-          marginLeft: 'auto',
-          appearance: 'none', 
-          WebkitAppearance: 'none',
-          borderWidth: '1px',
-          borderStyle: 'solid',
-          borderColor: 'currentColor',
-          background: colorPair[1],
-          color: colorPair[0],
-          padding: '8px 16px',
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: '6px',
-          cursor: 'pointer',
+        <button style={{
+            marginLeft: 'auto',
+            appearance: 'none', 
+            WebkitAppearance: 'none',
+            borderWidth: '1px',
+            borderStyle: 'solid',
+            borderColor: 'currentColor',
+            background: colorPair[1],
+            color: colorPair[0],
+            padding: '8px 16px',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '6px',
+            cursor: 'pointer',
 
-      }} onClick={handleGenerateColorPair}>Generate <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.14645 3.14645C8.34171 2.95118 8.65829 2.95118 8.85355 3.14645L12.8536 7.14645C13.0488 7.34171 13.0488 7.65829 12.8536 7.85355L8.85355 11.8536C8.65829 12.0488 8.34171 12.0488 8.14645 11.8536C7.95118 11.6583 7.95118 11.3417 8.14645 11.1464L11.2929 8H2.5C2.22386 8 2 7.77614 2 7.5C2 7.22386 2.22386 7 2.5 7H11.2929L8.14645 3.85355C7.95118 3.65829 7.95118 3.34171 8.14645 3.14645Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path></svg> </button>
+        }} onClick={handleGenerateColorPair}>Generate <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.14645 3.14645C8.34171 2.95118 8.65829 2.95118 8.85355 3.14645L12.8536 7.14645C13.0488 7.34171 13.0488 7.65829 12.8536 7.85355L8.85355 11.8536C8.65829 12.0488 8.34171 12.0488 8.14645 11.8536C7.95118 11.6583 7.95118 11.3417 8.14645 11.1464L11.2929 8H2.5C2.22386 8 2 7.77614 2 7.5C2 7.22386 2.22386 7 2.5 7H11.2929L8.14645 3.85355C7.95118 3.65829 7.95118 3.34171 8.14645 3.14645Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path></svg> </button>
       </header>
       
-     <div style={{ display: 'flex', flexWrap: 'wrap', minHeight: '32px'}}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', minHeight: '32px'}}>
         {colorHistory.map(entry => (
           <button key={entry.id} title={colorPair[0] + ' / ' + colorPair[1] } style={{ cursor: 'pointer', fontWeight: 'bold', border: 0, appearance: 'none', WebkitAppearance: 'none', backgroundColor: entry.colors[0], color: entry.colors[1], aspectRatio: 1, padding: '0px', width: 'auto', height: '32px',  }} onClick={() => restoreColorPair(entry.colors)}>
             A
@@ -429,35 +450,35 @@ style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, 
       <button title="Pin - Find matches for this color" className='f0 f3-m f5-l' style={{ fontWeight: 400, cursor: 'pointer', appearance: 'none', WebkitAppearance: 'none', fontFamily: 'monospace', padding: '16px 8px', margin: 0, border: 0, boxShadow: 'inset 0 0 0 1px currentColor', background: 'transparent', color: colorPair[1], }} onClick={() => handleSetPinnedColor(colorPair[1])}>{colorPair[1]}</button>
 
           </div>
-      
-        <div style={{ maxWidth: '100%', display: 'grid', gap: '8px', gridTemplateColumns: '1fr' }}>
-      <div style={{display: 'flex', gap: '4px', alignItems: 'center'}}>
-          <StatusDot colorPair={colorPair} borderRadius={borderRadius} />
-          <StatusDotOutline colorPair={colorPair} borderRadius={borderRadius} />
-          <Badge borderRadius={borderRadius} colorPair={colorPair}>Badge</Badge>
-          <BadgeOutline borderRadius={borderRadius} colorPair={colorPair}>Badge Outline</BadgeOutline>
-      <hr style={{ backgroundColor: colorPair[0], borderBottomWidth: '1px', borderBottomStyle: 'solid', borderBottomColor: colorPair[1], borderTopColor: 'transparent', borderLeftColor: 'transparent', borderRightColor: 'transparent',  width: '100%' }}/>
-      </div>
-      <div style={{ display: 'grid', gridTemplateColumns: '3fr 1fr 1fr', gap: '8px'}}>
-          <BarChart colorPair={colorPair} data={barChartData} borderRadius={borderRadius} />
-          <PieChartAlt colorPair={[colorPair[1],colorPair[0]]}  data={pieChartDataAlt} borderRadius={borderRadius} />
-          <article style={{ background: colorPair[1], color: colorPair[0], padding: '32px', borderRadius: borderRadius }}>
-
-    <div style={{ width: '100%' }}><Shape001 /></div>
-    <p style={{ lineHeight: 1.5, fontSize: '14px' }}>Every perception of colour is an illusion, we do not see colours as they really are. In our perception they alter one another.</p>
-          </article>
-      </div>
-
-          <ProgressBar colorPair={colorPair} progress={progressBarData} borderRadius={borderRadius} />
-
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 3fr', gap: '8px' }}>
-         <article style={{ border: '1px solid', padding: '32px', borderRadius: borderRadius }}>
-    <div style={{ width: '100%' }}><Shape001 /></div>
-    <p style={{ lineHeight: 1.5, fontSize: '14px' }}>Every perception of colour is an illusion, we do not see colours as they really are. In our perception they alter one another.</p>
-    </article> 
-    <PieChart colorPair={colorPair} data={pieChartData} borderRadius={borderRadius} />
           
-          <BarChart colorPair={[colorPair[1], colorPair[0]]} data={barChartData} borderRadius={borderRadius} />
+          <div style={{ maxWidth: '100%', display: 'grid', gap: '8px', gridTemplateColumns: '1fr' }}>
+        <div style={{display: 'flex', gap: '4px', alignItems: 'center'}}>
+            <StatusDot colorPair={colorPair} borderRadius={borderRadius} />
+            <StatusDotOutline colorPair={colorPair} borderRadius={borderRadius} />
+            <Badge borderRadius={borderRadius} colorPair={colorPair}>Badge</Badge>
+            <BadgeOutline borderRadius={borderRadius} colorPair={colorPair}>Badge Outline</BadgeOutline>
+        <hr style={{ backgroundColor: colorPair[0], borderBottomWidth: '1px', borderBottomStyle: 'solid', borderBottomColor: colorPair[1], borderTopColor: 'transparent', borderLeftColor: 'transparent', borderRightColor: 'transparent',  width: '100%' }}/>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: '3fr 1fr 1fr', gap: '8px'}}>
+            <BarChart colorPair={colorPair} data={barChartData} borderRadius={borderRadius} />
+            <PieChartAlt colorPair={[colorPair[1],colorPair[0]]}  data={pieChartDataAlt} borderRadius={borderRadius} />
+            <article style={{ background: colorPair[1], color: colorPair[0], padding: '32px', borderRadius: borderRadius }}>
+
+      <div style={{ width: '100%' }}><Shape001 /></div>
+      <p style={{ lineHeight: 1.5, fontSize: '14px' }}>Every perception of colour is an illusion, we do not see colours as they really are. In our perception they alter one another.</p>
+            </article>
+        </div>
+
+            <ProgressBar colorPair={colorPair} progress={progressBarData} borderRadius={borderRadius} />
+
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 3fr', gap: '8px' }}>
+           <article style={{ border: '1px solid', padding: '32px', borderRadius: borderRadius }}>
+      <div style={{ width: '100%' }}><Shape001 /></div>
+      <p style={{ lineHeight: 1.5, fontSize: '14px' }}>Every perception of colour is an illusion, we do not see colours as they really are. In our perception they alter one another.</p>
+      </article> 
+      <PieChart colorPair={colorPair} data={pieChartData} borderRadius={borderRadius} />
+        
+        <BarChart colorPair={[colorPair[1], colorPair[0]]} data={barChartData} borderRadius={borderRadius} />
       </div>
     <section style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
           <TextBox time='15 July 2024' title='A sample example title' subtitle='A subtitle for the card' colorPair={colorPair} />
@@ -465,7 +486,7 @@ style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, 
     </section>
 
       </div>
-<section style={{ display: 'grid', maxWidth: '100%', gap: '8px', gridTemplateColumns: 'repeat(auto-fill, minmax(min(10rem, 100%), 1fr))', marginTop: '8px' }}>
+    <section style={{ display: 'grid', maxWidth: '100%', gap: '8px', gridTemplateColumns: 'repeat(auto-fill, minmax(min(10rem, 100%), 1fr))', marginTop: '8px' }}>
       <BackgroundStripes degree={0} />
       <BackgroundStripes degree={45} />
       <BackgroundStripes degree={90} />
@@ -490,20 +511,20 @@ style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, 
       <OpacityScale color={colorPair[1]} />
     </section>
     
-      <GradientPanel colorPair={colorPair} />
-      <div style={{ boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '64px', padding: '16px', background: 'linear-gradient(135deg, currentColor 0%, transparent 100%)' }}></div>
-      <div>
-        <p>Contrast: {contrast}</p>
-        <p>Iterations: {iterations + 1}</p>
-      </div>
-      <section style={{ display: 'flex', gap: '32px' }}>
-        <ColorFormats color={colorPair[0]} />
-        <ColorFormats color={colorPair[1]} />
-      </section>
+    <GradientPanel colorPair={colorPair} />
+    <div style={{ boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '64px', padding: '16px', background: 'linear-gradient(135deg, currentColor 0%, transparent 100%)' }}></div>
+    <div>
+      <p>Contrast: {contrast}</p>
+      <p>Iterations: {iterations + 1}</p>
     </div>
-    <Footer count={count} /> 
-    </div>
-  );
+    <section style={{ display: 'flex', gap: '32px' }}>
+      <ColorFormats color={colorPair[0]} />
+      <ColorFormats color={colorPair[1]} />
+    </section>
+  </div>
+  <Footer count={count} /> 
+  </div>
+);
 };
 
 export default App;
