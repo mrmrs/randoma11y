@@ -6,7 +6,7 @@ export default function ExampleRadioGroup({ colorPair }) {
   // Extract colors from colorPair
   const foregroundColor = colorPair ? colorPair[0] : 'orange';
   const backgroundColor = colorPair ? colorPair[1] : 'pink';
-  
+
   return (
     <RadioGroup
       aria-labelledby="apples-caption"
@@ -15,12 +15,7 @@ export default function ExampleRadioGroup({ colorPair }) {
     >
       <style>
         {`
-        button { 
-        appearance: none;
-        background: ${backgroundColor};
-  
-        }
-          .RadioGroup {
+        .RadioGroup {
             display: flex;
             flex-direction: row;
             align-items: center;
@@ -58,7 +53,7 @@ export default function ExampleRadioGroup({ colorPair }) {
             border: none;
             overflow: hidden;
           }
-          
+
           .Radio[data-state="unchecked"] {
             border: 1px solid ${backgroundColor};
             background-color: transparent;
@@ -69,13 +64,13 @@ export default function ExampleRadioGroup({ colorPair }) {
             border-radius: 100%;
           }
 
-          .Radio:focus-visible {
-            outline: 2px solid ${backgroundColor};
+          .Radio:focus-visible,
+          .Radio:focus {
+            outline: 1px solid ${backgroundColor};
             outline-offset: 2px;
-            border-radius: 100%;
+            border-radius: 100%!important;
             overflow: hidden;
           }
-         
 
           .Indicator {
             display: flex;
@@ -84,23 +79,23 @@ export default function ExampleRadioGroup({ colorPair }) {
             border-radius: 100%;
             overflow: hidden;
           }
-          
+
           .Indicator[data-state="unchecked"] {
             display: none;
           }
 
           .Indicator::before {
             content: ' ';
-            border-radius: 100%;
+            border-radius: 100%!important;
             width: 0.5rem;
             height: 0.5rem;
             aspect-ratio: 1;
             background-color: ${foregroundColor};
           }
-            
+
         `}
       </style>
-      
+
       <div className='Caption' id="apples-caption">
         Radio Group
       </div>

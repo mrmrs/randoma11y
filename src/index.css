@@ -27,15 +27,15 @@ code {
     monospace;
 }
 
-* { 
+* {
     box-sizing: border-box;
 }
 
-div { 
-    transition: background-color .2s ease, color .1s ease, border-color .1s ease, fill .2s ease; 
+div {
+    transition: background-color .2s ease, color .1s ease, border-color .1s ease, fill .2s ease;
 }
 
-path { 
+path {
     transition: stroke .2s ease, stroke-width .2s ease, height .2s ease, d .2s ease;
 }
 
@@ -53,7 +53,7 @@ path {
 button:active,
 button:focus-visible,
 button:focus-within,
-button:focus { 
+button:focus {
     border-radius: 0!important;
     outline: 1px solid currentColor;
     outline-offset: 1px;
@@ -94,7 +94,7 @@ button:focus {
 }
 
 /* Radix components * /
- 
+
 .SliderRoot {
   position: relative;
   display: flex;
