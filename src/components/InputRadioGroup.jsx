@@ -36,9 +36,13 @@ export default function ExampleRadioGroup({ colorPair }) {
             gap: 0.25rem;
             white-space: nowrap;
             color: ${backgroundColor};
+
           }
 
           .Radio {
+            appearance: none;
+            -webkit-appearance: none;
+            background-color: ${backgroundColor};
             box-sizing: border-box;
             display: flex;
             width: 16px;
