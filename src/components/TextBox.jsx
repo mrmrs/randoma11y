@@ -9,8 +9,8 @@ const TextBox = ({ title, text = 'Color contrast is the difference in brightness
             color: colorPair[1],
             padding: '32px'
         }}>
-            <h2 style={{ marginTop: 0, fontSize: '4rem', marginBottom: '8px', fontWeight: 900, lineHeight: .9 }}>{title}</h2>
-            <h3 style={{ marginTop: 0, fontSize: '2rem', marginBottom: '16px', fontWeight: 600 }}>{subtitle}</h3>
+            <h2 style={{ marginTop: 0, fontSize: 'clamp(2rem, 5vw, 4rem)', marginBottom: '8px', fontWeight: 900, lineHeight: .9 }}>{title}</h2>
+            <h3 style={{ marginTop: 0, fontSize: 'clamp(1rem, 4vw, 2rem)', marginBottom: '16px', fontWeight: 600 }}>{subtitle}</h3>
             <h4 style={{ margin: 0, fontSize: '12px', marginBottom: '16px' }}><time>{time}</time></h4>
             <p style={{ lineHeight: 1.5, margin: 0, maxWidth: '65ch', fontSize: '1rem' }}>{text}</p>
         </article>
