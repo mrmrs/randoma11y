@@ -26,6 +26,7 @@ import ColorFormats from './components/ColorFormats.jsx'
 import OpacityScale from './components/OpacityScale.jsx'
 import GradientPanel from './components/GradientPanel.jsx'
 import curatedPalettes from './data/curatedPalettes.js'
+import CopyCodeSnippet from './components/CopyCodeSnippet.jsx';
 
 const App = () => {
   const [count, setCount] = useState(0);
@@ -454,6 +455,8 @@ style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, 
       <button title="Pin - Find matches for this color" className='f0 f3-m f5-l' style={{ fontWeight: 400, cursor: 'pointer', appearance: 'none', WebkitAppearance: 'none', fontFamily: 'monospace', padding: '16px 8px', margin: 0, border: 0, boxShadow: 'inset 0 0 0 1px currentColor', background: 'transparent', color: colorPair[1], }} onClick={() => handleSetPinnedColor(colorPair[1])}>{colorPair[1]}</button>
 
           </div>
+      
+
 
           <div style={{ maxWidth: '100%', display: 'grid', gap: '8px', gridTemplateColumns: '1fr' }}>
         <div style={{display: 'flex', gap: '8px', alignItems: 'center'}}>
@@ -469,8 +472,9 @@ style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, 
         <Avatar borderRadius={'9999px'} colorPair={colorPair}>AE</Avatar>
         <AvatarOutline borderRadius={'9999px'} colorPair={colorPair}>AE</AvatarOutline>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '3fr 1fr 1fr', gap: '8px'}}>
+        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: '8px'}}>
             <BarChart colorPair={colorPair} data={barChartData} borderRadius={borderRadius} />
+            <CopyCodeSnippet colorPair={colorPair} />
             <PieChartAlt colorPair={[colorPair[1],colorPair[0]]}  data={pieChartDataAlt} borderRadius={borderRadius} />
             <article style={{ background: colorPair[1], color: colorPair[0], padding: '32px', borderRadius: borderRadius }}>
 
@@ -481,11 +485,12 @@ style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, 
 
             <ProgressBar colorPair={colorPair} progress={progressBarData} borderRadius={borderRadius} />
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 3fr', gap: '8px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 2fr', gap: '8px' }}>
            <article style={{ border: '1px solid', padding: '32px', borderRadius: borderRadius }}>
       <div style={{ width: '100%' }}><Shape001 /></div>
       <p style={{ lineHeight: 1.5, fontSize: '14px' }}>Every perception of colour is an illusion, we do not see colours as they really are. In our perception they alter one another.</p>
       </article>
+      <div style={{ background: colorPair[1], color: colorPair[0] }}><CopyCodeSnippet colorPair={colorPair} /></div>
       <PieChart colorPair={colorPair} data={pieChartData} borderRadius={borderRadius} />
 
         <BarChart colorPair={[colorPair[1], colorPair[0]]} data={barChartData} borderRadius={borderRadius} />
@@ -565,6 +570,11 @@ style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, 
 
     <GradientPanel colorPair={colorPair} />
     <div style={{ boxShadow: 'inset 0 0 0 1px currentColor', minHeight: '64px', padding: '16px', background: 'linear-gradient(135deg, currentColor 0%, transparent 100%)' }}></div>
+    <section style={{ marginTop: '16px',display: 'grid', gap: '8px', gridTemplateColumns: 'repeat(auto-fit, minmax(min(480px, 100%), 1fr))' }}>
+          
+         
+          </section>
+   
     <div>
       <p>Contrast: {contrast}</p>
       <p>Iterations: {iterations + 1}</p>
