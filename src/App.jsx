@@ -392,6 +392,21 @@ const generateRandomColor = (format) => {
     setBorderRadius(value);
   };
 
+  // Swap the foreground/background colours without adding to history
+  const swapColorPair = () => {
+    setColorPair(prevPair => {
+      const newPair = [prevPair[1], prevPair[0]];
+
+      // Update all dependent data based on the new foreground (now index 0)
+      setRadialChartData(generateRadialDataFromForegroundColor(newPair[0]));
+      setContrastScoresChartData(generateContrastScoresChartData(newPair));
+      setColorDistanceData(generateColorDistanceData(newPair));
+      // Re-calculate contrast for progress bar & stats
+      setContrast(Color.contrast(newPair[0], newPair[1], contrastAlgorithm));
+
+      return newPair;
+    });
+  };
 
  const handleSetPinnedColor = (color) => {
     setPinnedColor(color);
@@ -406,7 +421,7 @@ const generateRandomColor = (format) => {
     <div style={{ minHeight: '100dvh', backgroundColor: colorPair[0], color: colorPair[1], position: 'relative', transition: 'background-color 0.3s ease-in-out, color 0.3s ease-in-out' }}>
       <header style={{  zIndex: 999, backgroundColor: colorPair[0], color: colorPair[1], position: 'sticky', top: 0, paddingRight: '8px', borderBottomWidth: '1px', borderBottomStyle: 'solid', borderBottomColor: 'currentColor', display: 'flex', alignItems: 'center' , gap: '8px', transition: 'background-color 0.3s ease-in-out, color 0.3s ease-in-out, border-bottom-color 0.3s ease-in-out' }}>
         <div style={{ padding: '20px 16px', display: 'flex', alignItems: 'center', gap: '8px', borderRight: '1px solid', transition: 'border-right-color 0.3s ease-in-out' }}>
-          <Logo colorPair={colorPair} size={20} />
+          <Logo colorPair={colorPair} size={20} onClick={swapColorPair} />
           <b className='dn db-m' style={{ fontSize: '12px', letterSpacing: '-0.05em', fontWeight: 900 }}>RandomA11y</b>
         </div>
         <section style={{ width: '100%', marginRight: '8px', borderRight: '1px solid currentColor', display: 'flex', alignItems: 'flex-start', gap: '32px', padding: '8px', overflow: 'scroll', flexWrap: 'none', whiteSpace: 'nowrap', zIndex: 2000 }}>
