@@ -629,8 +629,8 @@ style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, 
         <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: '8px'}}>
             <BarChart colorPair={colorPair} data={colorDistanceData} borderRadius={borderRadius} />
             <CopyCodeSnippet colorPair={colorPair} />
-            <PieChartAlt colorPair={[colorPair[1],colorPair[0]]} borderRadius={borderRadius} />
-            <article style={{ background: colorPair[1], color: colorPair[0], padding: '16px', borderRadius: borderRadius }}>
+            <PieChart colorPair={[colorPair[0],colorPair[1]]} borderRadius={borderRadius} />
+            <article style={{ boxShadow: 'inset 0 0 0 1px currentColor', background: colorPair[0], color: colorPair[1],  padding: '16px', borderRadius: borderRadius }}>
               <div style={{ width: '100%', height: '384px' }}>
                   <RadialBarChart data={radialChartData} colorPair={colorPair} /> 
               </div>
@@ -646,7 +646,7 @@ style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 2fr', gap: '8px' }}>
            <RadarChart colorPair={colorPair} borderRadius={borderRadius} />
            <div style={{ background: colorPair[1], color: colorPair[0] }}><CopyCodeSnippet colorPair={colorPair} /></div>
-             <PieChart colorPair={colorPair} data={pieChartData} borderRadius={borderRadius} />
+             <PieChartAlt colorPair={[colorPair[1],colorPair[0]]} data={pieChartData} borderRadius={borderRadius} />
              <div>
                <HorizontalBarChart colorPair={[colorPair[1], colorPair[0]]} data={contrastScoresChartData} />
              </div>
