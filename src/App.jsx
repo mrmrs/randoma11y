@@ -30,6 +30,9 @@ import CopyCodeSnippet from './components/CopyCodeSnippet.jsx';
 import PatternDisplay from './components/PatternDisplay.jsx';
 import HorizontalBarChart from './components/HorizontalBarChart.jsx';
 import RadarChart from './components/RadarChart.jsx';
+import BaseMeter from './components/Meter.jsx';
+import BaseSlider from './components/Slider.jsx';
+import BaseTabs from './components/Tabs.jsx';
 
 const App = () => {
   const [count, setCount] = useState(0);
@@ -636,6 +639,9 @@ style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, 
          
             <InputCheckbox label='Checkbox Label' colorPair={colorPair}/>
             <InputRadioGroup colorPair={colorPair}/>
+            <BaseMeter colorPair={colorPair} value={75} />
+            <BaseSlider colorPair={colorPair} />
+            <BaseTabs colorPair={colorPair} />
 
         <hr style={{ backgroundColor: colorPair[0], borderBottomWidth: '1px', borderBottomStyle: 'solid', borderBottomColor: colorPair[1], borderTopColor: 'transparent', borderLeftColor: 'transparent', borderRightColor: 'transparent',  width: '100%' }}/>
         <Avatar borderRadius={'9999px'} colorPair={colorPair}>AE</Avatar>
