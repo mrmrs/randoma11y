@@ -146,12 +146,12 @@ const App = () => {
       Object.entries(refs).forEach(([name, refColor]) => {
         // Calculate and add FG distance
         distanceData.push({
-          label: `FG ΔE vs ${name}`,
+          label: `FG ${name}`,
           value: formatVal(fgColor.deltaE(refColor, { method: '2000' }))
         });
         // Calculate and add BG distance
         distanceData.push({
-          label: `BG ΔE vs ${name}`,
+          label: `BG ${name}`,
           value: formatVal(bgColor.deltaE(refColor, { method: '2000' }))
         });
       });

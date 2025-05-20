@@ -1,7 +1,7 @@
 import React from 'react';
 
 // Accept an additionalStyles prop (object) and merge it with the base styles
-const PatternDisplay = ({ background, className = '', additionalStyles = {} }) => {
+const PatternDisplay = React.memo(({ background, className = '', additionalStyles = {} }) => {
   const style = {
     width: '100%',
     aspectRatio: 'var(--aspectRatio)',
@@ -12,6 +12,6 @@ const PatternDisplay = ({ background, className = '', additionalStyles = {} }) =
   };
 
   return <div className={className} style={style}></div>;
-};
+});
 
 export default PatternDisplay; 
