@@ -31,6 +31,7 @@ import PatternDisplay from './components/PatternDisplay.jsx';
 import HorizontalBarChart from './components/HorizontalBarChart.jsx';
 import RadarChart from './components/RadarChart.jsx';
 import EditableColorInput from './components/EditableColorInput.jsx';
+import SlabStat from './components/SlabStat.jsx';
 
 const App = () => {
   const [count, setCount] = useState(0);
@@ -903,7 +904,11 @@ style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, 
         />
 
           </div>
+          <div style={{ margin: '16px 0', display: 'flex', gap: '16px',  }}>
+      <SlabStat label="Contrast" value={typeof contrast === 'number' ? contrast.toFixed(3) : '—'} />
+      <SlabStat label="Iterations" value={iterations + 1} />
       
+    </div>
 
 
           <div style={{ maxWidth: '100%', display: 'grid', gap: '8px', gridTemplateColumns: '1fr' }}>
@@ -1070,10 +1075,7 @@ style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, 
          
           </section>
    
-    <div>
-      <p>Contrast: {contrast}</p>
-      <p>Iterations: {iterations + 1}</p>
-    </div>
+  
     <section style={{ display: 'flex', gap: '32px' }}>
       <ColorFormats color={colorPair[0]} />
       <ColorFormats color={colorPair[1]} />
