@@ -327,7 +327,7 @@ const generateRandomColor = (format) => {
       return new Color(space, [Math.random() * 100, Math.random() * 256 - 128, Math.random() * 256 - 128]).toString({ format });
     case 'rec2020':
     case 'p3':
-      return new Color(space, [Math.random(), Math.random(), Math.random()]).toString({ format });
+      return new Color(space, [Math.random(), Math.random(), Math.random()]).toString({ format, precision: 3 });
     case 'lch':
       return new Color(space, [Math.random() * 100, Math.random() * 150, Math.random() * 360]).toString({ format });
           case 'oklab':
