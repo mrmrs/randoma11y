@@ -30,6 +30,7 @@ import CopyCodeSnippet from './components/CopyCodeSnippet.jsx';
 import PatternDisplay from './components/PatternDisplay.jsx';
 import HorizontalBarChart from './components/HorizontalBarChart.jsx';
 import RadarChart from './components/RadarChart.jsx';
+import EditableColorInput from './components/EditableColorInput.jsx';
 
 const App = () => {
   const [count, setCount] = useState(0);
@@ -40,12 +41,24 @@ const App = () => {
   const [borderRadius, setBorderRadius] = useState('0px');
   const [colorSpace, setColorSpace] = useState('p3');
   const [inputFormat, setInputFormat] = useState('p3');
-  const [pinnedColor, setPinnedColor] = useState('');
+  const [lockedColorValue, setLockedColorValue] = useState('');
   const [threshold, setThreshold] = useState(60);
   const [contrastAlgorithm, setContrastAlgorithm] = useState('APCA');
   const [colorPair, setColorPair] = useState(['#000000', '#FFFFFF']); // Default for initial render to prevent FOUC
   const [contrast, setContrast] = useState(null);
   const [iterations, setIterations] = useState(0);
+
+  // State for raw text input values
+  const [fgInput, setFgInput] = useState(colorPair[0]);
+  const [bgInput, setBgInput] = useState(colorPair[1]);
+
+  // State for input validity (to show visual feedback)
+  const [isFgValid, setIsFgValid] = useState(true);
+  const [isBgValid, setIsBgValid] = useState(true);
+
+  // State for locked color
+  const [lockedColorIndex, setLockedColorIndex] = useState(null); // 0 for FG, 1 for BG, null for none
+
   const [pieChartData, setPieChartData] = useState([15,Math.floor(Math.random() * 100),55])
   const [monthBarChartData, setMonthBarChartData] = useState([
     { label: 'Jan', value: 8 },
@@ -62,6 +75,10 @@ const App = () => {
     { label: 'Dec', value: Math.floor(Math.random() * 100) },
   ]
   )
+
+  // State for favorites
+  const [favorites, setFavorites] = useState([]); // Array of [bg, fg] pairs
+  const [favoriteIndex, setFavoriteIndex] = useState(-1); // -1 means not cycling
 
   // Function to generate radial chart data from the foreground color string
   const generateRadialDataFromForegroundColor = (colorString) => {
@@ -236,6 +253,22 @@ const App = () => {
         const handleKeyDown = (event) => {
           if (event.key === 'ArrowRight') {
             handleGenerateColorPair();
+          } else if ((event.key.toLowerCase() === 'f' && !event.shiftKey) || event.key === 'ArrowUp') {
+            // Add to favorites if not already present
+            const exists = favorites.some(([bg, fg]) => bg === colorPair[0] && fg === colorPair[1]);
+            if (!exists) {
+              setFavorites(prev => [...prev, [colorPair[0], colorPair[1]]]);
+            }
+          } else if (event.key.toLowerCase() === 'f' && event.shiftKey) {
+            // Cycle through favorites
+            if (favorites.length > 0) {
+              setFavoriteIndex(prev => {
+                const next = prev === -1 ? 0 : (prev + 1) % favorites.length;
+                const fav = favorites[next];
+                if (fav) restoreColorPair(fav);
+                return next;
+              });
+            }
           }
         };
 
@@ -246,8 +279,22 @@ const App = () => {
         return () => {
           window.removeEventListener('keydown', handleKeyDown);
         };
-      }, [pinnedColor, inputFormat, threshold, contrastAlgorithm]); // Dependencies
+      }, [colorPair, favorites]); // Dependencies
 
+    // Update inputs when colorPair changes (e.g. from history or swap)
+    useEffect(() => {
+      if (lockedColorIndex === 0) {
+        // Background is locked, only update foreground input
+        setFgInput(colorPair[1]);
+      } else if (lockedColorIndex === 1) {
+        // Foreground is locked, only update background input
+        setBgInput(colorPair[0]);
+      } else {
+        // Neither is locked, update both
+        setFgInput(colorPair[1]);
+        setBgInput(colorPair[0]);
+      }
+    }, [colorPair, lockedColorIndex]);
 
   const formatMapping = {
     hex: 'srgb',
@@ -291,87 +338,160 @@ const generateRandomColor = (format) => {
   }
 };
 
-  const generateAccessibleColorPair = (pinnedColor, inputFormat, threshold, algorithm) => {
+  const generateAccessibleColorPair = (colorToMatch, colorToGenerateIndex, inputFormat, threshold, algorithm) => {
     const maxIterations = 20000;
     let iterations = 0;
     let color1, color2;
 
-    // Use the pinned color if provided, otherwise generate a random color
-    color1 = pinnedColor ? new Color(pinnedColor) : new Color(generateRandomColor(inputFormat));
-
-    while (iterations < maxIterations) {
-      // Generate the second color randomly
-      color2 = new Color(generateRandomColor(inputFormat));
-
-      // Calculate the contrast between the two colors
-      const contrast = color1.contrast(color2, algorithm);
-
-      // Check if the contrast meets the threshold based on the algorithm
-      if (
-        (algorithm === 'WCAG21' && contrast >= threshold) ||
-        (algorithm === 'APCA' && (contrast >= threshold || contrast <= -threshold))
-      ) {
-        // Return the accessible color pair, contrast, and iterations
+    if (colorToMatch) {
+      // One color is locked, generate the other
+      if (colorToGenerateIndex === 0) {
+        // Generate color1, color2 is locked
+        color2 = new Color(colorToMatch);
+        while (iterations < maxIterations) {
+          color1 = new Color(generateRandomColor(inputFormat));
+          const contrast = color1.contrast(color2, algorithm);
+          if (
+            (algorithm === 'WCAG21' && contrast >= threshold) ||
+            (algorithm === 'APCA' && (contrast >= threshold || contrast <= -threshold))
+          ) {
+            return {
+              colorPair: [color1.toString({ format: inputFormat }), color2.toString({ format: inputFormat })],
+              contrast,
+              iterations,
+            };
+          }
+          iterations++;
+        }
+        // Fallback: use black or white for color1
+        const blackContrast = new Color('black').contrast(color2, algorithm);
+        const whiteContrast = new Color('white').contrast(color2, algorithm);
+        if (blackContrast >= whiteContrast) {
+          return {
+            colorPair: ['black', color2.toString({ format: inputFormat })],
+            contrast: blackContrast,
+            iterations,
+          };
+        } else {
+          return {
+            colorPair: ['white', color2.toString({ format: inputFormat })],
+            contrast: whiteContrast,
+            iterations,
+          };
+        }
+      } else {
+        // Generate color2, color1 is locked
+        color1 = new Color(colorToMatch);
+        while (iterations < maxIterations) {
+          color2 = new Color(generateRandomColor(inputFormat));
+          const contrast = color1.contrast(color2, algorithm);
+          if (
+            (algorithm === 'WCAG21' && contrast >= threshold) ||
+            (algorithm === 'APCA' && (contrast >= threshold || contrast <= -threshold))
+          ) {
+            return {
+              colorPair: [color1.toString({ format: inputFormat }), color2.toString({ format: inputFormat })],
+              contrast,
+              iterations,
+            };
+          }
+          iterations++;
+        }
+        // Fallback: use black or white for color2
+        const blackContrast = color1.contrast(new Color('black'), algorithm);
+        const whiteContrast = color1.contrast(new Color('white'), algorithm);
+        if (blackContrast >= whiteContrast) {
+          return {
+            colorPair: [color1.toString({ format: inputFormat }), 'black'],
+            contrast: blackContrast,
+            iterations,
+          };
+        } else {
+          return {
+            colorPair: [color1.toString({ format: inputFormat }), 'white'],
+            contrast: whiteContrast,
+            iterations,
+          };
+        }
+      }
+    } else {
+      // No color locked, generate both randomly
+      color1 = new Color(generateRandomColor(inputFormat));
+      while (iterations < maxIterations) {
+        color2 = new Color(generateRandomColor(inputFormat));
+        const contrast = color1.contrast(color2, algorithm);
+        if (
+          (algorithm === 'WCAG21' && contrast >= threshold) ||
+          (algorithm === 'APCA' && (contrast >= threshold || contrast <= -threshold))
+        ) {
+          return {
+            colorPair: [color1.toString({ format: inputFormat }), color2.toString({ format: inputFormat })],
+            contrast,
+            iterations,
+          };
+        }
+        iterations++;
+      }
+      // Fallback: use black or white for color2
+      const blackContrast = color1.contrast(new Color('black'), algorithm);
+      const whiteContrast = color1.contrast(new Color('white'), algorithm);
+      if (blackContrast >= whiteContrast) {
         return {
-          colorPair: [color1.toString({ format: inputFormat }), color2.toString({ format: inputFormat })],
-          contrast,
+          colorPair: [color1.toString({ format: inputFormat }), 'black'],
+          contrast: blackContrast,
+          iterations,
+        };
+      } else {
+        return {
+          colorPair: [color1.toString({ format: inputFormat }), 'white'],
+          contrast: whiteContrast,
           iterations,
         };
       }
-
-      iterations++;
-    }
-
-    // If no accessible color pair is found after the maximum iterations,
-    // return the color pair with black or white, whichever has higher contrast
-    const blackContrast = color1.contrast(new Color('black'), algorithm);
-    const whiteContrast = color1.contrast(new Color('white'), algorithm);
-
-    if (blackContrast >= whiteContrast) {
-      return {
-        colorPair: [color1.toString({ format: inputFormat }), 'black'],
-        contrast: blackContrast,
-        iterations,
-      };
-    } else {
-      return {
-        colorPair: [color1.toString({ format: inputFormat }), 'white'],
-        contrast: whiteContrast,
-        iterations,
-      };
     }
   };
 
  const handleGenerateColorPair = () => {
-    const { colorPair: newColorPair, contrast: newContrast, iterations: newIterations } = generateAccessibleColorPair(pinnedColor, inputFormat, threshold, contrastAlgorithm);
+    let colorToMatch = null;
+    let colorToGenerateIndex = 0;
+    if (lockedColorIndex === 0) {
+      colorToMatch = colorPair[0];
+      colorToGenerateIndex = 1;
+    } else if (lockedColorIndex === 1) {
+      colorToMatch = colorPair[1];
+      colorToGenerateIndex = 0;
+    }
+    const { colorPair: newColorPair, contrast: newContrast, iterations: newIterations } = generateAccessibleColorPair(
+      colorToMatch,
+      colorToGenerateIndex,
+      inputFormat,
+      threshold,
+      contrastAlgorithm
+    );
     setColorPair(newColorPair);
-    setRadialChartData(generateRadialDataFromForegroundColor(newColorPair[0]));
+    setRadialChartData(generateRadialDataFromForegroundColor(newColorPair[1]));
     setContrastScoresChartData(generateContrastScoresChartData(newColorPair));
-    // Update color distance data when new color pair is generated
     setColorDistanceData(generateColorDistanceData(newColorPair));
     setContrast(newContrast);
     setIterations(newIterations);
     handleIncrement();
-
-    // Update history state
     setSessionCount(prev => {
       const nextSessionCount = prev + 1;
       setContrastHistoryData(prevData => [
         {
           ...prevData[0],
-          data: [...prevData[0].data.slice(-99), { x: nextSessionCount, y: Math.abs(newContrast) }] // Keep last 100 points
+          data: [...prevData[0].data.slice(-99), { x: nextSessionCount, y: Math.abs(newContrast) }]
         }
       ]);
       setIterationHistoryData(prevData => [
         {
           ...prevData[0],
-          data: [...prevData[0].data.slice(-99), { x: nextSessionCount, y: newIterations + 1 }] // Keep last 100 points
+          data: [...prevData[0].data.slice(-99), { x: nextSessionCount, y: newIterations + 1 }]
         }
       ]);
       return nextSessionCount;
     });
-
-    setColorHistory(prev => [...prev.slice(-511), { id: uuidv4(), colors: newColorPair }]); // Keep only the last 512 entries
+    setColorHistory(prev => [...prev.slice(-511), { id: uuidv4(), colors: newColorPair }]);
   };
 
   // Function to restore color from history
@@ -394,22 +514,95 @@ const generateRandomColor = (format) => {
 
   // Swap the foreground/background colours without adding to history
   const swapColorPair = () => {
+    const oldFgInput = fgInput;
+    const oldBgInput = bgInput;
+
     setColorPair(prevPair => {
       const newPair = [prevPair[1], prevPair[0]];
+      setFgInput(oldBgInput); // Swap input values as well
+      setBgInput(oldFgInput);
+      
+      // If a color was locked, update the lock index
+      if (lockedColorIndex === 0) setLockedColorIndex(1);
+      else if (lockedColorIndex === 1) setLockedColorIndex(0);
 
       // Update all dependent data based on the new foreground (now index 0)
       setRadialChartData(generateRadialDataFromForegroundColor(newPair[0]));
       setContrastScoresChartData(generateContrastScoresChartData(newPair));
       setColorDistanceData(generateColorDistanceData(newPair));
-      // Re-calculate contrast for progress bar & stats
       setContrast(Color.contrast(newPair[0], newPair[1], contrastAlgorithm));
-
       return newPair;
     });
   };
 
+  // Placeholder for onBlur and debounced onChange logic - to be detailed next
+  const handleFgInputChange = (e) => {
+    setFgInput(e.target.value);
+    // Basic validation example (can be expanded)
+    try {
+        new Color(e.target.value); 
+        setIsFgValid(true);
+    } catch {
+        setIsFgValid(false);
+    }
+  };
+  const handleBgInputChange = (e) => {
+    setBgInput(e.target.value);
+    try {
+        new Color(e.target.value); 
+        setIsBgValid(true);
+    } catch {
+        setIsBgValid(false);
+    }
+  };
+
+  const handleFgInputBlur = () => {
+    try {
+      const parsedColor = new Color(fgInput).toString({ format: inputFormat });
+      setColorPair(prev => [prev[0], parsedColor]);
+      setFgInput(parsedColor);
+      setIsFgValid(true);
+    } catch {
+      // Revert to last valid
+      setFgInput(colorPair[1]);
+      setIsFgValid(false);
+    }
+  };
+
+  const handleBgInputBlur = () => {
+    try {
+      const parsedColor = new Color(bgInput).toString({ format: inputFormat });
+      setColorPair(prev => [parsedColor, prev[1]]);
+      setBgInput(parsedColor);
+      setIsBgValid(true);
+    } catch {
+      setBgInput(colorPair[0]);
+      setIsBgValid(false);
+    }
+  };
+
+  const toggleBgLock = () => {
+    if (lockedColorIndex === 0) {
+      setLockedColorIndex(null);
+      setLockedColorValue('');
+    } else {
+      setLockedColorIndex(0);
+      setLockedColorValue(colorPair[0]);
+    }
+  };
+
+  const toggleFgLock = () => {
+    if (lockedColorIndex === 1) {
+      setLockedColorIndex(null);
+      setLockedColorValue('');
+    } else {
+      setLockedColorIndex(1);
+      setLockedColorValue(colorPair[1]);
+    }
+  };
+
  const handleSetPinnedColor = (color) => {
-    setPinnedColor(color);
+    setLockedColorValue(color);
   };
 
   // Calculate progress for the progress bar
@@ -417,8 +610,34 @@ const generateRandomColor = (format) => {
   const currentAbsoluteContrast = Math.abs(contrast || 0);
   const progressPercent = Math.min(100, (currentAbsoluteContrast / maxContrast) * 100);
 
+  // Defensive usage of colorPair in styles and Color constructors
+  // Example for main container:
+  let safeBg = colorPair[0];
+  let safeFg = colorPair[1];
+  try {
+    new Color(safeBg);
+  } catch {
+    safeBg = '#000';
+  }
+  try {
+    new Color(safeFg);
+  } catch {
+    safeFg = '#fff';
+  }
+
+  // Optionally, show a star if current colorPair is a favorite
+  const isCurrentFavorite = favorites.some(([bg, fg]) => bg === colorPair[0] && fg === colorPair[1]);
+
+  const handleToggleFavorite = () => {
+    if (isCurrentFavorite) {
+      setFavorites(favorites.filter(([bg, fg]) => !(bg === colorPair[0] && fg === colorPair[1])));
+    } else {
+      setFavorites([...favorites, [colorPair[0], colorPair[1]]]);
+    }
+  };
+
   return (
-    <div style={{ minHeight: '100dvh', backgroundColor: colorPair[0], color: colorPair[1], position: 'relative', transition: 'background-color 0.3s ease-in-out, color 0.3s ease-in-out' }}>
+    <div style={{ minHeight: '100dvh', backgroundColor: safeBg, color: safeFg, position: 'relative', transition: 'background-color 0.3s ease-in-out, color 0.3s ease-in-out' }}>
       <header style={{  zIndex: 999, backgroundColor: colorPair[0], color: colorPair[1], position: 'sticky', top: 0, paddingRight: '8px', borderBottomWidth: '1px', borderBottomStyle: 'solid', borderBottomColor: 'currentColor', display: 'flex', alignItems: 'center' , gap: '8px', transition: 'background-color 0.3s ease-in-out, color 0.3s ease-in-out, border-bottom-color 0.3s ease-in-out' }}>
         <div style={{ padding: '20px 16px', display: 'flex', alignItems: 'center', gap: '8px', borderRight: '1px solid', transition: 'border-right-color 0.3s ease-in-out' }}>
           <Logo colorPair={colorPair} size={20} onClick={swapColorPair} />
@@ -575,53 +794,113 @@ style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, 
               </label>
             </div>
         </div>
-        <div>
-          <label style={{ position: 'relative', top: '-2px' }}>
-        <span style={{ display: 'block', fontSize: '12px', fontWeight: 700, marginBottom: '4px', }}>Pinned color</span>
-
-            <input
-              type="text"
-              value={pinnedColor}
-              onChange={(e) => setPinnedColor(e.target.value)}
-              style={{ appearance: 'none', WebkitAppearance: 'none', borderWidth: '1px', borderStyle: 'solid', borderColor: colorPair[1], color: colorPair[1], backgroundColor: 'transparent', padding: '4px', fontSize: '12px', width: '100%'  }}
-            />
-          </label>
-        </div>
+       
         </section>
 
-
-        <button style={{
-            marginLeft: 'auto',
-            appearance: 'none',
-            WebkitAppearance: 'none',
-            borderWidth: '1px',
-            borderStyle: 'solid',
-            borderColor: 'currentColor',
-            background: colorPair[1],
-            color: colorPair[0],
-            padding: '8px 16px',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '6px',
+        <button
+          onClick={handleToggleFavorite}
+          title={isCurrentFavorite ? 'Remove from favorites' : 'Add to favorites'}
+          style={{
+            background: 'none',
+            border: 'none',
+            padding: '0 8px',
+            fontSize: '22px',
+            color: isCurrentFavorite ? 'currentColor' : 'currentColor',
             cursor: 'pointer',
-
-        }} onClick={handleGenerateColorPair}>Generate <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.14645 3.14645C8.34171 2.95118 8.65829 2.95118 8.85355 3.14645L12.8536 7.14645C13.0488 7.34171 13.0488 7.65829 12.8536 7.85355L8.85355 11.8536C8.65829 12.0488 8.34171 12.0488 8.14645 11.8536C7.95118 11.6583 7.95118 11.3417 8.14645 11.1464L11.2929 8H2.5C2.22386 8 2 7.77614 2 7.5C2 7.22386 2.22386 7 2.5 7H11.2929L8.14645 3.85355C7.95118 3.65829 7.95118 3.34171 8.14645 3.14645Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path></svg> </button>
+            display: 'flex',
+            alignItems: 'center',
+            marginLeft: '16px',
+            marginRight: '0',
+            lineHeight: 1,
+            verticalAlign: 'middle',
+            transition: 'color 0.2s',
+          }}
+          aria-pressed={isCurrentFavorite}
+        >
+          {isCurrentFavorite ? '★' : '☆'}
+        </button>
+        <button style={{
+          marginLeft: 0,
+          appearance: 'none',
+          WebkitAppearance: 'none',
+          borderWidth: '1px',
+          borderStyle: 'solid',
+          borderColor: 'currentColor',
+          background: colorPair[1],
+          color: colorPair[0],
+          padding: '8px 16px',
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '6px',
+          cursor: 'pointer',
+        }} onClick={handleGenerateColorPair}>
+          Generate
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.14645 3.14645C8.34171 2.95118 8.65829 2.95118 8.85355 3.14645L12.8536 7.14645C13.0488 7.34171 13.0488 7.65829 12.8536 7.85355L8.85355 11.8536C8.65829 12.0488 8.34171 12.0488 8.14645 11.8536C7.95118 11.6583 7.95118 11.3417 8.14645 11.1464L11.2929 8H2.5C2.22386 8 2 7.77614 2 7.5C2 7.22386 2.22386 7 2.5 7H11.2929L8.14645 3.85355C7.95118 3.65829 7.95118 3.34171 8.14645 3.14645Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path></svg>
+        </button>
       </header>
 
-      <div style={{ display: 'flex', flexWrap: 'wrap', minHeight: '32px'}}>
-        {colorHistory.map(entry => (
-          <button key={entry.id} title={colorPair[0] + ' / ' + colorPair[1] } style={{ cursor: 'pointer', fontWeight: 'bold', border: 0, appearance: 'none', WebkitAppearance: 'none', backgroundColor: entry.colors[0], color: entry.colors[1], aspectRatio: 1, padding: '0px', width: 'auto', height: '32px', fontSize: '10px'  }} onClick={() => restoreColorPair(entry.colors)}>
-            A
-          </button>
-        ))}
+      <div style={{ display: 'flex', flexWrap: 'nowrap', minHeight: '48px', paddingLeft: '8px',paddingTop: '8px', paddingRight: '8px',overflow: 'auto', gap: '8px'}}>
+        {colorHistory.map(entry => {
+          const isSelected = entry.colors[0] === colorPair[0] && entry.colors[1] === colorPair[1];
+          return (
+            <button
+              key={entry.id}
+              title={colorPair[0] + ' / ' + colorPair[1]}
+              style={{
+                
+                borderRadius: isSelected ? '0px' : '9999px',
+                cursor: 'pointer',
+                fontWeight: 'bold',
+                border: 0,
+                appearance: 'none',
+                WebkitAppearance: 'none',
+                borderWidth: '0px',
+                borderStyle: 'solid',
+                backgroundColor: entry.colors[0],
+                color: entry.colors[1],
+                aspectRatio: 1,
+                padding: '0px',
+                width: 'auto',
+                height: '24px',
+                fontSize: '8px',
+                boxShadow: isSelected ? `inset 0 0 0 16px ${entry.colors[1]}` : 'none',
+                outline: 'none',
+                transition: 'all .2s ease',
+              }}
+              onClick={() => restoreColorPair(entry.colors)}
+            >
+              A
+            </button>
+          );
+        })}
       </div>
-      <div style={{ maxWidth: '100%', padding: '16px', overflow: 'hidden' }}>
+      <div style={{ maxWidth: '100%', paddingLeft: '16px', paddingRight: '16px', overflow: 'hidden' }}>
           <div style={{ marginBottom: '8px', maxWidth: '100%', display: 'grid', gap: '8px', gridTemplateColumns: '1fr 1fr' }}>
 
-        <button title="Pin - Find matches for this color" className='f0 f3-m f5-l' style={{ fontWeight: 400, cursor: 'pointer', appearance: 'none', WebkitAppearance: 'none', fontFamily: 'monospace', padding: '16px 8px', margin: 0, border: 0, background: colorPair[1], color: colorPair[0], }} onClick={() => handleSetPinnedColor(colorPair[0])}>{colorPair[0]}</button>
-
-
-      <button title="Pin - Find matches for this color" className='f0 f3-m f5-l' style={{ fontWeight: 400, cursor: 'pointer', appearance: 'none', WebkitAppearance: 'none', fontFamily: 'monospace', padding: '16px 8px', margin: 0, border: 0, boxShadow: 'inset 0 0 0 1px currentColor', background: 'transparent', color: colorPair[1], }} onClick={() => handleSetPinnedColor(colorPair[1])}>{colorPair[1]}</button>
+        <EditableColorInput 
+            label="Background"
+            id="bgColorInput"
+            value={bgInput}
+            actualColor={colorPair[0]}
+            onChange={handleBgInputChange}
+            onBlur={handleBgInputBlur}
+            onLockToggle={toggleBgLock}
+            isLocked={lockedColorIndex === 0}
+            isValidInput={isBgValid}
+            colorPairForStyling={colorPair}
+        />
+        <EditableColorInput 
+            label="Color"
+            id="fgColorInput"
+            value={fgInput}
+            actualColor={colorPair[1]}
+            onChange={handleFgInputChange}
+            onBlur={handleFgInputBlur}
+            onLockToggle={toggleFgLock}
+            isLocked={lockedColorIndex === 1}
+            isValidInput={isFgValid}
+            colorPairForStyling={colorPair}
+        />
 
           </div>
       
