@@ -44,12 +44,6 @@ export const useColorFeed = () => {
               
             case 'newColor':
               setRecentColors(prev => {
-                // Check if this color already exists (to prevent duplicates)
-                const exists = prev.some(c => 
-                  c.id === data.color.id || 
-                  (c.colors[0] === data.color.colors[0] && c.colors[1] === data.color.colors[1])
-                );
-                if (exists) return prev;
                 // Always add new color at the beginning and keep only MAX_ITEMS
                 return [data.color, ...prev.slice(0, MAX_ITEMS - 1)];
               });
