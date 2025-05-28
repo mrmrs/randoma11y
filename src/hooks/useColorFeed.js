@@ -9,6 +9,9 @@ export const useColorFeed = () => {
   const wsRef = useRef(null);
   const reconnectTimeoutRef = useRef(null);
   const reconnectAttemptsRef = useRef(0);
+  
+  // Maximum items to keep in memory (matching server limit)
+  const MAX_ITEMS = 1000;
 
   const connect = useCallback(() => {
     // Check if WebSocket is enabled
@@ -47,7 +50,8 @@ export const useColorFeed = () => {
                   (c.colors[0] === data.color.colors[0] && c.colors[1] === data.color.colors[1])
                 );
                 if (exists) return prev;
-                return [data.color, ...prev.slice(0, 99)];
+                // Add new color and limit array size
+                return [data.color, ...prev].slice(0, MAX_ITEMS);
               });
               break;
               
@@ -59,7 +63,8 @@ export const useColorFeed = () => {
                   (f.colors[0] === data.favorite.colors[0] && f.colors[1] === data.favorite.colors[1])
                 );
                 if (exists) return prev;
-                return [data.favorite, ...prev.slice(0, 99)];
+                // Add new favorite and limit array size
+                return [data.favorite, ...prev].slice(0, MAX_ITEMS);
               });
               break;
               

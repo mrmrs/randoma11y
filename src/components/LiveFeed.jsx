@@ -1,6 +1,7 @@
 import React from 'react';
 import { useColorFeed } from '../hooks/useColorFeed';
 import Color from 'colorjs.io';
+import Logo from './Logo.jsx'
 
 const ColorPairCard = ({ colorData, type }) => {
   const [bg, fg] = colorData.colors;
@@ -22,7 +23,6 @@ const ColorPairCard = ({ colorData, type }) => {
         backgroundColor: bg,
         color: fg,
         padding: '1.5rem',
-        borderRadius: '0.5rem',
         marginBottom: '1rem',
         position: 'relative',
         transition: 'all 0.3s ease',
@@ -36,31 +36,24 @@ const ColorPairCard = ({ colorData, type }) => {
         marginBottom: '0.5rem'
       }}>
         <div>
-          <div style={{ fontSize: '0.875rem', opacity: 0.8 }}>
-            {type === 'generated' ? '✨ Generated' : '❤️ Favorited'}
-          </div>
           <div style={{ fontSize: '1.25rem', fontWeight: '600' }}>
             {colorData.algorithm}: {Math.abs(colorData.contrast).toFixed(2)}
           </div>
         </div>
-        <div style={{ fontSize: '0.75rem', opacity: 0.7 }}>
+        <time style={{ fontSize: '0.75rem', fontFamily: 'monospace', opacity: 0.7 }}>
           {timeAgo}
-        </div>
+        </time>
       </div>
       
       <div style={{ 
-        display: 'flex', 
-        gap: '1rem',
         fontSize: '0.875rem',
         fontFamily: 'monospace'
       }}>
         <div>
-          <div style={{ opacity: 0.7 }}>Background</div>
-          <div>{bg}</div>
-        </div>
-        <div>
-          <div style={{ opacity: 0.7 }}>Foreground</div>
-          <div>{fg}</div>
+          <code>
+            background: {bg}<br />
+            color: {fg}
+          </code>
         </div>
       </div>
     </div>
@@ -80,7 +73,6 @@ const LiveFeed = () => {
       minHeight: '100vh',
       backgroundColor: '#111',
       color: '#fff',
-      padding: '2rem'
     }}>
       <style>{`
         @keyframes slideIn {
@@ -108,38 +100,43 @@ const LiveFeed = () => {
           box-shadow: 0 4px 20px rgba(0,0,0,0.3);
         }
         
-        .feed-section {
-          max-width: 600px;
-          margin: 0 auto;
-        }
         
         .connection-indicator {
-          width: 10px;
-          height: 10px;
-          border-radius: 50%;
+          width: 6px;
+          height: 6px;
+          border-radius: 100%;
           display: inline-block;
           margin-right: 0.5rem;
+          font-size: 12px;
         }
       `}</style>
 
-      <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
+
+      <div>
         <header style={{ 
           display: 'flex', 
           justifyContent: 'space-between',
           alignItems: 'center',
-          marginBottom: '3rem'
         }}>
           <div>
-            <h1 style={{ 
-              fontSize: '2.5rem', 
-              fontWeight: '700',
-              marginBottom: '0.5rem' 
-            }}>
-              Randoma11y Live Feed
-            </h1>
-            <p style={{ opacity: 0.7 }}>
-              Real-time feed of accessible color combinations being generated worldwide
-            </p>
+<a 
+              href="/"
+              style={{ 
+                padding: '1.25rem 1rem',
+                backgroundColor: 'transparent',
+                color: '#fff',
+                textDecoration: 'none',
+                borderRadius: '0.25rem',
+                fontWeight: '500',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '.5rem',
+                
+              }}
+            >
+    <Logo colorPair={['black', 'white', ]} size={20} />
+  <b className='dn db-m' style={{ fontSize: '12px', letterSpacing: '-0.05em', fontWeight: 900 }}>RandomA11y</b>
+            </a>
           </div>
           
           <div style={{ 
@@ -148,11 +145,12 @@ const LiveFeed = () => {
             gap: '1rem'
           }}>
             <div style={{ 
+              marginRight: '1rem',
               display: 'flex', 
               alignItems: 'center',
-              padding: '0.5rem 1rem',
+              padding: '0.25rem .5rem',
               backgroundColor: 'rgba(255,255,255,0.1)',
-              borderRadius: '2rem'
+              borderRadius: '6px'
             }}>
               <span 
                 className="connection-indicator"
@@ -161,24 +159,12 @@ const LiveFeed = () => {
                   animation: isConnected ? 'pulse 2s infinite' : 'none'
                 }}
               />
-              <span style={{ fontSize: '0.875rem' }}>
+              <span style={{ fontSize: '10px', fontFamily: 'monospace' }}>
                 {isConnected ? 'Connected' : error || 'Disconnected'}
               </span>
             </div>
             
-            <a 
-              href="/"
-              style={{ 
-                padding: '0.5rem 1.5rem',
-                backgroundColor: '#fff',
-                color: '#000',
-                textDecoration: 'none',
-                borderRadius: '0.25rem',
-                fontWeight: '500'
-              }}
-            >
-              Back to Generator
-            </a>
+            
           </div>
         </header>
 
@@ -192,35 +178,28 @@ const LiveFeed = () => {
             textAlign: 'center'
           }}>
             <h3 style={{ marginBottom: '1rem' }}>🚀 WebSocket Not Configured</h3>
-            <p style={{ marginBottom: '1rem', opacity: 0.8 }}>
-              To enable the live feed, you need to deploy the Cloudflare Worker first.
-            </p>
-            <ol style={{ textAlign: 'left', maxWidth: '600px', margin: '0 auto', opacity: 0.8 }}>
-              <li>Deploy the worker: <code>cd cloudflare-workers && wrangler deploy</code></li>
-              <li>Update <code>src/config/websocket.js</code> with your worker URL</li>
-              <li>Restart the development server</li>
-            </ol>
           </div>
         )}
 
         <div style={{ 
           display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(500px, 1fr))',
-          gap: '3rem'
+          gridTemplateColumns: '3fr 1fr',
+            padding: '0 1rem',
+            gap: '1rem',
         }}>
           <div className="feed-section">
             <h2 style={{ 
-              fontSize: '1.5rem', 
+              fontSize: '1rem', 
               fontWeight: '600',
               marginBottom: '1.5rem',
               display: 'flex',
               alignItems: 'center',
-              gap: '0.5rem'
             }}>
-              <span>✨</span> Recently Generated
+              <span>✨</span> Generated
               <span style={{ 
-                fontSize: '0.875rem', 
-                opacity: 0.5,
+                marginLeft: '.5rem',
+                fontSize: '0.75rem', 
+                opacity: 0.75,
                 fontWeight: 'normal'
               }}>
                 ({recentColors.length})
@@ -250,14 +229,14 @@ const LiveFeed = () => {
 
           <div className="feed-section">
             <h2 style={{ 
-              fontSize: '1.5rem', 
+              fontSize: '1rem', 
               fontWeight: '600',
               marginBottom: '1.5rem',
               display: 'flex',
               alignItems: 'center',
               gap: '0.5rem'
             }}>
-              <span>❤️</span> Recently Favorited
+              <span>❤️</span> Favorites
               <span style={{ 
                 fontSize: '0.875rem', 
                 opacity: 0.5,
