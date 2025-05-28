@@ -18,24 +18,20 @@ export const ColorFeedProvider = ({ children }) => {
   const connect = useCallback(() => {
     // Check if WebSocket is enabled
     if (!isWebSocketEnabled()) {
-      console.log('WebSocket is disabled. Update WEBSOCKET_URL in src/config/websocket.js to enable.');
       setError('WebSocket disabled');
       return;
     }
 
     // Don't create a new connection if one already exists
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-      console.log('WebSocket already connected');
       return;
     }
 
     try {
-      console.log('Creating new WebSocket connection...');
       const ws = new WebSocket(getWebSocketUrl());
       wsRef.current = ws;
 
       ws.onopen = () => {
-        console.log('Connected to color feed');
         setIsConnected(true);
         setError(null);
         reconnectAttemptsRef.current = 0;
@@ -44,7 +40,6 @@ export const ColorFeedProvider = ({ children }) => {
       ws.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
-          console.log('Received WebSocket message:', data);
           
           switch (data.type) {
             case 'initial':
@@ -53,11 +48,9 @@ export const ColorFeedProvider = ({ children }) => {
               break;
               
             case 'newColor':
-              console.log('Processing new color:', data.color);
               setRecentColors(prev => {
                 // Always add new color at the beginning and keep only MAX_ITEMS
                 const newColors = [data.color, ...prev.slice(0, MAX_ITEMS - 1)];
-                console.log('Updated colors array length:', newColors.length);
                 return newColors;
               });
               break;
@@ -89,7 +82,6 @@ export const ColorFeedProvider = ({ children }) => {
       };
 
       ws.onclose = () => {
-        console.log('Disconnected from color feed');
         setIsConnected(false);
         wsRef.current = null;
 
@@ -97,7 +89,6 @@ export const ColorFeedProvider = ({ children }) => {
         const attempts = reconnectAttemptsRef.current;
         if (attempts < 5) {
           const delay = Math.min(1000 * Math.pow(2, attempts), 30000);
-          console.log(`Reconnecting in ${delay}ms...`);
           
           reconnectTimeoutRef.current = setTimeout(() => {
             reconnectAttemptsRef.current += 1;
@@ -129,15 +120,11 @@ export const ColorFeedProvider = ({ children }) => {
   }, []);
 
   const sendColorGenerated = useCallback((colorData) => {
-    console.log('Attempting to send color generated:', colorData);
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-      console.log('WebSocket is open, sending...');
       wsRef.current.send(JSON.stringify({
         type: 'colorGenerated',
         ...colorData
       }));
-    } else {
-      console.log('WebSocket not ready:', wsRef.current?.readyState);
     }
   }, []);
 

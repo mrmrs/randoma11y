@@ -68,11 +68,6 @@ const LiveFeed = () => {
     error 
   } = useColorFeedContext();
 
-  // Debug: Log when recentColors changes
-  React.useEffect(() => {
-    console.log('LiveFeed - recentColors updated:', recentColors.length, 'items');
-  }, [recentColors]);
-
   return (
     <div style={{ 
       minHeight: '100vh',
