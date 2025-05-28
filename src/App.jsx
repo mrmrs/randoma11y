@@ -32,15 +32,12 @@ import HorizontalBarChart from './components/HorizontalBarChart.jsx';
 import RadarChart from './components/RadarChart.jsx';
 import EditableColorInput from './components/EditableColorInput.jsx';
 import SlabStat from './components/SlabStat.jsx';
-import { useColorFeed } from './hooks/useColorFeed.js';
+import { useColorFeedContext } from './contexts/ColorFeedContext';
 
 const App = () => {
-  // Get WebSocket functions early
-  const { sendColorGenerated, sendColorFavorited } = useColorFeed();
-  
-  // Generate a unique user ID for this session
   const [userId] = useState(() => `user-${uuidv4()}`);
-
+  const { sendColorGenerated, sendColorFavorited } = useColorFeedContext();
+  
   const [count, setCount] = useState(0);
   const [sessionCount, setSessionCount] = useState(0);
   const [colorHistory, setColorHistory] = useState([]);

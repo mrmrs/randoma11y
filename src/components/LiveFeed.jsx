@@ -1,5 +1,5 @@
 import React from 'react';
-import { useColorFeed } from '../hooks/useColorFeed';
+import { useColorFeedContext } from '../contexts/ColorFeedContext';
 import Color from 'colorjs.io';
 import Logo from './Logo.jsx'
 
@@ -66,7 +66,7 @@ const LiveFeed = () => {
     recentFavorites, 
     isConnected, 
     error 
-  } = useColorFeed();
+  } = useColorFeedContext();
 
   return (
     <div style={{ 

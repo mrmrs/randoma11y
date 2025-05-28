@@ -1,27 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import App from './App.jsx';
-import LiveFeed from './components/LiveFeed.jsx';
+import React, { useState } from 'react';
+import App from './App';
+import LiveFeed from './components/LiveFeed';
+import { ColorFeedProvider } from './contexts/ColorFeedContext';
 
-const AppRouter = () => {
+function AppRouter() {
   const [currentPath, setCurrentPath] = useState(window.location.pathname);
 
-  useEffect(() => {
-    // Handle browser back/forward buttons
-    const handlePopState = () => {
+  React.useEffect(() => {
+    const handleLocationChange = () => {
       setCurrentPath(window.location.pathname);
     };
 
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
+    window.addEventListener('popstate', handleLocationChange);
+    return () => window.removeEventListener('popstate', handleLocationChange);
   }, []);
 
-  // Simple routing logic
-  if (currentPath === '/live') {
-    return <LiveFeed />;
-  }
-
-  // Default to main app
-  return <App />;
-};
+  return (
+    <ColorFeedProvider>
+      {currentPath === '/live' ? <LiveFeed /> : <App />}
+    </ColorFeedProvider>
+  );
+}
 
 export default AppRouter; 

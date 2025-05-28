@@ -35,6 +35,7 @@ export const useColorFeed = () => {
       ws.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
+          console.log('Received WebSocket message:', data);
           
           switch (data.type) {
             case 'initial':
@@ -43,9 +44,12 @@ export const useColorFeed = () => {
               break;
               
             case 'newColor':
+              console.log('Processing new color:', data.color);
               setRecentColors(prev => {
                 // Always add new color at the beginning and keep only MAX_ITEMS
-                return [data.color, ...prev.slice(0, MAX_ITEMS - 1)];
+                const newColors = [data.color, ...prev.slice(0, MAX_ITEMS - 1)];
+                console.log('Updated colors array length:', newColors.length);
+                return newColors;
               });
               break;
               
@@ -116,11 +120,15 @@ export const useColorFeed = () => {
   }, []);
 
   const sendColorGenerated = useCallback((colorData) => {
+    console.log('Attempting to send color generated:', colorData);
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+      console.log('WebSocket is open, sending...');
       wsRef.current.send(JSON.stringify({
         type: 'colorGenerated',
         ...colorData
       }));
+    } else {
+      console.log('WebSocket not ready:', wsRef.current?.readyState);
     }
   }, []);
 
@@ -139,7 +147,7 @@ export const useColorFeed = () => {
     return () => {
       disconnect();
     };
-  }, [connect, disconnect]);
+  }, []);
 
   return {
     recentColors,
