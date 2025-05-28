@@ -32,8 +32,15 @@ import HorizontalBarChart from './components/HorizontalBarChart.jsx';
 import RadarChart from './components/RadarChart.jsx';
 import EditableColorInput from './components/EditableColorInput.jsx';
 import SlabStat from './components/SlabStat.jsx';
+import { useColorFeed } from './hooks/useColorFeed.js';
 
 const App = () => {
+  // Get WebSocket functions early
+  const { sendColorGenerated, sendColorFavorited } = useColorFeed();
+  
+  // Generate a unique user ID for this session
+  const [userId] = useState(() => `user-${uuidv4()}`);
+
   const [count, setCount] = useState(0);
   const [sessionCount, setSessionCount] = useState(0);
   const [colorHistory, setColorHistory] = useState([]);
@@ -48,6 +55,7 @@ const App = () => {
   const [colorPair, setColorPair] = useState(['#000000', '#FFFFFF']); // Default for initial render to prevent FOUC
   const [contrast, setContrast] = useState(null);
   const [iterations, setIterations] = useState(0);
+  const [isBroadcasting, setIsBroadcasting] = useState(false);
 
   // State for raw text input values
   const [fgInput, setFgInput] = useState(colorPair[0]);
@@ -259,6 +267,15 @@ const App = () => {
             const exists = favorites.some(([bg, fg]) => bg === colorPair[0] && fg === colorPair[1]);
             if (!exists) {
               setFavorites(prev => [...prev, [colorPair[0], colorPair[1]]]);
+              
+              // Send to WebSocket feed when favoriting via keyboard
+              sendColorFavorited({
+                id: uuidv4(),
+                colors: colorPair,
+                contrast: contrast,
+                algorithm: contrastAlgorithm,
+                userId: userId
+              });
             }
           } else if (event.key.toLowerCase() === 'f' && event.shiftKey) {
             // Cycle through favorites
@@ -280,7 +297,7 @@ const App = () => {
         return () => {
           window.removeEventListener('keydown', handleKeyDown);
         };
-      }, [colorPair, favorites]); // Dependencies
+      }, [colorPair, favorites, contrast, contrastAlgorithm, userId, sendColorFavorited]); // Dependencies
 
     // Update inputs when colorPair changes (e.g. from history or swap)
     useEffect(() => {
@@ -476,6 +493,18 @@ const generateRandomColor = (format) => {
     setContrast(newContrast);
     setIterations(newIterations);
     handleIncrement();
+    
+    // Send to WebSocket feed
+    setIsBroadcasting(true);
+    sendColorGenerated({
+      id: uuidv4(),
+      colors: newColorPair,
+      contrast: newContrast,
+      algorithm: contrastAlgorithm,
+      userId: userId
+    });
+    setTimeout(() => setIsBroadcasting(false), 1000);
+    
     setSessionCount(prev => {
       const nextSessionCount = prev + 1;
       setContrastHistoryData(prevData => [
@@ -634,11 +663,32 @@ const generateRandomColor = (format) => {
       setFavorites(favorites.filter(([bg, fg]) => !(bg === colorPair[0] && fg === colorPair[1])));
     } else {
       setFavorites([...favorites, [colorPair[0], colorPair[1]]]);
+      
+      // Send to WebSocket feed when favoriting
+      sendColorFavorited({
+        id: uuidv4(),
+        colors: colorPair,
+        contrast: contrast,
+        algorithm: contrastAlgorithm,
+        userId: userId
+      });
     }
   };
 
   return (
     <div style={{ minHeight: '100dvh', backgroundColor: safeBg, color: safeFg, position: 'relative', transition: 'background-color 0.3s ease-in-out, color 0.3s ease-in-out' }}>
+      <style>{`
+        @keyframes pulse-out {
+          0% {
+            transform: translate(-50%, -50%) scale(0.8);
+            opacity: 0.6;
+          }
+          100% {
+            transform: translate(-50%, -50%) scale(1.5);
+            opacity: 0;
+          }
+        }
+      `}</style>
       <header style={{  zIndex: 999, backgroundColor: colorPair[0], color: colorPair[1], position: 'sticky', top: 0, paddingRight: '8px', borderBottomWidth: '1px', borderBottomStyle: 'solid', borderBottomColor: 'currentColor', display: 'flex', alignItems: 'center' , gap: '8px', transition: 'background-color 0.3s ease-in-out, color 0.3s ease-in-out, border-bottom-color 0.3s ease-in-out' }}>
         <div style={{ padding: '20px 16px', display: 'flex', alignItems: 'center', gap: '8px', borderRight: '1px solid', transition: 'border-right-color 0.3s ease-in-out' }}>
           <Logo colorPair={colorPair} size={20} onClick={swapColorPair} />
@@ -820,6 +870,37 @@ style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, 
         >
           {isCurrentFavorite ? '★' : '☆'}
         </button>
+        <a
+          href="/live"
+          style={{
+            textDecoration: 'none',
+            padding: '8px 16px',
+            fontSize: '12px',
+            fontWeight: 'bold',
+            color: 'currentColor',
+            border: '1px solid currentColor',
+            cursor: 'pointer',
+            display: 'none',
+            alignItems: 'center',
+            gap: '4px',
+            transition: 'all 0.2s',
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.background = colorPair[1];
+            e.target.style.color = colorPair[0];
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.background = 'transparent';
+            e.target.style.color = 'currentColor';
+          }}
+        >
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="3" fill="currentColor"/>
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" fill="currentColor" opacity="0.3"/>
+            <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5z" fill="currentColor" opacity="0.6"/>
+          </svg>
+          Live Feed
+        </a>
         <button style={{
           marginLeft: 0,
           appearance: 'none',
@@ -834,9 +915,26 @@ style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, 
           alignItems: 'center',
           gap: '6px',
           cursor: 'pointer',
+          position: 'relative',
+          overflow: 'hidden',
         }} onClick={handleGenerateColorPair}>
-          Generate
-          <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.14645 3.14645C8.34171 2.95118 8.65829 2.95118 8.85355 3.14645L12.8536 7.14645C13.0488 7.34171 13.0488 7.65829 12.8536 7.85355L8.85355 11.8536C8.65829 12.0488 8.34171 12.0488 8.14645 11.8536C7.95118 11.6583 7.95118 11.3417 8.14645 11.1464L11.2929 8H2.5C2.22386 8 2 7.77614 2 7.5C2 7.22386 2.22386 7 2.5 7H11.2929L8.14645 3.85355C7.95118 3.65829 7.95118 3.34171 8.14645 3.14645Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path></svg>
+          {isBroadcasting && (
+            <span style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: '200%',
+              height: '200%',
+              background: colorPair[0],
+              opacity: 0.3,
+              animation: 'pulse-out 1s ease-out',
+              pointerEvents: 'none',
+              borderRadius: '50%',
+            }} />
+          )}
+          <span style={{ position: 'relative', zIndex: 1 }}>Generate</span>
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ position: 'relative', zIndex: 1 }}><path d="M8.14645 3.14645C8.34171 2.95118 8.65829 2.95118 8.85355 3.14645L12.8536 7.14645C13.0488 7.34171 13.0488 7.65829 12.8536 7.85355L8.85355 11.8536C8.65829 12.0488 8.34171 12.0488 8.14645 11.8536C7.95118 11.6583 7.95118 11.3417 8.14645 11.1464L11.2929 8H2.5C2.22386 8 2 7.77614 2 7.5C2 7.22386 2.22386 7 2.5 7H11.2929L8.14645 3.85355C7.95118 3.65829 7.95118 3.34171 8.14645 3.14645Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path></svg>
         </button>
       </header>
 
