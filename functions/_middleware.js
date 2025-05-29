@@ -2,23 +2,38 @@ export async function onRequest(context) {
   const { request, env, next } = context;
   const url = new URL(request.url);
 
-  // Only act on GET requests
+  // Fetch the original page asset first. This is important.
+  let response = await next();
+
+  // --- BEGIN TEMPORARY DEBUGGING ---
+  // Create a simple HTMLRewriter to add a comment, to see if the middleware is running at all.
+  // This will run on ALL HTML responses if the middleware is active.
+  if (response.headers.get("content-type")?.includes("text/html")) {
+    class HeadCommentInjector {
+      element(element) {
+        // Add a comment at the end of the <head>
+        element.append("<!-- FUNCTIONS/_MIDDLEWARE.JS WAS HERE -->", { html: true });
+      }
+    }
+    response = new HTMLRewriter().on("head", new HeadCommentInjector()).transform(response);
+  }
+  // --- END TEMPORARY DEBUGGING ---
+
+
+  // Only act on GET requests for the dynamic OG tag logic
   if (request.method !== 'GET') {
-    return next();
+    return response; // Return the (potentially comment-injected) response
   }
 
   const bgParam = url.searchParams.get('bg');
   const fgParam = url.searchParams.get('fg');
 
-  // Fetch the original page asset first. We need its content type.
-  const response = await next();
-
-  // Only rewrite if it's an HTML response and we have bg/fg params for dynamic OG tags
+  // Only rewrite for dynamic OG tags if it's an HTML response AND we have bg/fg params
+  // Note: 'response' here is already the one potentially modified by the debug comment injector
   if (bgParam && fgParam && response.headers.get("content-type")?.includes("text/html")) {
     const encodedBg = encodeURIComponent(bgParam);
     const encodedFg = encodeURIComponent(fgParam);
 
-    // IMPORTANT: This is the URL of your *standalone worker* that generates the OG images.
     const ogImageWorkerUrl = 'https://randoma11y-feed.adam-f8f.workers.dev'; 
     const ogImageUrl = `${ogImageWorkerUrl}/og-image.svg?bg=${encodedBg}&fg=${encodedFg}`;
     
@@ -35,16 +50,18 @@ export async function onRequest(context) {
         const property = element.getAttribute('property');
         if (property && (property.startsWith('og:') || property.startsWith('twitter:'))) {
           if (this.tagsToSet.find(t => t.property === property)) {
-            element.remove(); // Remove existing tag if we are providing a new one
+            element.remove(); 
           }
         }
-        // if (element.tagName === 'title') { // Optionally replace main title
+        // if (element.tagName === 'title') { 
         //   element.setInnerContent(title);
         // }
       }
 
       end(end) {
         let tagsHtml = '';
+        // Add the debug comment again if it's a dynamic rewrite, to see this block was hit
+        // tagsHtml += "<!-- DYNAMIC OG BLOCK EXECUTED -->\n"; 
         this.tagsToSet.forEach(tag => {
           const escapedContent = tag.content.replace(/"/g, '&quot;').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
           tagsHtml += `<meta property="${tag.property}" content="${escapedContent}" />\n`;
@@ -69,14 +86,11 @@ export async function onRequest(context) {
       { property: 'twitter:image', content: ogImageUrl },
     ];
 
-    // Create a new response by transforming the original response
-    const transformedResponse = new HTMLRewriter()
+    // Important: transform the 'response' we got after the potential debug comment injection
+    return new HTMLRewriter()
       .on('head', new MetaTagInjector(tags))
       .transform(response);
-      
-    return transformedResponse;
   }
 
-  // If not rewriting (no bg/fg params, not GET, or not HTML), return the original response from next()
   return response; 
 } 
