@@ -31,12 +31,11 @@ const ColorPairCard = ({ colorData, type }) => {
     <div 
       className="color-pair-card"
       onClick={handleClick}
-      title="Click to load these colors in the generator"
+      title={`color: ${fg} / background: ${bg}`}
       style={{ 
         backgroundColor: bg,
         color: fg,
         padding: '1.5rem',
-        marginBottom: '1rem',
         position: 'relative',
         transition: 'all 0.3s ease',
         animation: 'slideIn 0.5s ease-out',
@@ -45,23 +44,22 @@ const ColorPairCard = ({ colorData, type }) => {
     >
       <div style={{ 
         display: 'flex', 
-        justifyContent: 'space-between',
-        alignItems: 'flex-start',
-        marginBottom: '0.5rem'
+        alignItems: 'center',
+        gap: '.5rem',
       }}>
-        <div>
-          <div style={{ fontSize: '1.25rem', fontWeight: '600' }}>
+        <div style={{ height: '8px', borderRadius: '9999px', width: '8px', aspectRatio: 1, background: fg }}></div>
+          <p style={{ margin: 0, fontWeight: '600' }}>
             {colorData.algorithm}: {Math.abs(colorData.contrast).toFixed(2)}
-          </div>
-        </div>
-        <time style={{ fontSize: '0.75rem', fontFamily: 'monospace', opacity: 0.7 }}>
+          </p>
+        <time style={{ marginLeft: 'auto', fontSize: '0.75rem', fontFamily: 'monospace', opacity: 0.7 }}>
           {timeAgo}
         </time>
       </div>
       
       <div style={{ 
         fontSize: '0.875rem',
-        fontFamily: 'monospace'
+          fontFamily: 'monospace',
+        display: 'none',
       }}>
         <div>
           <code>
@@ -202,7 +200,7 @@ const LiveFeed = () => {
 
         <div style={{ 
           display: 'grid', 
-          gridTemplateColumns: '3fr 1fr',
+          gridTemplateColumns: 'minmax(320px, 3fr) minmax(320px, 1fr)',
             padding: '0 1rem',
             gap: '1rem',
         }}>
@@ -210,19 +208,10 @@ const LiveFeed = () => {
             <h2 style={{ 
               fontSize: '1rem', 
               fontWeight: '600',
-              marginBottom: '1.5rem',
               display: 'flex',
               alignItems: 'center',
             }}>
               <span>✨</span> Generated
-              <span style={{ 
-                marginLeft: '.5rem',
-                fontSize: '0.75rem', 
-                opacity: 0.75,
-                fontWeight: 'normal'
-              }}>
-                ({recentColors.length})
-              </span>
             </h2>
             
             {recentColors.length === 0 ? (
@@ -234,7 +223,7 @@ const LiveFeed = () => {
                 Waiting for new color generations...
               </div>
             ) : (
-              <div>
+              <div style={{ display: 'grid', gap: '1rem' }}>
                 {recentColors.map((colorData) => (
                   <ColorPairCard 
                     key={colorData.id} 
@@ -250,19 +239,11 @@ const LiveFeed = () => {
             <h2 style={{ 
               fontSize: '1rem', 
               fontWeight: '600',
-              marginBottom: '1.5rem',
               display: 'flex',
               alignItems: 'center',
               gap: '0.5rem'
             }}>
               <span>❤️</span> Favorites
-              <span style={{ 
-                fontSize: '0.875rem', 
-                opacity: 0.5,
-                fontWeight: 'normal'
-              }}>
-                ({recentFavorites.length})
-              </span>
             </h2>
             
             {recentFavorites.length === 0 ? (
@@ -274,7 +255,7 @@ const LiveFeed = () => {
                 Waiting for favorites...
               </div>
             ) : (
-              <div>
+              <div style={{ display: 'grid', gap: '1rem' }}>
                 {recentFavorites.map((colorData) => (
                   <ColorPairCard 
                     key={colorData.id} 
