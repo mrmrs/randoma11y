@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Color from 'colorjs.io';
 import { HexColorPicker } from 'react-colorful';
 import { v4 as uuidv4 } from 'uuid';
@@ -124,6 +124,23 @@ const App = () => {
   // Add state to track if the threshold was not met and the max contrast achieved
   const [thresholdNotMet, setThresholdNotMet] = useState(false);
   const [maxContrastAchieved, setMaxContrastAchieved] = useState(null);
+
+  const [isCopied, setIsCopied] = useState(false);
+
+  const handleShareColors = useCallback(() => {
+    const params = new URLSearchParams();
+    params.set('bg', colorPair[0]);
+    params.set('fg', colorPair[1]);
+    const shareUrl = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
+    
+    navigator.clipboard.writeText(shareUrl).then(() => {
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000); // Reset after 2 seconds
+    }).catch(err => {
+      console.error('Failed to copy URL: ', err);
+      // Optionally, provide fallback or alert user
+    });
+  }, [colorPair]);
 
   // Function to generate radial chart data from the foreground color string
   const generateRadialDataFromForegroundColor = (colorString) => {
@@ -1100,6 +1117,27 @@ style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, 
           aria-pressed={isCurrentFavorite}
         >
           {isCurrentFavorite ? '★' : '☆'}
+        </button>
+        <button
+          onClick={handleShareColors}
+          title="Copy link to this color combination"
+          style={{
+            appearance: 'none',
+            WebkitAppearance: 'none',
+            borderWidth: '1px',
+            borderStyle: 'solid',
+            borderColor: 'currentColor',
+            background: 'transparent',
+            color: 'currentColor',
+            padding: '8px 16px',
+            cursor: 'pointer',
+            textAlign: 'center',
+            fontSize: '13px',
+            marginRight: '8px', // Add some space before Generate button
+            borderRadius: '0px',
+          }}
+        >
+          {isCopied ? 'Copied!' : 'Share Colors'}
         </button>
         <button style={{
           marginLeft: 0,

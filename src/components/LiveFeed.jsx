@@ -17,14 +17,12 @@ const ColorPairCard = ({ colorData, type }) => {
       : `${seconds}s ago`;
 
   const handleClick = () => {
-    // Encode colors for URL parameters
-    const params = new URLSearchParams({
-      bg: bg,
-      fg: fg
-    });
+    // Encode colors for URL path segments
+    const encodedBg = encodeURIComponent(bg);
+    const encodedFg = encodeURIComponent(fg);
     
-    // Full page navigation to load colors properly
-    window.location.href = `/?${params.toString()}`;
+    // Full page navigation to load colors properly using the new path format
+    window.location.href = `/${encodedBg}/${encodedFg}`;
   };
 
   return (
