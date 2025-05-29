@@ -9,13 +9,21 @@ export async function onRequest(context) {
   // Create a simple HTMLRewriter to add a comment, to see if the middleware is running at all.
   // This will run on ALL HTML responses if the middleware is active.
   if (response.headers.get("content-type")?.includes("text/html")) {
-    class HeadCommentInjector {
+    class HeadDebugInjector {
       element(element) {
-        // Add a comment at the end of the <head>
-        element.append("<!-- FUNCTIONS/_MIDDLEWARE.JS WAS HERE -->", { html: true });
+        // What the function sees:
+        const method = request.method;
+        const searchParams = url.searchParams.toString();
+        const contentType = response.headers.get("content-type") || 'null';
+
+        let debugHtml = "<!-- FUNCTIONS/_MIDDLEWARE.JS WAS HERE -->\n";
+        debugHtml += `<!-- METHOD: ${method} -->\n`;
+        debugHtml += `<!-- SEARCH PARAMS: ${searchParams} -->\n`;
+        debugHtml += `<!-- CONTENT-TYPE: ${contentType} -->\n`;
+        element.append(debugHtml, { html: true });
       }
     }
-    response = new HTMLRewriter().on("head", new HeadCommentInjector()).transform(response);
+    response = new HTMLRewriter().on("head", new HeadDebugInjector()).transform(response);
   }
   // --- END TEMPORARY DEBUGGING ---
 
