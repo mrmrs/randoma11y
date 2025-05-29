@@ -900,7 +900,7 @@ const generateRandomColor = (format) => {
   }, [contrastAlgorithm]);
 
   return (
-    <div style={{ minHeight: '100dvh', backgroundColor: safeBg, color: safeFg, position: 'relative', transition: 'background-color 0.3s ease-in-out, color 0.3s ease-in-out' }}>
+    <div style={{ minHeight: '100dvh', backgroundColor: safeBg, color: safeFg, position: 'relative', transition: 'background-color 0.3s ease-in-out, color 0.3s ease-in-out', overflowX: 'hidden' }}>
       <style>{`
         @keyframes pulse-out {
           0% {
