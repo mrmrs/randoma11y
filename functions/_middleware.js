@@ -2,6 +2,10 @@ export async function onRequest(context) {
   const { request, env, next } = context;
   const url = new URL(request.url);
 
+  // Define params early for debugging
+  const bgParamForDebug = url.searchParams.get('bg');
+  const fgParamForDebug = url.searchParams.get('fg');
+
   // Fetch the original page asset first. This is important.
   let response = await next();
 
@@ -11,14 +15,19 @@ export async function onRequest(context) {
   if (response.headers.get("content-type")?.includes("text/html")) {
     class HeadDebugInjector {
       element(element) {
-        // What the function sees:
         const method = request.method;
         const searchParams = url.searchParams.toString();
         const contentType = response.headers.get("content-type") || 'null';
+        
+        // Access the early-defined params for logging
+        const bgVal = bgParamForDebug || 'null_or_empty';
+        const fgVal = fgParamForDebug || 'null_or_empty';
 
         let debugHtml = "<!-- FUNCTIONS/_MIDDLEWARE.JS WAS HERE -->\n";
         debugHtml += `<!-- METHOD: ${method} -->\n`;
-        debugHtml += `<!-- SEARCH PARAMS: ${searchParams} -->\n`;
+        debugHtml += `<!-- SEARCH PARAMS (RAW): ${searchParams} -->\n`;
+        debugHtml += `<!-- bgParam (parsed): ${bgVal} -->\n`;
+        debugHtml += `<!-- fgParam (parsed): ${fgVal} -->\n`;
         debugHtml += `<!-- CONTENT-TYPE: ${contentType} -->\n`;
         element.append(debugHtml, { html: true });
       }
@@ -33,8 +42,9 @@ export async function onRequest(context) {
     return response; // Return the (potentially comment-injected) response
   }
 
-  const bgParam = url.searchParams.get('bg');
-  const fgParam = url.searchParams.get('fg');
+  // Use the already parsed params
+  const bgParam = bgParamForDebug;
+  const fgParam = fgParamForDebug;
 
   // Only rewrite for dynamic OG tags if it's an HTML response AND we have bg/fg params
   // Note: 'response' here is already the one potentially modified by the debug comment injector
