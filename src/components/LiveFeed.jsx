@@ -16,9 +16,22 @@ const ColorPairCard = ({ colorData, type }) => {
       ? `${minutes}m ago` 
       : `${seconds}s ago`;
 
+  const handleClick = () => {
+    // Encode colors for URL parameters
+    const params = new URLSearchParams({
+      bg: bg,
+      fg: fg
+    });
+    
+    // Full page navigation to load colors properly
+    window.location.href = `/?${params.toString()}`;
+  };
+
   return (
     <div 
       className="color-pair-card"
+      onClick={handleClick}
+      title="Click to load these colors in the generator"
       style={{ 
         backgroundColor: bg,
         color: fg,
@@ -26,7 +39,8 @@ const ColorPairCard = ({ colorData, type }) => {
         marginBottom: '1rem',
         position: 'relative',
         transition: 'all 0.3s ease',
-        animation: 'slideIn 0.5s ease-out'
+        animation: 'slideIn 0.5s ease-out',
+        cursor: 'pointer'
       }}
     >
       <div style={{ 
@@ -98,6 +112,11 @@ const LiveFeed = () => {
         .color-pair-card:hover {
           transform: scale(1.02);
           box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+          z-index: 10;
+        }
+        
+        .color-pair-card:active {
+          transform: scale(0.98);
         }
         
         

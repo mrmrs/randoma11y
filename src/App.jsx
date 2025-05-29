@@ -34,6 +34,41 @@ import EditableColorInput from './components/EditableColorInput.jsx';
 import SlabStat from './components/SlabStat.jsx';
 import { useColorFeedContext } from './contexts/ColorFeedContext';
 
+// At the top of the file, before App component
+const LAST_PAIR_CACHE_SIZE = 100;
+let lastGeneratedPairs = [];
+
+function addPairToCache(pair) {
+  const key = pair.join(',');
+  if (!lastGeneratedPairs.includes(key)) {
+    lastGeneratedPairs.push(key);
+    if (lastGeneratedPairs.length > LAST_PAIR_CACHE_SIZE) {
+      lastGeneratedPairs.shift();
+    }
+  }
+}
+
+function isPairInCache(pair) {
+  return lastGeneratedPairs.includes(pair.join(','));
+}
+
+function shuffledGrid(hueSteps, satSteps, lightSteps) {
+  const grid = [];
+  for (let h = 0; h < 360; h += 360 / hueSteps) {
+    for (let s = 0; s <= 100; s += 100 / satSteps) {
+      for (let l = 0; l <= 100; l += 100 / lightSteps) {
+        grid.push([h, s, l]);
+      }
+    }
+  }
+  // Fisher-Yates shuffle
+  for (let i = grid.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [grid[i], grid[j]] = [grid[j], grid[i]];
+  }
+  return grid;
+}
+
 const App = () => {
   const [userId] = useState(() => `user-${uuidv4()}`);
   const { sendColorGenerated, sendColorFavorited } = useColorFeedContext();
@@ -85,6 +120,10 @@ const App = () => {
   // State for favorites
   const [favorites, setFavorites] = useState([]); // Array of [bg, fg] pairs
   const [favoriteIndex, setFavoriteIndex] = useState(-1); // -1 means not cycling
+
+  // Add state to track if the threshold was not met and the max contrast achieved
+  const [thresholdNotMet, setThresholdNotMet] = useState(false);
+  const [maxContrastAchieved, setMaxContrastAchieved] = useState(null);
 
   // Function to generate radial chart data from the foreground color string
   const generateRadialDataFromForegroundColor = (colorString) => {
@@ -229,10 +268,37 @@ const App = () => {
 
     // Initialize with a random curated palette
     useEffect(() => {
-        const randomIndex = Math.floor(Math.random() * curatedPalettes.length);
-        const initialPalette = curatedPalettes[randomIndex];
+        // Check if we're navigating from live feed (URL will have been updated by LiveFeed)
+        const urlParams = new URLSearchParams(window.location.search);
+        const bgParam = urlParams.get('bg');
+        const fgParam = urlParams.get('fg');
+        
+        let initialPalette;
+        
+        if (bgParam && fgParam) {
+            // Use colors from URL if provided (coming from LiveFeed)
+            try {
+                // Validate the colors
+                new Color(bgParam);
+                new Color(fgParam);
+                initialPalette = [bgParam, fgParam];
+                
+                // Clear the URL parameters after reading
+                window.history.replaceState({}, document.title, window.location.pathname);
+            } catch (error) {
+                console.error('Invalid colors in URL parameters:', error);
+                // Fall back to random palette if colors are invalid
+                const randomIndex = Math.floor(Math.random() * curatedPalettes.length);
+                initialPalette = curatedPalettes[randomIndex];
+            }
+        } else {
+            // Use random curated palette if no URL parameters
+            const randomIndex = Math.floor(Math.random() * curatedPalettes.length);
+            initialPalette = curatedPalettes[randomIndex];
+        }
+        
         setColorPair(initialPalette);
-        setRadialChartData(generateRadialDataFromForegroundColor(initialPalette[0]));
+        setRadialChartData(generateRadialDataFromForegroundColor(initialPalette[1])); // Use index 1 for foreground color
         setContrastScoresChartData(generateContrastScoresChartData(initialPalette));
         // Update color distance data when initial palette is set
         setColorDistanceData(generateColorDistanceData(initialPalette));
@@ -353,116 +419,206 @@ const generateRandomColor = (format) => {
   }
 };
 
+  const findColorMeetingThreshold = (targetColor, threshold, algorithm, inputFormat, colorToGenerateIndex, allowAdjustTarget = true) => {
+    const target = new Color(targetColor);
+    let bestColor = null;
+    let bestContrast = 0;
+    let iterations = 0;
+
+    const meetsThreshold = (contrast) => {
+      if (algorithm === 'WCAG21') {
+        return contrast >= threshold;
+      } else {
+        return contrast >= threshold || contrast <= -threshold;
+      }
+    };
+
+    const hueSteps = 36;
+    const satSteps = 10;
+    const lightSteps = 20;
+    const grid = shuffledGrid(hueSteps, satSteps, lightSteps);
+    for (const [h, s, l] of grid) {
+      iterations++;
+      try {
+        const testColor = new Color('hsl', [h, s, l]);
+        const contrast = colorToGenerateIndex === 0
+          ? testColor.contrast(target, algorithm)
+          : target.contrast(testColor, algorithm);
+        const colorPair = colorToGenerateIndex === 0
+          ? [testColor.toString({ format: inputFormat }), target.toString({ format: inputFormat })]
+          : [target.toString({ format: inputFormat }), testColor.toString({ format: inputFormat })];
+        if (meetsThreshold(contrast) && !isPairInCache(colorPair)) {
+          addPairToCache(colorPair);
+          return {
+            colorPair,
+            contrast,
+            iterations,
+            adjustedTarget: null
+          };
+        }
+        const absContrast = Math.abs(contrast);
+        if (absContrast > Math.abs(bestContrast)) {
+          bestColor = testColor;
+          bestContrast = contrast;
+        }
+      } catch (e) {}
+    }
+
+    // Fallback: try black and white in the current color space/format
+    const black = new Color('#000000').to(formatMapping[inputFormat]);
+    const white = new Color('#ffffff').to(formatMapping[inputFormat]);
+    const blackContrast = colorToGenerateIndex === 0
+      ? black.contrast(target, algorithm)
+      : target.contrast(black, algorithm);
+    const whiteContrast = colorToGenerateIndex === 0
+      ? white.contrast(target, algorithm)
+      : target.contrast(white, algorithm);
+    const colorPairBlack = colorToGenerateIndex === 0
+      ? [black.toString({ format: inputFormat }), target.toString({ format: inputFormat })]
+      : [target.toString({ format: inputFormat }), black.toString({ format: inputFormat })];
+    const colorPairWhite = colorToGenerateIndex === 0
+      ? [white.toString({ format: inputFormat }), target.toString({ format: inputFormat })]
+      : [target.toString({ format: inputFormat }), white.toString({ format: inputFormat })];
+
+    // If either meets threshold, prefer the one with higher contrast
+    if (meetsThreshold(blackContrast) && (!meetsThreshold(whiteContrast) || Math.abs(blackContrast) >= Math.abs(whiteContrast))) {
+      addPairToCache(colorPairBlack);
+      return {
+        colorPair: colorPairBlack,
+        contrast: blackContrast,
+        iterations: iterations + 1,
+        adjustedTarget: null
+      };
+    } else if (meetsThreshold(whiteContrast)) {
+      addPairToCache(colorPairWhite);
+      return {
+        colorPair: colorPairWhite,
+        contrast: whiteContrast,
+        iterations: iterations + 1,
+        adjustedTarget: null
+      };
+    }
+
+    // If neither meets threshold, just return the one with the highest contrast (do not adjust locked color)
+    if (!allowAdjustTarget) {
+      if (Math.abs(blackContrast) >= Math.abs(whiteContrast)) {
+        addPairToCache(colorPairBlack);
+        return {
+          colorPair: colorPairBlack,
+          contrast: blackContrast,
+          iterations: iterations + 1,
+          adjustedTarget: null
+        };
+      } else {
+        addPairToCache(colorPairWhite);
+        return {
+          colorPair: colorPairWhite,
+          contrast: whiteContrast,
+          iterations: iterations + 1,
+          adjustedTarget: null
+        };
+      }
+    }
+
+    // If still nothing, return the best contrast found with the original target
+    const colorPair = colorToGenerateIndex === 0
+      ? [bestColor ? bestColor.toString({ format: inputFormat }) : black.toString({ format: inputFormat }), target.toString({ format: inputFormat })]
+      : [target.toString({ format: inputFormat }), bestColor ? bestColor.toString({ format: inputFormat }) : black.toString({ format: inputFormat })];
+    return {
+      colorPair,
+      contrast: bestContrast || blackContrast,
+      iterations: iterations + 1,
+      adjustedTarget: null
+    };
+  };
+
+  // Refactor generateAccessibleColorPair to ensure all pairs meet the contrast threshold for unlocked pairs.
   const generateAccessibleColorPair = (colorToMatch, colorToGenerateIndex, inputFormat, threshold, algorithm) => {
-    const maxIterations = 20000;
+    const maxRandomIterations = 20000;
     let iterations = 0;
     let color1, color2;
 
+    const meetsThreshold = (contrast) => {
+      return algorithm === 'WCAG21' ? contrast >= threshold : (contrast >= threshold || contrast <= -threshold);
+    };
+
+    // If a color is locked, use the existing logic
     if (colorToMatch) {
-      // One color is locked, generate the other
       if (colorToGenerateIndex === 0) {
-        // Generate color1, color2 is locked
         color2 = new Color(colorToMatch);
-        while (iterations < maxIterations) {
+        while (iterations < maxRandomIterations) {
           color1 = new Color(generateRandomColor(inputFormat));
           const contrast = color1.contrast(color2, algorithm);
-          if (
-            (algorithm === 'WCAG21' && contrast >= threshold) ||
-            (algorithm === 'APCA' && (contrast >= threshold || contrast <= -threshold))
-          ) {
+          if (meetsThreshold(contrast)) {
             return {
               colorPair: [color1.toString({ format: inputFormat }), color2.toString({ format: inputFormat })],
               contrast,
               iterations,
+              adjustedTarget: null
             };
           }
           iterations++;
         }
-        // Fallback: use black or white for color1
-        const blackContrast = new Color('black').contrast(color2, algorithm);
-        const whiteContrast = new Color('white').contrast(color2, algorithm);
-        if (blackContrast >= whiteContrast) {
-          return {
-            colorPair: ['black', color2.toString({ format: inputFormat })],
-            contrast: blackContrast,
-            iterations,
-          };
-        } else {
-          return {
-            colorPair: ['white', color2.toString({ format: inputFormat })],
-            contrast: whiteContrast,
-            iterations,
-          };
-        }
+        return findColorMeetingThreshold(colorToMatch, threshold, algorithm, inputFormat, 0);
       } else {
-        // Generate color2, color1 is locked
         color1 = new Color(colorToMatch);
-        while (iterations < maxIterations) {
+        while (iterations < maxRandomIterations) {
           color2 = new Color(generateRandomColor(inputFormat));
           const contrast = color1.contrast(color2, algorithm);
-          if (
-            (algorithm === 'WCAG21' && contrast >= threshold) ||
-            (algorithm === 'APCA' && (contrast >= threshold || contrast <= -threshold))
-          ) {
+          if (meetsThreshold(contrast)) {
             return {
               colorPair: [color1.toString({ format: inputFormat }), color2.toString({ format: inputFormat })],
               contrast,
               iterations,
+              adjustedTarget: null
             };
           }
           iterations++;
         }
-        // Fallback: use black or white for color2
-        const blackContrast = color1.contrast(new Color('black'), algorithm);
-        const whiteContrast = color1.contrast(new Color('white'), algorithm);
-        if (blackContrast >= whiteContrast) {
-          return {
-            colorPair: [color1.toString({ format: inputFormat }), 'black'],
-            contrast: blackContrast,
-            iterations,
-          };
-        } else {
-          return {
-            colorPair: [color1.toString({ format: inputFormat }), 'white'],
-            contrast: whiteContrast,
-            iterations,
-          };
-        }
+        return findColorMeetingThreshold(colorToMatch, threshold, algorithm, inputFormat, 1);
       }
     } else {
-      // No color locked, generate both randomly
-      color1 = new Color(generateRandomColor(inputFormat));
-      while (iterations < maxIterations) {
+      // No color locked: pick a random first color that CAN meet the threshold
+      let safeFirstColor = null;
+      let maxContrast = 0;
+      let maxContrastColor = null;
+      let attempts = 0;
+      while (attempts < 10000) { // avoid infinite loop
+        const candidate = new Color(generateRandomColor(inputFormat));
+        const contrastToBlack = Math.abs(candidate.contrast('#000', algorithm));
+        const contrastToWhite = Math.abs(candidate.contrast('#fff', algorithm));
+        const maxCandidateContrast = Math.max(contrastToBlack, contrastToWhite);
+        if (maxCandidateContrast >= threshold) {
+          safeFirstColor = candidate;
+          break;
+        }
+        if (maxCandidateContrast > maxContrast) {
+          maxContrast = maxCandidateContrast;
+          maxContrastColor = candidate;
+        }
+        attempts++;
+      }
+      if (!safeFirstColor) {
+        // fallback: use the color with the highest possible contrast
+        safeFirstColor = maxContrastColor || new Color('#000');
+      }
+      // Now try to find a second color that meets the threshold
+      iterations = 0;
+      while (iterations < maxRandomIterations) {
         color2 = new Color(generateRandomColor(inputFormat));
-        const contrast = color1.contrast(color2, algorithm);
-        if (
-          (algorithm === 'WCAG21' && contrast >= threshold) ||
-          (algorithm === 'APCA' && (contrast >= threshold || contrast <= -threshold))
-        ) {
+        const contrast = safeFirstColor.contrast(color2, algorithm);
+        if (meetsThreshold(contrast)) {
           return {
-            colorPair: [color1.toString({ format: inputFormat }), color2.toString({ format: inputFormat })],
+            colorPair: [safeFirstColor.toString({ format: inputFormat }), color2.toString({ format: inputFormat })],
             contrast,
             iterations,
+            adjustedTarget: null
           };
         }
         iterations++;
       }
-      // Fallback: use black or white for color2
-      const blackContrast = color1.contrast(new Color('black'), algorithm);
-      const whiteContrast = color1.contrast(new Color('white'), algorithm);
-      if (blackContrast >= whiteContrast) {
-        return {
-          colorPair: [color1.toString({ format: inputFormat }), 'black'],
-          contrast: blackContrast,
-          iterations,
-        };
-      } else {
-        return {
-          colorPair: [color1.toString({ format: inputFormat }), 'white'],
-          contrast: whiteContrast,
-          iterations,
-        };
-      }
+      // If random fails, walk the grid
+      return findColorMeetingThreshold(safeFirstColor.toString({ format: inputFormat }), threshold, algorithm, inputFormat, 1);
     }
   };
 
@@ -490,6 +646,13 @@ const generateRandomColor = (format) => {
     setContrast(newContrast);
     setIterations(newIterations);
     handleIncrement();
+    
+    // Check if threshold was met
+    const thresholdMet = contrastAlgorithm === 'WCAG21'
+      ? newContrast >= threshold
+      : (newContrast >= threshold || newContrast <= -threshold);
+    setThresholdNotMet(!thresholdMet);
+    setMaxContrastAchieved(newContrast);
     
     // Send to WebSocket feed
     setIsBroadcasting(true);
@@ -524,7 +687,7 @@ const generateRandomColor = (format) => {
   // Function to restore color from history
   const restoreColorPair = (colors) => {
     setColorPair(colors);
-    setRadialChartData(generateRadialDataFromForegroundColor(colors[0]));
+    setRadialChartData(generateRadialDataFromForegroundColor(colors[1])); // Use index 1 for foreground color
     setContrastScoresChartData(generateContrastScoresChartData(colors));
     // Update color distance data when color pair is restored
     setColorDistanceData(generateColorDistanceData(colors));
@@ -554,7 +717,7 @@ const generateRandomColor = (format) => {
       else if (lockedColorIndex === 1) setLockedColorIndex(0);
 
       // Update all dependent data based on the new foreground (now index 0)
-      setRadialChartData(generateRadialDataFromForegroundColor(newPair[0]));
+      setRadialChartData(generateRadialDataFromForegroundColor(newPair[1])); // After swap, index 1 is still the foreground
       setContrastScoresChartData(generateContrastScoresChartData(newPair));
       setColorDistanceData(generateColorDistanceData(newPair));
       setContrast(Color.contrast(newPair[0], newPair[1], contrastAlgorithm));
@@ -672,6 +835,70 @@ const generateRandomColor = (format) => {
     }
   };
 
+  // Listen for URL parameter changes (when navigating from live feed)
+  useEffect(() => {
+    const handleUrlChange = () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const bgParam = urlParams.get('bg');
+        const fgParam = urlParams.get('fg');
+        
+        if (bgParam && fgParam) {
+            try {
+                // Validate the colors
+                new Color(bgParam);
+                new Color(fgParam);
+                const newPalette = [bgParam, fgParam];
+                
+                setColorPair(newPalette);
+                setRadialChartData(generateRadialDataFromForegroundColor(newPalette[1])); // Use index 1 for foreground color
+                setContrastScoresChartData(generateContrastScoresChartData(newPalette));
+                setColorDistanceData(generateColorDistanceData(newPalette));
+                
+                // Recalculate contrast
+                const calculatedContrast = Color.contrast(newPalette[0], newPalette[1], contrastAlgorithm);
+                setContrast(calculatedContrast);
+                
+                // Add to history
+                setColorHistory(prev => [...prev, { id: uuidv4(), colors: newPalette }]);
+                
+                // Clear the URL parameters after reading
+                window.history.replaceState({}, document.title, window.location.pathname);
+            } catch (error) {
+                console.error('Invalid colors in URL parameters:', error);
+            }
+        }
+    };
+    
+    // Check on mount and when navigating
+    handleUrlChange();
+    
+    // Listen for popstate events (browser back/forward)
+    window.addEventListener('popstate', handleUrlChange);
+    
+    return () => {
+        window.removeEventListener('popstate', handleUrlChange);
+    };
+  }, [contrastAlgorithm]); // Re-run if contrast algorithm changes
+
+  // Listen for color changes from LiveFeed
+  useEffect(() => {
+    const handleColorParams = (event) => {
+      const { bg, fg } = event.detail;
+      setColorPair([bg, fg]);
+      setRadialChartData(generateRadialDataFromForegroundColor(fg)); // fg is the foreground color
+      setContrastScoresChartData(generateContrastScoresChartData([bg, fg]));
+      setColorDistanceData(generateColorDistanceData([bg, fg]));
+      
+      const calculatedContrast = Color.contrast(bg, fg, contrastAlgorithm);
+      setContrast(calculatedContrast);
+      
+      setColorHistory(prev => [...prev, { id: uuidv4(), colors: [bg, fg] }]);
+    };
+    
+    window.addEventListener('colorparams', handleColorParams);
+    return () => window.removeEventListener('colorparams', handleColorParams);
+  }, [contrastAlgorithm]);
+
   return (
     <div style={{ minHeight: '100dvh', backgroundColor: safeBg, color: safeFg, position: 'relative', transition: 'background-color 0.3s ease-in-out, color 0.3s ease-in-out' }}>
       <style>{`
@@ -744,7 +971,7 @@ style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, 
           </RadioGroup.Root>
         </fieldset>
 
-        <fieldset style={{ width: '128px', border: 0, padding: 0, fontSize: '12px', fontWeight: 'bold', display: 'block', }}><legend style={{ marginBottom: '8px'}}>Threshold</legend>
+        <fieldset style={{ width: '160px', border: 0, padding: 0, fontSize: '12px', fontWeight: 'bold', display: 'block', }}><legend style={{ marginBottom: '8px'}}>Threshold</legend>
 
             {contrastAlgorithm === 'WCAG21' && (
     <RadioGroup.Root value={threshold} onValueChange={(value) => handleThresholdChange(parseFloat(value))}>
@@ -796,6 +1023,13 @@ style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, 
               <RadioGroup.Indicator style={{ height: '100%', width: '100%', display: 'block', background: colorPair[1]}} />
           </RadioGroup.Item>
                 75
+              </label>
+    <label style={{ gap: '4px', fontWeight: 400, fontSize: '12px', display: 'inline-flex', alignItems: 'center', }}>
+      <RadioGroup.Item value={90} id="90"
+style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, boxShadow: 'inset 0 0 0 1px currentColor', color: colorPair[1], background: 'transparent' }}>
+              <RadioGroup.Indicator style={{ height: '100%', width: '100%', display: 'block', background: colorPair[1]}} />
+          </RadioGroup.Item>
+                90
               </label>
             </div>
             </RadioGroup.Root>
@@ -1002,7 +1236,21 @@ style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, 
           <div style={{ margin: '16px 0', display: 'flex', gap: '16px',  }}>
       <SlabStat label="Contrast" value={typeof contrast === 'number' ? contrast.toFixed(3) : '—'} />
       <SlabStat label="Iterations" value={iterations + 1} />
-      
+      {thresholdNotMet && (
+        <span style={{
+          background: '#ffbaba',
+          color: '#d8000c',
+          borderRadius: '6px',
+          padding: '4px 10px',
+          fontWeight: 'bold',
+          fontSize: '12px',
+          alignSelf: 'center',
+          border: '1px solid #d8000c',
+          marginLeft: '8px',
+        }}>
+          Max {contrastAlgorithm} contrast: {typeof maxContrastAchieved === 'number' ? Math.abs(maxContrastAchieved).toFixed(1) : '?'}
+        </span>
+      )}
     </div>
 
 
@@ -1026,7 +1274,19 @@ style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, 
             <PieChart colorPair={[colorPair[0],colorPair[1]]} borderRadius={borderRadius} />
             <article style={{ boxShadow: 'inset 0 0 0 1px currentColor', background: colorPair[0], color: colorPair[1],  padding: '16px', borderRadius: borderRadius }}>
               <div style={{ width: '100%', height: '384px' }}>
-                  <RadialBarChart data={radialChartData} colorPair={colorPair} /> 
+                {Array.isArray(radialChartData) &&
+                  radialChartData.length === 4 &&
+                  radialChartData.every(series => Array.isArray(series.data) && series.data.length === 1 && series.data[0].x === 'Channel Value') ? (
+                    <RadialBarChart 
+                      key={colorPair.join(',')}
+                      data={radialChartData} 
+                      colorPair={colorPair} 
+                    />
+                  ) : (
+                    <div style={{ color: colorPair[1], background: colorPair[0], height: '384px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '16px' }}>
+                      Radial chart unavailable (data error)
+                    </div>
+                  )}
               </div>
             </article>
         </div>
@@ -1042,7 +1302,12 @@ style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, 
            <div style={{ background: colorPair[1], color: colorPair[0] }}><CopyCodeSnippet colorPair={colorPair} /></div>
              <PieChartAlt colorPair={[colorPair[1],colorPair[0]]} data={pieChartData} borderRadius={borderRadius} />
              <div>
-               <HorizontalBarChart colorPair={[colorPair[1], colorPair[0]]} data={contrastScoresChartData} />
+               <HorizontalBarChart 
+                 key={colorPair.join(',')}
+                 colorPair={colorPair} 
+                 data={contrastScoresChartData} 
+                 borderRadius={borderRadius} 
+               />
              </div>
         </div>
     <section style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>

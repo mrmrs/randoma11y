@@ -93,7 +93,6 @@ button:focus {
   background-position: 0 0, 0.65rem 0.65rem;
 }
 
-/* Radix components * /
 
 .SliderRoot {
   position: relative;
@@ -108,16 +107,14 @@ button:focus {
 .SliderTrack {
   background-color: cyan!imporant;
   position: relative;
-  flex-grow: 1;
- /* border-radius: 9999px;*/
-  height: 4px;
-  width: 100%;
+  flex-grow:1;
+  height:4px;
+  width:100%;
 
 }
 
 .SliderRange {
   position: absolute;
-/*  BORDER-RADIUS: 9999PX;*/
   height: 100%;
 }
 
@@ -128,14 +125,11 @@ button:focus {
   background-color: currentColor;
 }
 .SliderThumb:hover {
-  /* background-color: var(--violet-3); */
 }
 .SliderThumb:focus {
   outline: none;
-/*  box-shadow: 0 0 0 5px var(--black-a8); */
 }
 
-/* TACHYONS */
 
 
 .dn { display: none; }

@@ -11,8 +11,12 @@ function AppRouter() {
       setCurrentPath(window.location.pathname);
     };
 
+    // Handle browser navigation
     window.addEventListener('popstate', handleLocationChange);
-    return () => window.removeEventListener('popstate', handleLocationChange);
+    
+    return () => {
+      window.removeEventListener('popstate', handleLocationChange);
+    };
   }, []);
 
   return (
