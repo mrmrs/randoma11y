@@ -1137,7 +1137,7 @@ style={{height: '10px', width: '10px', border: 0, display: 'block', padding: 0, 
             borderRadius: '0px',
           }}
         >
-          {isCopied ? 'Copied!' : 'Share Colors'}
+          {isCopied ? 'Copied!' : 'Share'}
         </button>
         <button style={{
           marginLeft: 0,
