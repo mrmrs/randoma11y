@@ -59,9 +59,7 @@ export async function onRequest(context) {
       }
 
       end(end) {
-        let tagsHtml = '';
-        // Add the debug comment again if it's a dynamic rewrite, to see this block was hit
-        // tagsHtml += "<!-- DYNAMIC OG BLOCK EXECUTED -->\n"; 
+        let tagsHtml = '<!-- DYNAMIC OG BLOCK EXECUTED -->\n';
         this.tagsToSet.forEach(tag => {
           const escapedContent = tag.content.replace(/"/g, '&quot;').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
           tagsHtml += `<meta property="${tag.property}" content="${escapedContent}" />\n`;
